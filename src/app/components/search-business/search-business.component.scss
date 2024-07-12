@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 100px; /* Ajusta esto según la altura de tu navbar */
+}
+
+#results {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+#map-container {
+  width: 90%;
+  height: 30vh;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background-color: #f0f0f0; /* Temporalmente añadido para visualización */
+}

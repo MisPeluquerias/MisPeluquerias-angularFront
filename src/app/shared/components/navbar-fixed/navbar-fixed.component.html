@@ -1,0 +1,88 @@
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <a href="/"><img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3"></a>
+    <form class="d-flex mx-auto me-5" role="search" style="flex: 1; justify-content: center; max-width: 1400px;">
+      <div class="row g-2 w-100">
+        <div class="col-md-3 position-relative">
+          <input
+            type="text"
+            id="category"
+            class="form-control form-control-lg border-bottom-only"
+            name="category"
+            placeholder="Categoría"
+            (input)="onInputCategory($event)"
+          />
+          <div *ngIf="categories.length > 0" class="results-list">
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let category of categories" (click)="onSelectCategory(category.name)">
+                <i class="las la-tags"></i> {{ category.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-3 position-relative">
+          <input
+            type="text"
+            name="serviceOrSalon"
+            id="serviceOrSalon"
+            class="form-control form-control-lg border-bottom-only"
+            placeholder="¿Qué estas buscando? Salón o Servicio"
+            (input)="onInputServiceOrSalon($event)"
+          />
+          <div *ngIf="services.length > 0 || salons.length > 0" class="results-list-double row">
+            <div class="col-6">
+              <ul class="list-group">
+                <h3>Servicios</h3>
+                <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
+                 <i class="la la-scissors"></i> {{ service.name }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <ul class="list-group">
+                <h3>Salones</h3>
+                <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon.name)">
+                  <i class="la la-home"></i> {{ salon.name }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 position-relative">
+          <input
+            type="text"
+            id="zone"
+            class="form-control form-control-lg border-bottom-only"
+            name="zone"
+            placeholder="¿Dónde? Ciudad o C.P."
+            (input)="onInputCity($event)"
+          />
+          <div *ngIf="cities.length > 0" class="results-list">
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
+               <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-3 ms-auto">
+          <button
+            class="btn btn-lg btn-danger rounded-pill btn-custom"
+            type="submit"
+            style="font-size: 1rem"
+          >
+            <i class="las la-search"></i> Buscar
+          </button>
+        </div>
+      </div>
+    </form>
+    <button
+      class="btn btn-lg btn-danger rounded-pill btn-custom ms-auto me-5"
+      style="font-size: 1rem"
+      type="button"
+      (click)="handleAuthAction()"
+    >
+      <i class="las la-user"></i> {{ isAuthenticated ? 'Salir' : 'Iniciar Sesión' }}
+    </button>
+  </div>
+</nav>

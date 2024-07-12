@@ -1,0 +1,195 @@
+<app-navbar></app-navbar>
+<app-search-bar class="search-bar"></app-search-bar>
+
+<div class="container text-center">
+  <div class="row bg-light">
+    <div class="col-12">
+      <h1 class="h1 text-center text-dark mt-5 mb-5">Categorías de Salones de Belleza</h1>
+    </div>
+    <!-- Fila para las dos primeras imágenes -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-6 mb-4">
+        <div class="card custom-card-height">
+          <img src="./assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias" />
+          <div class="card-body">
+            <h2 class="h3 card-title">Peluquerias</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-6 mb-4">
+        <div class="card custom-card-height">
+          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias" />
+          <div class="card-body">
+            <h2 class="h3 card-title">Barberias</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila para las cuatro imágenes siguientes -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card custom-card-height">
+          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
+          <div class="card-body">
+            <h2 class="h4 card-title">Academias</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card custom-card-height">
+          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
+          <div class="card-body">
+            <h2 class="h4 card-title">Depilación láser</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card custom-card-height">
+          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
+          <div class="card-body">
+            <h2 class="h4 card-title">Estética</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card custom-card-height">
+          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Salón de manicura y pedicura" />
+          <div class="card-body">
+            <h2 class="h4 card-title">Salón de manicura y pedicura</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <div class="separator-line"></div>
+    </div>
+    <!-- Salones destacados -->
+    <div class="row g-0 text-center">
+      <div class="col-12">
+        <p class="h1 mt-5">Salones destacados</p>
+        <small>Descubre nuestra selección de salones de peluquería y belleza.</small>
+      </div>
+      <div class="container mt-5">
+        <p-carousel [value]="slides" [numVisible]="4" [numScroll]="1" [circular]="true" [autoplayInterval]="0">
+          <ng-template pTemplate="item" let-slide>
+            <div class="slide">
+              <div class="card">
+                <img [src]="slide.img" class="card-img-top custom-img-height" [alt]="slide.title">
+                <div class="card-body">
+                  <h2 class="card-title">{{slide.title}}</h2>
+                  <p class="card-text">{{slide.desc}}</p>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="separator-line mt-4"></div>
+      </div>
+      <div class="container-fluid mt-5">
+        <div class="container my-3">
+          <div class="row">
+            <div class="col-md-12 col-12 mx-auto">
+              <div class="card card-featured mb-3 shadow">
+                <div class="row g-0">
+                  <div class="col-xxl-8 col-xl-8 col-lg-6 col-md-12 d-flex align-items-center bg-grey-light">
+                    <div class="card-body p-4">
+                      <h4 class="card-title fw-bold">¿Tienes un negocio de peluquería y belleza?</h4>
+                      <p class="card-text small">AHORA PUEDES DARLE VISIBILIDAD ONLINE</p>
+                      <a href="/reclamation" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">SUBE TU SALON, ES GRATIS</a>
+                    </div>
+                  </div>
+                  <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 position-relative">
+                    <img src="./assets/img/web/negocio.jpg" class="img-fluid rounded-end" alt="Incluye tu salon en MisPeluquerias.com">
+                    <small class="position-absolute bottom-0 start-0 p-4 fw-bold text-white">
+                      Susana T., Peluquería Martina e Hijas, Madrid Caso de éxito en MisPeluquerias.com
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="separator-line mt-3"></div>
+      </div>
+      <h2 class="fw-bold text-center mt-5">Búsqueda por Provincias</h2>
+      <div class="container my-1 align-items-center mb-5" style="margin-left: 120px">
+        <div class="row mt-4">
+          <div class="col-6 col-md-4 col-lg-3">
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-black"> Álava</a></li>
+              <li><a href="#" class="text-black"> Asturias</a></li>
+              <li><a href="#" class="text-black"> Burgos</a></li>
+              <li><a href="#" class="text-black"> Castellón</a></li>
+              <li><a href="#" class="text-black"> Cuenca</a></li>
+              <li><a href="#" class="text-black"> Guipúzcoa</a></li>
+              <li><a href="#" class="text-black"> Jaén</a></li>
+              <li><a href="#" class="text-black"> León</a></li>
+              <li><a href="#" class="text-black"> Málaga</a></li>
+              <li><a href="#" class="text-black"> Ourense</a></li>
+              <li><a href="#" class="text-black"> Santa Cruz de Tenerife</a></li>
+              <li><a href="#" class="text-black"> Tarragona</a></li>
+              <li><a href="#" class="text-black"> Valladolid</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-4 col-lg-3">
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-black">Albacete</a></li>
+              <li><a href="#" class="text-black">Ávila</a></li>
+              <li><a href="#" class="text-black">Cáceres</a></li>
+              <li><a href="#" class="text-black">Ceuta</a></li>
+              <li><a href="#" class="text-black">Girona</a></li>
+              <li><a href="#" class="text-black">Huelva</a></li>
+              <li><a href="#" class="text-black">La Coruña</a></li>
+              <li><a href="#" class="text-black">Lleida</a></li>
+              <li><a href="#" class="text-black">Melilla</a></li>
+              <li><a href="#" class="text-black">Palencia</a></li>
+              <li><a href="#" class="text-black">Segovia</a></li>
+              <li><a href="#" class="text-black">Teruel</a></li>
+              <li><a href="#" class="text-black">Vizcaya</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-4 col-lg-3">
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-black">Alicante</a></li>
+              <li><a href="#" class="text-black">Badajoz</a></li>
+              <li><a href="#" class="text-black">Cádiz</a></li>
+              <li><a href="#" class="text-black">Ciudad Real</a></li>
+              <li><a href="#" class="text-black">Granada</a></li>
+              <li><a href="#" class="text-black">Huesca</a></li>
+              <li><a href="#" class="text-black">La Rioja</a></li>
+              <li><a href="#" class="text-black">Lugo</a></li>
+              <li><a href="#" class="text-black">Murcia</a></li>
+              <li><a href="#" class="text-black">Pontevedra</a></li>
+              <li><a href="#" class="text-black">Sevilla</a></li>
+              <li><a href="#" class="text-black">Toledo</a></li>
+              <li><a href="#" class="text-black">Zamora</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-4 col-lg-3">
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-black">Almería</a></li>
+              <li><a href="#" class="text-black">Barcelona</a></li>
+              <li><a href="#" class="text-black">Cantabria</a></li>
+              <li><a href="#" class="text-black">Córdoba</a></li>
+              <li><a href="#" class="text-black">Guadalajara</a></li>
+              <li><a href="#" class="text-black">Islas Baleares</a></li>
+              <li><a href="#" class="text-black">Las Palmas</a></li>
+              <li><a href="#" class="text-black">Madrid</a></li>
+              <li><a href="#" class="text-black">Navarra</a></li>
+              <li><a href="#" class="text-black">Salamanca</a></li>
+              <li><a href="#" class="text-black">Soria</a></li>
+              <li><a href="#" class="text-black">Valencia</a></li>
+              <li><a href="#" class="text-black">Zaragoza</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer class="mt-5"></app-footer>

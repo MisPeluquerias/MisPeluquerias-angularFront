@@ -1,0 +1,113 @@
+<div class="container text-center">
+  <div style="margin-top: -260px;" class="mb-5">
+    <img
+      src="../../../../assets/img/web/logo-mis-peluquerias.svg"
+      width="450"
+      class="img-fluid"
+      style="margin-top: -260px"
+      alt="Log mis Peluquerias"
+    />
+    <button
+      class="btn btn-lg btn-danger rounded-pill btn-custom"
+      style="margin-top: -260px; margin-left: 53%; font-size: 1rem"
+      type="button"
+      (click)="handleAuthAction()"
+    >
+      <i class="las la-user"></i> {{ isAuthenticated ? 'Salir' : 'Iniciar Sesión' }}
+    </button>
+
+    <section class="text-center" style="margin-top: -42px">
+      <h1 class="title text-white fw-bold">
+        Busca y encuentra el mejor salón de tu ciudad
+      </h1>
+      <p class="subtitle text-white fw-bold">
+        Somos el mayor directorio de salones de peluquería y belleza en español
+      </p>
+    </section>
+    <section id="card-search-section" class="d-flex justify-content-center">
+      <div class="card card-search shadow mb-4 w-100 w-md-75 w-lg-50">
+        <div class="card-body position-relative">
+          <div class="row g-2">
+            <div class="col-md-3 position-relative">
+              <input
+                type="text"
+                id="category"
+                class="form-control form-control-lg border-bottom-only"
+                name="category"
+                placeholder="Categoría"
+                (input)="onInputCategory($event)"
+              />
+              <div *ngIf="categories.length > 0" class="results-list">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let category of categories" (click)="onSelectCategory(category.name)">
+                    <i class="las la-tags"></i> {{ category.name }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-3 position-relative">
+              <input
+                type="text"
+                name="serviceOrSalon"
+                id="serviceOrSalon"
+                class="form-control form-control-lg border-bottom-only"
+                placeholder="¿Qué estas buscando? Salón o Servicio"
+                (input)="onInputServiceOrSalon($event)"
+              />
+              <div *ngIf="services.length > 0 || salons.length > 0" class="results-list-double row">
+                <div class="col-6">
+                  <ul class="list-group">
+                    <h3>Servicios</h3>
+                    <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
+                     <i class="la la-scissors"></i> {{ service.name }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-6">
+                  <ul class="list-group">
+                    <h3>Salones</h3>
+                    <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon.name)">
+                      <i class="la la-home"></i> {{ salon.name }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 position-relative">
+              <input
+                type="text"
+                id="zone"
+                class="form-control form-control-lg border-bottom-only"
+                name="zone"
+                placeholder="¿Dónde? Ciudad o C.P."
+                (input)="onInputCity($event)"
+              />
+              <div *ngIf="cities.length > 0" class="results-list">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
+                   <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div
+              class="col-md-3 d-flex align-items-center justify-content-center"
+              style="font-size: 1rem"
+            >
+              <button
+                class="btn btn-lg btn-danger rounded-pill btn-custom me-2"
+                type="submit"
+              >
+                <i class="las la-search"></i> Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <p class="text-white fw-bold">
+      ¿Eres una peluquería y te gustaría aparecer aquí?
+      <a class="text-light text-white" href="/contacto">Contacta con nosotros</a> y daremos de alta tu salón gratis
+    </p>
+  </div>
+</div>

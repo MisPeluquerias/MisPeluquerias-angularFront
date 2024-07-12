@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h4 class="modal-title">Iniciar sesión</h4>
+  <button
+    type="button"
+    aria-label="Close"
+    class="btn-close me-2"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body text-center">
+  <div class="text-center mb-3">
+    <img
+      src="../../../assets/img/web/sello.jpg"
+      width="120"
+      alt="logo-mis-peluquerias"
+    />
+  </div>
+  <form class="d-flex flex-column align-items-center w-100" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3 w-75" style="max-width: 400px;">
+      <label for="exampleInputEmail1" class="form-label fw-bold">Correo electrónico</label>
+      <input
+        type="email"
+        class="form-control"
+        style="text-align: center;"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        placeholder="correo@example.com"
+        formControlName="email"
+      />
+      <div id="emailHelp" class="form-text text-center">
+        Nunca compartiremos tu correo con nadie más.
+      </div>
+    </div>
+    <div class="mb-3 w-75" style="max-width: 400px;">
+      <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
+      <input
+        type="password"
+        class="form-control"
+        style="text-align: center;"
+        id="exampleInputPassword1"
+        placeholder="********"
+        formControlName="password"
+      />
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-danger rounded-pill px-4 mb-4" [disabled]="!loginForm.valid">
+        <i class="las la-door-open"></i>Login
+      </button>
+    </div>
+    <small id="error" class="text-danger mb-4">{{ errorMessage }}</small>
+    <div class="row">
+      <small>Si no posees una cuenta <a href="" (click)="openRegisterModal($event)">regístrate aquí</a></small>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,138 @@
+<div class="wrapper">
+  <app-navbar-fixed></app-navbar-fixed>
+  <div class="content">
+    <div
+      class="container"
+      style="
+        background: rgba(0, 0, 0, 0.1) url(/assets/img/web/bg-salons/01.jpeg)
+          no-repeat center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+      "
+    >
+      <div class="row">
+        <div class="col-md-6 bg-white bg-opacity-75 py-5 px-4">
+          <h1 class="fw-light text-danger">Contacto</h1>
+          <p class="fw-light text-secondary">
+            ¿Tienes alguna Pregunta? Contacta con Nosotros
+          </p>
+
+          <form
+            [formGroup]="contactForm"
+            (ngSubmit)="onSubmit()"
+            id="form-contact"
+            class="contact"
+          >
+            <div class="row">
+              <!--NAME AND SURNAME-->
+              <div class="col-md-12">
+                <div class="form-group py-3">
+                  <label for="nameMessageUser" class="label small text-danger"
+                    >Nombres y Apellidos</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-lg rounded-0"
+                    formControlName="name"
+                    id="nameMessageUser"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!--PHONE-->
+              <div class="col-md-6">
+                <div class="form-group py-3">
+                  <label for="phoneMessageUser" class="label small text-danger"
+                    >Teléfono</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-lg rounded-0"
+                    formControlName="phone"
+                    id="phoneMessageUser"
+                    pattern="[0-9]{9}"
+                    maxlength="9"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!--EMAIL-->
+              <div class="col-md-6">
+                <div class="form-group py-3">
+                  <label for="mailMessageUser" class="label small text-danger"
+                    >Correo Electrónico</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control form-control-lg rounded-0"
+                    formControlName="email"
+                    id="mailMessageUser"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!--MESSAGE-->
+              <div class="col-md-12">
+                <div class="form-group py-3">
+                  <label for="textMessageUser" class="label small text-danger"
+                    >Mensaje</label
+                  >
+                  <textarea
+                    class="form-control form-control-lg rounded-0"
+                    formControlName="msg"
+                    id="textMessageUser"
+                    rows="5"
+                    maxlength="1000"
+                    required
+                    style="resize: none"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!--CHECK TERMS AND CONDITIONS-->
+              <div class="col-md-12 my-5 d-flex justify-content-between">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="term_cond"
+                    id="invalidCheck"
+                    required
+                  />
+                  <label class="form-check-label" for="invalidCheck">
+                    Aceptar
+                    <a
+                      class="colorRed"
+                      href="/terminos-y-condiciones"
+                      target="_blank"
+                    >
+                      Términos y Condiciones</a
+                    >
+                  </label>
+                  <div class="invalid-feedback">
+                    Debes Aceptar nuestros Términos y Condiciones.
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-danger rounded-pill px-5"
+                  [disabled]="!contactForm.valid"
+                >
+                  Enviar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>

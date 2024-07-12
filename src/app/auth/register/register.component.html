@@ -1,0 +1,181 @@
+<div class="modal-header">
+  <h4 class="modal-title">Regístrate</h4>
+  <button
+    type="button"
+    aria-label="Close"
+    class="btn-close me-2"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body text-center px-5">
+  <div class="text-center mb-3">
+    <img
+      src="../../../assets/img/web/sello.jpg"
+      width="120"
+      alt="logo-mis-peluquerias"
+    />
+  </div>
+  <form class="w-100" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="nombre" class="form-label fw-bold">Nombre</label>
+        <input
+          type="text"
+          class="form-control text-center"
+          id="name"
+          placeholder="Nombre"
+          formControlName="name"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="apellidos" class="form-label fw-bold">Apellidos</label>
+        <input
+          type="text"
+          class="form-control text-center"
+          id="lastname"
+          placeholder="Apellidos"
+          formControlName="lastname"
+        />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="fechaNacimiento" class="form-label fw-bold"
+          >Fecha de nacimiento</label
+        >
+        <input
+          type="date"
+          class="form-control text-center"
+          id="fechaNacimiento"
+          placeholder="dd/mm/aaaa"
+          formControlName="birth_date"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="telefono" class="form-label fw-bold">Teléfono</label>
+        <input
+          type="tel"
+          class="form-control text-center"
+          id="telefono"
+          placeholder="Teléfono"
+          formControlName="phone"
+        />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="correoElectronico" class="form-label fw-bold"
+          >Correo electrónico</label
+        >
+        <input
+          type="email"
+          class="form-control text-center"
+          id="correoElectronico"
+          placeholder="Correo electrónico"
+          formControlName="email"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="dni" class="form-label fw-bold">DNI</label>
+        <input
+          type="text"
+          class="form-control text-center"
+          id="dni"
+          placeholder="DNI"
+          formControlName="dni"
+        />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="ciudad" class="form-label fw-bold">Ciudad</label>
+        <input
+          type="text"
+          id="ciudad"
+          class="form-control form-control-lg border-bottom-only"
+          name="ciudad"
+          placeholder="¿Dónde? Ciudad o C.P."
+          (input)="onInputCity($event)"
+        />
+        <div *ngIf="cities.length > 0" id="city-results" class="results-list">
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
+              <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="provincia" class="form-label fw-bold">Provincia</label>
+        <input
+          type="text"
+          id="provincia"
+          class="form-control form-control-lg border-bottom-only"
+          name="provincia"
+          placeholder="¿Dónde? Ciudad o C.P."
+          (input)="onInputProvince($event)"
+        />
+        <div *ngIf="provinces.length > 0" id="province-results" class="results-list">
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let province of provinces" (click)="onSelectProvince(province)">
+              <i class="las la-map-marker"></i> {{ province.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="mb-3">
+      <label for="direccion" class="form-label fw-bold">Dirección</label>
+      <input
+        type="text"
+        class="form-control text-center"
+        id="direccion"
+        placeholder="Dirección"
+        formControlName="address"
+      />
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="contrasena" class="form-label fw-bold">Contraseña</label>
+        <input
+          type="password"
+          class="form-control text-center"
+          id="contrasena"
+          placeholder="Contraseña"
+          formControlName="password"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="confirmarContrasena" class="form-label fw-bold"
+          >Confirmar contraseña</label
+        >
+        <input
+          type="password"
+          class="form-control text-center"
+          id="confirmarContrasena"
+          placeholder="Confirmar contraseña"
+          formControlName="confirmPassword"
+        />
+      </div>
+    </div>
+    <div class="text-center">
+      <button
+        type="submit"
+        class="btn btn-danger rounded-pill px-4 mb-4"
+        [disabled]="!registerForm.valid"
+      >
+        Registrar Usuario
+      </button>
+    </div>
+    <div class="row mt-3">
+      <small
+        >Si ya posees una cuenta puedes ir a
+        <a href="" (click)="openLoginModal($event)"
+          >ingreso de usuarios</a
+        ></small
+      >
+    </div>
+  </form>
+</div>

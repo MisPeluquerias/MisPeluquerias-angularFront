@@ -1,0 +1,26 @@
+*{
+  box-sizing: border-box;
+}
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+input[type="password"],
+input[type="email"],
+textarea {
+  width: 100%;
+    border: none;
+    border-bottom: 2px solid #B91622;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+}
+
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    border-bottom: 2px solid #ff4d4d;
+    outline: none;
+    box-shadow: none;
+}
