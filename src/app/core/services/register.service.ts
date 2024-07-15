@@ -11,6 +11,7 @@ import { environment } from "../../../environments/environment.development";
 
 export class RegisterService {
 
+
   baseUrl: string = environment.baseUrl;
 
 
@@ -31,5 +32,9 @@ export class RegisterService {
       },
     });
   }
-    
+
+
+  registerUser(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/register`, data);
+  }
 }

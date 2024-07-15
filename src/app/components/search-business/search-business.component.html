@@ -1,13 +1,40 @@
 <div class="wrapper">
   <app-navbar-fixed></app-navbar-fixed>
 
-  <div class="content">
-    <div id="results" class="container">
-      <h5>Resultados de Búsqueda</h5>
-      <p>Todavía no se realizo ningúna búsqueda...</p>
-    </div>
-    <div id="map-container" class="container">
-      <div id="map"></div>
+  <div class="content container-fluid">
+    <div class="row">
+      <div id="results" class="col-md-6 d-flex flex-column">
+        <h5>Resultados de Búsqueda</h5>
+        <div *ngIf="paginatedMarkers.length === 0">
+          <p>No hay resultados en esta área.</p>
+        </div>
+        <div class="card-container" *ngIf="paginatedMarkers.length > 0">
+          <div class="card" *ngFor="let marker of paginatedMarkers">
+            <div class="card-image">
+              <img [src]="marker.image" alt="{{marker.name}}" *ngIf="marker.image">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{marker.name}}</h5>
+              <p class="card-text">{{marker.address}}</p>
+              <p class="card-status" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
+            </div>
+            <div class="card-favorite">
+              <i class="fa fa-heart"></i>
+            </div>
+          </div>
+        </div>
+        <div class="pagination" *ngIf="totalPages.length > 1">
+          <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">Anterior</button>
+          <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">Siguiente</button>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex flex-column">
+        <div class="map-frame flex-grow-1 position-relative">
+          <div id="map" class="map-content"></div>
+          <div id="loading-spinner" class="loading-spinner" *ngIf="isLoading"></div>
+          <div id="map-cover" class="map-cover" *ngIf="isMapLoading"></div>
+        </div>
+      </div>
     </div>
   </div>
   <app-footer></app-footer>

@@ -4,8 +4,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from '../../core/services/register.service';
 import { LoginComponent } from '../login/login.component';
-import { Subject, of, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-register',
@@ -16,6 +18,8 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   cities: any[] = [];
   provinces: any[] = [];
+  errorMessage : string = "";
+  successMessage : string = "";
 
   private searchTermsCity = new Subject<string>();
   private searchTermsProvince = new Subject<string>();
@@ -24,25 +28,24 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
-    private registerService: RegisterService
+    private registerService: RegisterService,
   ) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       lastname: ['', Validators.required],
-      birth_date: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      birth_date: [''],
+      phone: ['', Validators.pattern(/^\d{9}$/)],
       email: ['', [Validators.required, Validators.email]],
-      dni: ['', Validators.required],
-      id_province: ['', Validators.required],
-      id_city: ['', Validators.required],
-      address: ['', Validators.required],
+      dni: [''],
+      id_province: [53], // Valor predeterminado
+      id_city: [65549],  // Valor predeterminado
+      address: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
 
   ngOnInit(): void {
-
     this.searchTermsCity.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -61,6 +64,7 @@ export class RegisterComponent implements OnInit {
         console.error('Error al buscar ciudades:', error);
       }
     });
+
     this.searchTermsProvince.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -76,7 +80,7 @@ export class RegisterComponent implements OnInit {
         this.provinces = response;
       },
       error: (error) => {
-        console.error('Error al buscar ciudades:', error);
+        console.error('Error al buscar provincias:', error);
       }
     });
   }
@@ -98,14 +102,36 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      console.log(this.registerForm.value);
+      const formData = this.registerForm.value;
+      this.registerService.registerUser(formData).subscribe(
+        response => {
+          console.log('Usuario registrado:', response);
+          this.registerForm.reset();
+          this.successMessage = '¡Se ha registrado con éxito!';
+          this.errorMessage = '';
+
+
+          // Manejar la respuesta del registro, por ejemplo:
+          // mostrar un mensaje de éxito, redirigir al usuario, etc.
+        },
+        error => {
+          console.error('Error al registrar usuario:', error);
+          console.error('Error al registrar usuario:', error);
+          this.errorMessage = error.error.message || 'Error al registrar usuario';
+          // Manejar el error, por ejemplo:
+          // mostrar un mensaje de error al usuario
+        }
+      );
     } else {
       console.error('Formulario inválido');
+      // Puedes agregar lógica para mostrar errores de validación al usuario
     }
   }
+
   searchCity(term: string): void {
     this.searchTermsCity.next(term);
   }
+
   searchProvince(term: string): void {
     this.searchTermsProvince.next(term);
   }
@@ -122,12 +148,15 @@ export class RegisterComponent implements OnInit {
 
   onSelectCity(city: any): void {
     const inputElement = document.getElementById('ciudad') as HTMLInputElement;
-    inputElement.value = `${city.name} - ${city.zip_code}`;
+    inputElement.value = `${city.name} - ${city.zip_code} - ${city.id_city}`;
+    this.registerForm.patchValue({ id_city: city.id_city });
     this.cities = [];
   }
+
   onSelectProvince(province: any): void {
     const inputElement = document.getElementById('provincia') as HTMLInputElement;
-    inputElement.value = `${province.name}`;
+    inputElement.value = `${province.name} - ${province.id_province}`;
+    this.registerForm.patchValue({ id_province: province.id_province });
     this.provinces = [];
   }
 }

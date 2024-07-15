@@ -27,5 +27,4 @@ export class ContactComponent {
       console.log('Form Submitted', this.contactForm.value);
     }
   }
-
 }

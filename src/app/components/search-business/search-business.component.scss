@@ -23,10 +23,11 @@
   margin-bottom: 20px;
 }
 
-#map-container {
-  width: 90%;
-  height: 30vh;
+.map-frame {
+  width: 100%;
+  height: 70vh; /* Ajusta la altura según sea necesario */
   position: relative;
+  margin-bottom: 280px;
 }
 
 #map {
@@ -34,4 +35,131 @@
   height: 100%;
   border-radius: 12px;
   background-color: #f0f0f0; /* Temporalmente añadido para visualización */
+}
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite, fadeIn 0.5s ease-in-out;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.map-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.map-cover.fade-out {
+  opacity: 0;
+}
+
+.map-blur {
+  filter: blur(5px);
+  transition: filter 0.5s ease-in-out;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: calc(50% - 20px); /* Ajusta este valor para permitir dos tarjetas por fila */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.card-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.card-status {
+  font-size: 12px;
+  color: green;
+}
+
+.card-status.closed {
+  color: red;
+}
+
+.card-favorite {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.card-favorite .fa-heart {
+  color: red;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
 }

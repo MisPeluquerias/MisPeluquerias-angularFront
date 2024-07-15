@@ -44,7 +44,8 @@
               "node_modules/slick-carousel/slick/slick-theme.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/line-awesome/dist/line-awesome/css/line-awesome.min.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
 
@@ -52,8 +53,8 @@
               "node_modules/slick-carousel/slick/slick.min.js",
 
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
-
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/leaflet/dist/leaflet.js"
             ],
             "server": "src/main.server.ts",
             "prerender": true,

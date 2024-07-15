@@ -26,6 +26,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../jwt.interceptor';
 import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './core/guards/auth.guard';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 
@@ -56,7 +59,13 @@ import { AuthGuard } from './core/guards/auth.guard';
     HttpClientModule,
     ReactiveFormsModule,
     CarouselModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
