@@ -9,7 +9,7 @@
           <p>No hay resultados en esta área.</p>
         </div>
         <div class="card-container" *ngIf="paginatedMarkers.length > 0">
-          <div class="card" *ngFor="let marker of paginatedMarkers">
+          <div class="card" *ngFor="let marker of paginatedMarkers; let i = index" (click)="onCardClick(marker)" [class.selected]="selectedMarker === marker">
             <div class="card-image">
               <img [src]="marker.image" alt="{{marker.name}}" *ngIf="marker.image">
             </div>
@@ -23,10 +23,16 @@
             </div>
           </div>
         </div>
-        <div class="pagination" *ngIf="totalPages.length > 1">
-          <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">Anterior</button>
-          <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">Siguiente</button>
+        <div class="pagination-wrapper">
+          <div class="pagination" *ngIf="totalPages.length > 1">
+            <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">Anterior</button>
+            <div class="pagination-info">
+              Página {{ currentPage }} de {{ totalPages.length }}
+            </div>
+            <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">Siguiente</button>
+          </div>
         </div>
+        <h6 class="text-center mt-3" *ngIf="totalCards > 0">Hemos encontrado {{ totalCards }} resultados para ti.</h6>
       </div>
       <div class="col-md-6 d-flex flex-column">
         <div class="map-frame flex-grow-1 position-relative">

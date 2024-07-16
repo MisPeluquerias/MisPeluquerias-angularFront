@@ -1,48 +1,48 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import * as L from 'leaflet';
 import { SearchBuusinessService } from '../../core/services/search-business.service';
+import { min } from 'rxjs';
 
 @Component({
   selector: 'app-search-business',
-  templateUrl: './search-business.component.html',
-  styleUrls: ['./search-business.component.scss']
+  templateUrl: './search-map-business.component.html',
+  styleUrls: ['./search-map-business.component.scss']
 })
 export class SearchBusinessComponent implements OnInit, AfterViewInit {
 
-  private map: L.Map | undefined;
+  private map: L.Map | undefined; // Ajuste: permitir que sea undefined inicialmente
   private customIcon: L.Icon | undefined;
   public isLoading: boolean = false;
   public isMapLoading: boolean = false;
-  private markerLayer: L.LayerGroup | undefined;
+  private markerLayer: L.LayerGroup | undefined; // Ajuste: permitir que sea undefined inicialmente
   public visibleMarkers: any[] = [];
   public paginatedMarkers: any[] = [];
   public currentPage: number = 1;
   public itemsPerPage: number = 6; // Número de elementos por página (3 filas de 2 tarjetas)
+  public selectedMarker: any | null = null; // Marcador seleccionado
+  private markersMap: Map<any, L.Marker> = new Map(); // Map to store marker references
+  private leaflet: any;
+  private readonly minZoomToLoadMarkers: number = 14; // Nivel de zoom mínimo para cargar markers
 
-  constructor(private searchBusinessService: SearchBuusinessService) {
+  constructor(private searchBusinessService: SearchBuusinessService) { }
+
+  ngOnInit(): void { }
+
+  ngAfterViewInit(): void {
     if (typeof window !== 'undefined') {
       import('leaflet').then(L => {
+        this.leaflet = L;
         this.customIcon = L.icon({
           iconUrl: '../../../assets/img/web/icon-map-finder.png',
           iconSize: [38, 38],
           iconAnchor: [19, 30],
           popupAnchor: [0, -45]
         });
+        this.initMap(L);
       });
     }
   }
 
-  ngOnInit(): void { }
-
-  ngAfterViewInit(): void {
-    if (typeof window !== 'undefined') {
-      this.initMap();
-    }
-  }
-
-  private async initMap(): Promise<void> {
-    const L = await import('leaflet');
-
+  private async initMap(L: any): Promise<void> {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -62,7 +62,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
   private initializeMap(L: any, center: [number, number]): void {
     this.map = L.map('map', {
       center,
-      zoom: 16
+      zoom: 16,
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -70,7 +70,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       attribution: '© OpenStreetMap'
     }).addTo(this.map);
 
-    this.markerLayer = L.layerGroup().addTo(this.map);
+    this.markerLayer = L.layerGroup().addTo(this.map); // Ajuste: inicialización correcta
 
     if (this.customIcon) {
       L.marker(center, { icon: this.customIcon }).addTo(this.map)
@@ -80,21 +80,20 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
 
     this.loadMarkers(L);
 
-    if (this.map) {
-      this.map.on('moveend', () => {
-        this.loadMarkers(L);
-      });
-
-      this.map.on('click', () => {
-        this.isMapLoading = true;
-        this.applyBlurEffect(true);
-        setTimeout(() => this.loadMarkers(L), 100);
-      });
-    }
+    this.enableMapEvents(); // Inicialmente habilitar eventos del mapa
   }
 
   private loadMarkers(L: any): void {
     if (!this.map || !this.markerLayer) return;
+
+    const currentZoom = this.map.getZoom();
+    if (currentZoom < this.minZoomToLoadMarkers) {
+      console.log(`El nivel de zoom es ${currentZoom}, que es inferior al mínimo necesario (${this.minZoomToLoadMarkers}) para cargar markers.`);
+      this.markerLayer!.clearLayers();
+      this.visibleMarkers = [];
+      this.paginateMarkers();
+      return;
+    }
 
     this.isLoading = true;
 
@@ -109,16 +108,22 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       southWestLng: sw.lng,
     };
 
-    this.searchBusinessService.chargeMarkers(boundsParams).subscribe((markers: any[]) => {
-      console.log('Received markers:', markers); // Añadir log para depuración
-      this.markerLayer!.clearLayers();
+    this.searchBusinessService.chargeMarkersAndCars(boundsParams).subscribe((markers: any[]) => {
+      this.markerLayer!.clearLayers(); // Ajuste: uso de operador de aserción no nulo
       this.visibleMarkers = [];
+      this.markersMap.clear(); // Clear the map before adding new markers
 
-      markers.forEach(marker => {
+      markers.forEach((marker) => {
         if (this.customIcon) {
           const markerInstance = L.marker([marker.latitud, marker.longitud], { icon: this.customIcon }).addTo(this.markerLayer!)
-            .bindPopup(marker.name);
+            .bindPopup(`<div>
+                          <img src="${marker.image}" alt="${marker.name}" style="width:50px;height:50px;"/>
+                          <b>${marker.name}</b><br>
+                          ${marker.address}
+                        </div>`);
+          markerInstance.on('click', () => this.onMarkerClick(marker));
           this.visibleMarkers.push(marker);
+          this.markersMap.set(marker, markerInstance); // Save reference to marker instance
         }
       });
       this.paginateMarkers();
@@ -127,6 +132,39 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       console.error('Error loading markers:', error);
       this.fadeOutLoadingSpinner();
     });
+  }
+
+  private onMarkerClick(marker: any): void {
+    this.disableMapEvents(); // Desactivar eventos del mapa temporalmente
+    this.selectedMarker = marker;
+    this.map?.setView([marker.latitud, marker.longitud], 18); // Cambiar zoom a 18
+    this.paginateMarkers();
+    console.log(`Marker clicked: ${marker.name}`);
+    setTimeout(() => {
+      this.enableMapEvents(); // Reactivar eventos del mapa después de 2 segundos
+    }, 2000);
+  }
+
+  private disableMapEvents(): void {
+    if (this.map) {
+      this.map.off('moveend');
+      this.map.off('click');
+    }
+  }
+
+  private enableMapEvents(): void {
+    if (this.map) {
+      this.map.on('moveend', () => {
+        this.loadMarkers(this.leaflet);
+        this.selectedMarker = null;
+      });
+
+      this.map.on('click', () => {
+        this.isMapLoading = true;
+        this.applyBlurEffect(true);
+        setTimeout(() => this.loadMarkers(this.leaflet), 100);
+      });
+    }
   }
 
   private fadeOutLoadingSpinner(): void {
@@ -165,9 +203,13 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
   }
 
   private paginateMarkers(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedMarkers = this.visibleMarkers.slice(startIndex, endIndex);
+    if (this.selectedMarker) {
+      this.paginatedMarkers = [this.selectedMarker];
+    } else {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      this.paginatedMarkers = this.visibleMarkers.slice(startIndex, endIndex);
+    }
   }
 
   public goToPreviousPage(): void {
@@ -184,7 +226,24 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public get totalCards(): number {
+    return this.visibleMarkers.length;
+  }
+
   public get totalPages(): number[] {
     return Array(Math.ceil(this.visibleMarkers.length / this.itemsPerPage)).fill(0).map((_, i) => i + 1);
+  }
+
+  public onCardClick(marker: any): void {
+    this.disableMapEvents(); // Desactivar eventos del mapa temporalmente
+    const markerInstance = this.markersMap.get(marker);
+    if (markerInstance) {
+      this.map?.setView([marker.latitud, marker.longitud], 18); // Cambiar zoom a 18
+      this.selectedMarker = marker;
+      markerInstance.openPopup(); // Open the popup with marker information
+    }
+    setTimeout(() => {
+      this.enableMapEvents(); // Reactivar eventos del mapa después de 2 segundos
+    }, 2000);
   }
 }

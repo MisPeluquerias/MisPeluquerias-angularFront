@@ -28,6 +28,12 @@
   height: 70vh; /* Ajusta la altura según sea necesario */
   position: relative;
   margin-bottom: 280px;
+  z-index: 1;
+}
+
+.selected {
+  border: 2px solid #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
 #map {
@@ -36,6 +42,7 @@
   border-radius: 12px;
   background-color: #f0f0f0; /* Temporalmente añadido para visualización */
 }
+
 .loading-spinner {
   position: absolute;
   top: 50%;
@@ -53,8 +60,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .fade-out {
@@ -82,6 +93,7 @@
   filter: blur(5px);
   transition: filter 0.5s ease-in-out;
 }
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -146,14 +158,21 @@
 .pagination {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 15px;
 }
 
+.pagination-info {
+  font-weight: bold;
+  margin: 0 10px;
+}
+
 .pagination button {
-  background-color: #007bff;
+  background-color:#dc3545;
   color: white;
   border: none;
-  padding: 10px 20px;
+  border-radius: 12px;
+  padding: 5px 10px;
   margin: 0 5px;
   cursor: pointer;
   border-radius: 5px;
@@ -161,5 +180,10 @@
 }
 
 .pagination button:hover {
-  background-color: #0056b3;
+  background-color:darkred;
+}
+
+.card.selected {
+  border: 1px solid red;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }

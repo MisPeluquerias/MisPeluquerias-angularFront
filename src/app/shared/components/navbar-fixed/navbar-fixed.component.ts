@@ -4,6 +4,9 @@ import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operato
 import { Subject, of, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/AuthService.service'; // Importa el servicio de autenticación
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoginComponent } from '../../../auth/login/login.component';
+
 
 @Component({
   selector: 'app-navbar-fixed',
@@ -23,7 +26,8 @@ export class NavbarFixedComponent implements OnInit {
   constructor(
     private navBarFixedService: NavBarFixedService,
     private router: Router,
-    private authService: AuthService // Inyecta el servicio de autenticación
+    private authService: AuthService,
+    private modalService: NgbModal, // Inyecta el servicio de autenticación
   ) {}
 
   ngOnInit(): void {
@@ -118,7 +122,10 @@ export class NavbarFixedComponent implements OnInit {
       this.isAuthenticated = false;
       this.router.navigate(['/home']);
     } else {
-      this.router.navigate(['/login']);
+      this.openLoginModal();
     }
+  }
+  openLoginModal() {
+    this.modalService.open(LoginComponent);
   }
 }

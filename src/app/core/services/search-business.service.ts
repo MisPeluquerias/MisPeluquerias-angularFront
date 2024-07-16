@@ -11,12 +11,12 @@ export class SearchBuusinessService {
 
   constructor(private http: HttpClient) {}
 
-  chargeMarkers(bounds: any): Observable<any[]> {
+  chargeMarkersAndCars(bounds: any): Observable<any[]> {
     const params = new HttpParams()
       .set('northEastLat', bounds.northEastLat)
       .set('northEastLng', bounds.northEastLng)
       .set('southWestLat', bounds.southWestLat)
       .set('southWestLng', bounds.southWestLng);
-    return this.http.get<any[]>(`${this.baseUrl}/business/chargeMarker`, { params });
+    return this.http.get<any[]>(`${this.baseUrl}/business/chargeMarkersAndCard`, { params });
   }
 }

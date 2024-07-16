@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchBusinessComponent } from './search-business.component';
+import { SearchBusinessComponent } from './search-map-business.component';
 
 describe('SearchBusinessComponent', () => {
   let component: SearchBusinessComponent;
@@ -11,7 +11,7 @@ describe('SearchBusinessComponent', () => {
       declarations: [SearchBusinessComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(SearchBusinessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -9,10 +9,10 @@ import { AuthService } from '../../../core/services/AuthService.service';
 
 @Component({
   selector: 'app-search-bar',
-  templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.scss']
+  templateUrl: './navbar-home-search.html',
+  styleUrls: ['./navbar-home-search.scss']
 })
-export class SearchBarComponent implements OnInit {
+export class NavbarHomeSearchComponent implements OnInit {
   categories: any[] = [];
   services: any[] = [];
   salons: any[] = [];

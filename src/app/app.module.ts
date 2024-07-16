@@ -4,10 +4,10 @@ import { HttpClientModule,provideHttpClient,withFetch } from '@angular/common/ht
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { NavbarComponent } from './shared/components/navbar-home-background/navbar.component';
+import { NavbarHomeBackgroundComponent } from './shared/components/navbar-home-background/navbar-home-background.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SearchBarComponent } from './shared/components/navbar-home-search/search-bar.component';
+import { NavbarHomeSearchComponent } from './shared/components/navbar-home-search/navbar-home-search.component';
 import { TermsComponent } from './components/home/terms/terms.component';
 import { PrivacyComponent } from './components/home/privacy/privacy.component';
 import { WarningComponent } from './components/home/warning/warning.component';
@@ -21,7 +21,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { NavbarFixedComponent } from './shared/components/navbar-fixed/navbar-fixed.component';
 import { CarouselModule } from 'primeng/carousel';
 import { RegisterComponent } from './auth/register/register.component';
-import { SearchBusinessComponent } from './components/search-business/search-business.component';
+import { SearchBusinessComponent } from './components/search-map-business/search-map-business.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../jwt.interceptor';
 import { FormsModule } from '@angular/forms';
@@ -36,9 +36,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   declarations: [
     AppComponent,
     HomeComponent,
-    NavbarComponent,
+    NavbarHomeBackgroundComponent,
     FooterComponent,
-    SearchBarComponent,
+    NavbarHomeSearchComponent,
     TermsComponent,
     PrivacyComponent,
     WarningComponent,

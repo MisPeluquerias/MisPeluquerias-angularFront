@@ -10,7 +10,7 @@ import { ContactComponent } from './components/home/contact/contact.component';
 import { ContactProfesionalComponent } from './components/home/contact-profesional/contact-profesional.component';
 import { SalonReclamationComponent } from './components/home/salon-reclamation/salon-reclamation.component';
 import { LoginComponent } from './auth/login/login.component';
-import { SearchBusinessComponent } from './components/search-business/search-business.component';
+import { SearchBusinessComponent } from './components/search-map-business/search-map-business.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
