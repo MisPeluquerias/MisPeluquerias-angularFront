@@ -9,19 +9,19 @@ import { min } from 'rxjs';
 })
 export class SearchBusinessComponent implements OnInit, AfterViewInit {
 
-  private map: L.Map | undefined; // Ajuste: permitir que sea undefined inicialmente
+  private map: L.Map | undefined;
   private customIcon: L.Icon | undefined;
   public isLoading: boolean = false;
   public isMapLoading: boolean = false;
-  private markerLayer: L.LayerGroup | undefined; // Ajuste: permitir que sea undefined inicialmente
+  private markerLayer: L.LayerGroup | undefined;
   public visibleMarkers: any[] = [];
   public paginatedMarkers: any[] = [];
   public currentPage: number = 1;
-  public itemsPerPage: number = 6; // Número de elementos por página (3 filas de 2 tarjetas)
-  public selectedMarker: any | null = null; // Marcador seleccionado
-  private markersMap: Map<any, L.Marker> = new Map(); // Map to store marker references
+  public itemsPerPage: number = 6;
+  public selectedMarker: any | null = null;
+  private markersMap: Map<any, L.Marker> = new Map();
   private leaflet: any;
-  private readonly minZoomToLoadMarkers: number = 14; // Nivel de zoom mínimo para cargar markers
+  private readonly minZoomToLoadMarkers: number = 14;
 
   constructor(private searchBusinessService: SearchBuusinessService) { }
 
@@ -70,7 +70,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       attribution: '© OpenStreetMap'
     }).addTo(this.map);
 
-    this.markerLayer = L.layerGroup().addTo(this.map); // Ajuste: inicialización correcta
+    this.markerLayer = L.layerGroup().addTo(this.map);
 
     if (this.customIcon) {
       L.marker(center, { icon: this.customIcon }).addTo(this.map)
@@ -79,8 +79,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
     }
 
     this.loadMarkers(L);
-
-    this.enableMapEvents(); // Inicialmente habilitar eventos del mapa
+    this.enableMapEvents();
   }
 
   private loadMarkers(L: any): void {
@@ -91,7 +90,9 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       console.log(`El nivel de zoom es ${currentZoom}, que es inferior al mínimo necesario (${this.minZoomToLoadMarkers}) para cargar markers.`);
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
+      this.currentPage = 1; // Volver a la primera página
       this.paginateMarkers();
+      this.selectedMarker = null; // Deseleccionar marcador
       return;
     }
 
@@ -109,9 +110,9 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
     };
 
     this.searchBusinessService.chargeMarkersAndCars(boundsParams).subscribe((markers: any[]) => {
-      this.markerLayer!.clearLayers(); // Ajuste: uso de operador de aserción no nulo
+      this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
-      this.markersMap.clear(); // Clear the map before adding new markers
+      this.markersMap.clear();
 
       markers.forEach((marker) => {
         if (this.customIcon) {
@@ -123,9 +124,10 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
                         </div>`);
           markerInstance.on('click', () => this.onMarkerClick(marker));
           this.visibleMarkers.push(marker);
-          this.markersMap.set(marker, markerInstance); // Save reference to marker instance
+          this.markersMap.set(marker, markerInstance);
         }
       });
+      this.currentPage = 1; // Volver a la primera página
       this.paginateMarkers();
       this.fadeOutLoadingSpinner();
     }, error => {
@@ -135,14 +137,21 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
   }
 
   private onMarkerClick(marker: any): void {
-    this.disableMapEvents(); // Desactivar eventos del mapa temporalmente
+    this.disableMapEvents();
     this.selectedMarker = marker;
-    this.map?.setView([marker.latitud, marker.longitud], 18); // Cambiar zoom a 18
-    this.paginateMarkers();
-    console.log(`Marker clicked: ${marker.name}`);
+    this.map?.setView([marker.latitud, marker.longitud], 18);
+    this.goToPageWithMarker(marker);
     setTimeout(() => {
-      this.enableMapEvents(); // Reactivar eventos del mapa después de 2 segundos
+      this.enableMapEvents();
     }, 2000);
+  }
+
+  private goToPageWithMarker(marker: any): void {
+    const markerIndex = this.visibleMarkers.indexOf(marker);
+    if (markerIndex !== -1) {
+      this.currentPage = Math.floor(markerIndex / this.itemsPerPage) + 1;
+      this.paginateMarkers();
+    }
   }
 
   private disableMapEvents(): void {
@@ -157,6 +166,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       this.map.on('moveend', () => {
         this.loadMarkers(this.leaflet);
         this.selectedMarker = null;
+        this.currentPage = 1; // Volver a la primera página
       });
 
       this.map.on('click', () => {
@@ -203,13 +213,9 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
   }
 
   private paginateMarkers(): void {
-    if (this.selectedMarker) {
-      this.paginatedMarkers = [this.selectedMarker];
-    } else {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      this.paginatedMarkers = this.visibleMarkers.slice(startIndex, endIndex);
-    }
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedMarkers = this.visibleMarkers.slice(startIndex, endIndex);
   }
 
   public goToPreviousPage(): void {
@@ -226,24 +232,20 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public get totalCards(): number {
-    return this.visibleMarkers.length;
-  }
-
   public get totalPages(): number[] {
     return Array(Math.ceil(this.visibleMarkers.length / this.itemsPerPage)).fill(0).map((_, i) => i + 1);
   }
 
   public onCardClick(marker: any): void {
-    this.disableMapEvents(); // Desactivar eventos del mapa temporalmente
+    this.disableMapEvents();
     const markerInstance = this.markersMap.get(marker);
     if (markerInstance) {
-      this.map?.setView([marker.latitud, marker.longitud], 18); // Cambiar zoom a 18
+      this.map?.setView([marker.latitud, marker.longitud], 18);
       this.selectedMarker = marker;
-      markerInstance.openPopup(); // Open the popup with marker information
+      markerInstance.openPopup();
     }
     setTimeout(() => {
-      this.enableMapEvents(); // Reactivar eventos del mapa después de 2 segundos
+      this.enableMapEvents();
     }, 2000);
   }
 }

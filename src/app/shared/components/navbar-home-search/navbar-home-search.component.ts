@@ -9,8 +9,8 @@ import { AuthService } from '../../../core/services/AuthService.service';
 
 @Component({
   selector: 'app-search-bar',
-  templateUrl: './navbar-home-search.html',
-  styleUrls: ['./navbar-home-search.scss']
+  templateUrl: './navbar-home-search.component.html',
+  styleUrls: ['./navbar-home-search.component.scss']
 })
 export class NavbarHomeSearchComponent implements OnInit {
   categories: any[] = [];
