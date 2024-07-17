@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
+import * as L from 'leaflet'; // Importar Leaflet
 
 @Component({
   selector: 'app-unregistered-search-business',
@@ -20,7 +21,6 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   public itemsPerPage: number = 6;
   public selectedMarker: any | null = null;
   private markersMap: Map<any, L.Marker> = new Map();
-  private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
   private currentIdCity: string | null = null;
 
@@ -34,28 +34,32 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   ngAfterViewInit(): void {
     if (typeof window !== 'undefined') {
       import('leaflet').then(L => {
-        this.leaflet = L;
         this.customIcon = L.icon({
           iconUrl: '../../../assets/img/web/icon-map-finder.png',
           iconSize: [38, 38],
           iconAnchor: [19, 30],
           popupAnchor: [0, -45]
         });
+
         this.route.queryParams.subscribe(params => {
           const id_city = params['id_city'];
           if (id_city && id_city !== this.currentIdCity) {
             this.currentIdCity = id_city;
-            this.initMap(L, id_city);
+            if (this.map) {
+              this.loadMarkers(id_city); // Cargar nuevos marcadores en el mapa existente
+            } else {
+              this.initMap(id_city); // Inicializar el mapa por primera vez
+            }
           }
         });
       });
     }
   }
 
-  private initMap(L: any, id_city: string): void {
+  private initMap(id_city: string): void {
     this.map = L.map('map', {
       center: [0, 0],
-      zoom: 16,
+      zoom: 19,
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -65,11 +69,11 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
     this.markerLayer = L.layerGroup().addTo(this.map);
 
-    this.loadMarkers(L, id_city);
+    this.loadMarkers(id_city);
     this.enableMapEvents();
   }
 
-  private loadMarkers(L: any, id_city: string): void {
+  private loadMarkers(id_city: string): void {
     if (!this.map || !this.markerLayer) return;
 
     this.isLoading = true;
@@ -139,7 +143,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
         const id_city = this.route.snapshot.queryParamMap.get('id_city')!;
         if (id_city && id_city !== this.currentIdCity) {
           this.currentIdCity = id_city;
-          this.loadMarkers(this.leaflet, id_city);
+          this.loadMarkers(id_city);
           this.selectedMarker = null;
           this.currentPage = 1;
         }
@@ -152,7 +156,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
           const id_city = this.route.snapshot.queryParamMap.get('id_city')!;
           if (id_city && id_city !== this.currentIdCity) {
             this.currentIdCity = id_city;
-            this.loadMarkers(this.leaflet, id_city);
+            this.loadMarkers(id_city);
           }
         }, 100);
       });
