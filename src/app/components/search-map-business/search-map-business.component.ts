@@ -117,11 +117,11 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       markers.forEach((marker) => {
         if (this.customIcon) {
           const markerInstance = L.marker([marker.latitud, marker.longitud], { icon: this.customIcon }).addTo(this.markerLayer!)
-            .bindPopup(`<div>
-                          <img src="${marker.image}" alt="${marker.name}" style="width:50px;height:50px;"/>
-                          <b>${marker.name}</b><br>
-                          ${marker.address}
-                        </div>`);
+            .bindPopup(`<div style="text-align: center; padding: 10px; font-family: Arial, sans-serif;">
+              <img src="${marker.image}" alt="${marker.name}" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #555; margin-bottom: 5px;" />
+              <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
+              <div style="font-size: 12px; color: #777;">${marker.address}</div>
+            </div>`);
           markerInstance.on('click', () => this.onMarkerClick(marker));
           this.visibleMarkers.push(marker);
           this.markersMap.set(marker, markerInstance);
@@ -216,6 +216,9 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedMarkers = this.visibleMarkers.slice(startIndex, endIndex);
+  }
+  public get totalCards(): number {
+    return this.visibleMarkers.length;
   }
 
   public goToPreviousPage(): void {
