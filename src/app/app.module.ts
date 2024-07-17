@@ -21,13 +21,14 @@ import { LoginComponent } from './auth/login/login.component';
 import { NavbarFixedComponent } from './shared/components/navbar-fixed/navbar-fixed.component';
 import { CarouselModule } from 'primeng/carousel';
 import { RegisterComponent } from './auth/register/register.component';
-import { SearchBusinessComponent } from './components/search-map-business/search-map-business.component';
+import { RegisteredSearchBusinessComponent } from './components/registered-search-map-business/registered-search-map-business.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../jwt.interceptor';
 import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './core/guards/auth.guard';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UnRegisteredSearchBusinessComponent } from './components/unregistered-search-map-business copy/unregistered-search-map-business.component';
 
 
 
@@ -50,7 +51,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     LoginComponent,
     NavbarFixedComponent,
     RegisterComponent,
-    SearchBusinessComponent,
+    RegisteredSearchBusinessComponent,
+    UnRegisteredSearchBusinessComponent
   ],
   imports: [
     BrowserModule,

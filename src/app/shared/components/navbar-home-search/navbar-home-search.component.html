@@ -36,6 +36,7 @@
                 name="category"
                 placeholder="Categoría"
                 (input)="onInputCategory($event)"
+                [(ngModel)]="category"
               />
               <div *ngIf="categories.length > 0" class="results-list">
                 <ul class="list-group">
@@ -53,6 +54,7 @@
                 class="form-control form-control-lg border-bottom-only"
                 placeholder="¿Qué estas buscando? Salón o Servicio"
                 (input)="onInputServiceOrSalon($event)"
+                [(ngModel)]="serviceOrSalon"
               />
               <div *ngIf="services.length > 0 || salons.length > 0" class="results-list-double row">
                 <div class="col-6">
@@ -81,6 +83,7 @@
                 name="zone"
                 placeholder="¿Dónde? Ciudad o C.P."
                 (input)="onInputCity($event)"
+                [(ngModel)]="zone"
               />
               <div *ngIf="cities.length > 0" class="results-list">
                 <ul class="list-group">
@@ -97,6 +100,7 @@
               <button
                 class="btn btn-lg btn-danger rounded-pill btn-custom me-2"
                 type="submit"
+                (click)="onSearch()"
               >
                 <i class="las la-search"></i> Buscar
               </button>

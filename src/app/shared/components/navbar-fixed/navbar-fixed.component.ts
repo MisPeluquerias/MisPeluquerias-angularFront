@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NavBarFixedService } from '../../../core/services/navbar-fixed.service';
-import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject, of, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/AuthService.service'; // Importa el servicio de autenticación
+import { AuthService } from '../../../core/services/AuthService.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from '../../../auth/login/login.component';
-
+import { UnRegisteredSearchBuusinessService } from '../../../core/services/unregistered-search-business.service';
 
 @Component({
   selector: 'app-navbar-fixed',
@@ -22,12 +22,14 @@ export class NavbarFixedComponent implements OnInit {
   private searchTermsServiceOrSalon = new Subject<string>();
   private searchTermsCity = new Subject<string>();
   isAuthenticated: boolean = false;
+  id_city: string = '';
 
   constructor(
     private navBarFixedService: NavBarFixedService,
     private router: Router,
     private authService: AuthService,
-    private modalService: NgbModal, // Inyecta el servicio de autenticación
+    private modalService: NgbModal,
+    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService
   ) {}
 
   ngOnInit(): void {
@@ -106,6 +108,7 @@ export class NavbarFixedComponent implements OnInit {
   onSelectCity(city: any): void {
     const inputElement = document.getElementById('zone') as HTMLInputElement;
     inputElement.value = `${city.name} - ${city.zip_code}`;
+    this.id_city = city.id_city;
     this.cities = [];
   }
 
@@ -125,7 +128,27 @@ export class NavbarFixedComponent implements OnInit {
       this.openLoginModal();
     }
   }
+
   openLoginModal() {
     this.modalService.open(LoginComponent);
+  }
+
+  onSearch(): void {
+    if (!this.id_city) {
+      console.error('No se ha seleccionado una ciudad');
+      return;
+    }
+
+    this.unRegisteredSearchBusiness
+      .searchCategoryServiceAndZone(this.id_city)
+      .subscribe({
+        next: (response) => {
+          this.router.navigate(['/unregistered-search'], { queryParams: { id_city: this.id_city } });
+          console.log('Resultados de la búsqueda:', response);
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda:', error);
+        },
+      });
   }
 }

@@ -10,8 +10,9 @@ import { ContactComponent } from './components/home/contact/contact.component';
 import { ContactProfesionalComponent } from './components/home/contact-profesional/contact-profesional.component';
 import { SalonReclamationComponent } from './components/home/salon-reclamation/salon-reclamation.component';
 import { LoginComponent } from './auth/login/login.component';
-import { SearchBusinessComponent } from './components/search-map-business/search-map-business.component';
+import { RegisteredSearchBusinessComponent } from './components/registered-search-map-business/registered-search-map-business.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { UnRegisteredSearchBusinessComponent } from './components/unregistered-search-map-business copy/unregistered-search-map-business.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -70,7 +71,13 @@ const routes: Routes = [
   },
   {
     path: 'business',
-    component: SearchBusinessComponent, canActivate: [AuthGuard],
+    component: RegisteredSearchBusinessComponent, canActivate: [AuthGuard],
+    title: 'Mis Peluquerias | Encuentra tu salón perfecto',
+  },
+
+  {
+    path: 'unregistered-search',
+    component: UnRegisteredSearchBusinessComponent,
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
 

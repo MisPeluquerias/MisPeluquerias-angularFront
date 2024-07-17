@@ -1,13 +1,13 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { SearchBuusinessService } from '../../core/services/search-business.service';
+import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
 import { min } from 'rxjs';
 
 @Component({
-  selector: 'app-search-business',
-  templateUrl: './search-map-business.component.html',
-  styleUrls: ['./search-map-business.component.scss']
+  selector: 'app-registered-search-business',
+  templateUrl: './registered-search-map-business.component.html',
+  styleUrls: ['./registered-search-map-business.component.scss']
 })
-export class SearchBusinessComponent implements OnInit, AfterViewInit {
+export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit {
 
   private map: L.Map | undefined;
   private customIcon: L.Icon | undefined;
@@ -23,7 +23,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
   private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
 
-  constructor(private searchBusinessService: SearchBuusinessService) { }
+  constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService) { }
 
   ngOnInit(): void { }
 
@@ -109,7 +109,7 @@ export class SearchBusinessComponent implements OnInit, AfterViewInit {
       southWestLng: sw.lng,
     };
 
-    this.searchBusinessService.chargeMarkersAndCars(boundsParams).subscribe((markers: any[]) => {
+    this.registeredSearchBusinessService.chargeMarkersAndCars(boundsParams).subscribe((markers: any[]) => {
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();

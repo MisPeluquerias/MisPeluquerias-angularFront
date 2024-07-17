@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchBusinessComponent } from './search-map-business.component';
+import { UnRegisteredSearchBusinessComponent } from './unregistered-search-map-business.component';
 
 describe('SearchBusinessComponent', () => {
-  let component: SearchBusinessComponent;
-  let fixture: ComponentFixture<SearchBusinessComponent>;
+  let component: UnRegisteredSearchBusinessComponent;
+  let fixture: ComponentFixture<UnRegisteredSearchBusinessComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SearchBusinessComponent]
+      declarations: [UnRegisteredSearchBusinessComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SearchBusinessComponent);
+    fixture = TestBed.createComponent(UnRegisteredSearchBusinessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
