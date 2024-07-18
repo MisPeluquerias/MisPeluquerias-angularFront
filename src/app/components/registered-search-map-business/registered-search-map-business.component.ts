@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
-import { min } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registered-search-business',
@@ -23,7 +23,9 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
 
-  constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService) { }
+  constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void { }
 
@@ -250,5 +252,13 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     setTimeout(() => {
       this.enableMapEvents();
     }, 2000);
+  }
+  public viewDetails(id: any): void {
+    if (id) {
+      console.log('Navigating to details with ID:', id); // Para depuración
+      this.router.navigate(['/details-business', id]);
+    } else {
+      console.error('Marker ID is undefined');
+    }
   }
 }

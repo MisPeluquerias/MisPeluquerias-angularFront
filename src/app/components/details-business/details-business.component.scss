@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
+.container {
+  margin-top: 80px; /* Ajusta esta altura para que coincida con la altura del navbar */
+  padding: 1em;
+  z-index: 1; /* Asegúrate de que el z-index esté correcto */
+  position: relative; /* Asegura que el contenedor sea el contenedor de referencia para el posicionamiento absoluto */
+}
+
+app-navbar-fixed {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: 70px; /* Ajusta esta altura según la altura de tu navbar */
+  z-index: 1000; /* Asegúrate de que el z-index esté correcto */
+}
+
+.fixed-img-size {
+  width: 100%; /* Ajusta el ancho al 100% del contenedor */
+  max-width: 600px; /* Máximo ancho que deseas para la imagen */
+  height: 300px; /* Establece una altura fija */
+  object-fit: cover; /* Ajusta la imagen para que cubra todo el área sin distorsionarse */
+  border-radius: 10px; /* Opcional: añade bordes redondeados */
+  border: 2px solid #ddd; /* Opcional: añade un borde */
+}
+
+.save-btn {
+  font-size: 0.8rem; /* Ajusta según sea necesario */; /* Ajusta según sea necesario */
+  border: 1px solid black;
+}

@@ -29,6 +29,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnRegisteredSearchBusinessComponent } from './components/unregistered-search-map-business copy/unregistered-search-map-business.component';
+import { DetailsBusinessComponent } from './components/details-business/details-business.component';
 
 
 
@@ -52,7 +53,8 @@ import { UnRegisteredSearchBusinessComponent } from './components/unregistered-s
     NavbarFixedComponent,
     RegisterComponent,
     RegisteredSearchBusinessComponent,
-    UnRegisteredSearchBusinessComponent
+    UnRegisteredSearchBusinessComponent,
+    DetailsBusinessComponent
   ],
   imports: [
     BrowserModule,

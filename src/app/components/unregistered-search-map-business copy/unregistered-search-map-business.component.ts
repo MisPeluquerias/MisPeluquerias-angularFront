@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet'; // Importar Leaflet
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-unregistered-search-business',
@@ -26,10 +27,15 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router : Router
   ) { }
 
-  ngOnInit(): void { }
+  async ngOnInit(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const L = await import('leaflet');
+    }
+  }
 
   ngAfterViewInit(): void {
     if (typeof window !== 'undefined') {
@@ -237,5 +243,14 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     setTimeout(() => {
       this.enableMapEvents();
     }, 2000);
+  }
+  
+  public viewDetails(id: any): void {
+    if (id) {
+      console.log('Navigating to details with ID:', id); // Para depuración
+      this.router.navigate(['/details-business', id]);
+    } else {
+      console.error('Marker ID is undefined');
+    }
   }
 }

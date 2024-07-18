@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterComponent } from '../register/register.component';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,8 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string = '';
+
+  baseUrl: string = environment.baseUrl;
 
   constructor(private fb: FormBuilder, public activeModal: NgbActiveModal,
     private modalService: NgbModal, private http: HttpClient, private router: Router) {
@@ -29,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.http.post('http://localhost:3000/login', this.loginForm.value)
+      this.http.post(`${this.baseUrl}/login`, this.loginForm.value)
         .subscribe({
           next: (response: any) => {
             localStorage.setItem('Token', response.token);
@@ -59,8 +62,8 @@ export class LoginComponent implements OnInit {
   }
 
   openRegisterModal(event: Event) {
-    event.preventDefault(); // Previene la acción por defecto del enlace
-    this.modalService.dismissAll(); // Cierra el modal actual
-    this.modalService.open(RegisterComponent); // Abre el modal de registro
+    event.preventDefault();
+    this.modalService.dismissAll();
+    this.modalService.open(RegisterComponent); 
   }
 }

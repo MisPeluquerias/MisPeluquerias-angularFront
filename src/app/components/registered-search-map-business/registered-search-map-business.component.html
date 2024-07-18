@@ -17,6 +17,7 @@
               <h5 class="card-title">{{marker.name}}</h5>
               <p class="card-text">{{marker.address}}</p>
               <p class="card-status" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
+              <a href="#">+info</a>
             </div>
             <div class="card-favorite">
               <i class="fa fa-heart"></i>
@@ -25,11 +26,11 @@
         </div>
         <div class="pagination-wrapper">
           <div class="pagination" *ngIf="totalPages.length > 1">
-            <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">Anterior</button>
-            <div class="pagination-info">
+            <button (click)="goToPreviousPage()" [disabled]="currentPage === 1"><</button>
+            <div class="pagination-info mt-2">
               Página {{ currentPage }} de {{ totalPages.length }}
             </div>
-            <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">Siguiente</button>
+            <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">></button>
           </div>
           <h6 class="text-center mt-3" *ngIf="totalCards > 0">Hemos encontrado {{ totalCards }} resultados para ti.</h6>
         </div>

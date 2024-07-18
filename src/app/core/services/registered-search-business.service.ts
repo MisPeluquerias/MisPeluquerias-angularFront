@@ -19,4 +19,12 @@ export class RegisteredSearchBuusinessService {
       .set('southWestLng', bounds.southWestLng);
     return this.http.get<any[]>(`${this.baseUrl}/business/chargeMarkersAndCard`, { params });
   }
+
+  viewDetailsBusiness(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {
+      params: {
+        id
+      },
+    });;
+  }
 }

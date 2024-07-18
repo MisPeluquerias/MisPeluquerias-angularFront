@@ -19,5 +19,12 @@ export class UnRegisteredSearchBuusinessService {
       },
     });;
   }
+  viewDetailsBusiness(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {
+      params: {
+        id
+      },
+    });;
+  }
 }
 
