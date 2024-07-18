@@ -2,15 +2,20 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-size: 1rem;
+  font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+
 }
 
 .content {
   flex: 1;
 }
 
-.container {
-  margin-top: 80px; /* Ajusta esta altura para que coincida con la altura del navbar */
+
+.container-fluid {
+  margin-top: 50px; /* Ajusta esta altura para que coincida con la altura del navbar */
   padding: 1em;
+  width: 65%;
   z-index: 1; /* Asegúrate de que el z-index esté correcto */
   position: relative; /* Asegura que el contenedor sea el contenedor de referencia para el posicionamiento absoluto */
 }
@@ -25,14 +30,47 @@ app-navbar-fixed {
 
 .fixed-img-size {
   width: 100%; /* Ajusta el ancho al 100% del contenedor */
-  max-width: 600px; /* Máximo ancho que deseas para la imagen */
-  height: 300px; /* Establece una altura fija */
-  object-fit: cover; /* Ajusta la imagen para que cubra todo el área sin distorsionarse */
-  border-radius: 10px; /* Opcional: añade bordes redondeados */
-  border: 2px solid #ddd; /* Opcional: añade un borde */
+  max-width: 1200px; /* Máximo ancho que deseas para la imagen */
+  height: 500px; /* Establece una altura fija */ /* Ajusta la imagen para que cubra todo el área sin distorsionarse */
+  border-radius: 12px;
+  object-fit: cover;
+   /* Opcional: añade bordes redondeados */
+ /* Opcional: añade un borde */
 }
 
 .save-btn {
   font-size: 0.8rem; /* Ajusta según sea necesario */; /* Ajusta según sea necesario */
   border: 1px solid black;
+}
+.horarios {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.horario-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0; /* Ajusta el padding según tus necesidades */
+  min-height: 50px;
+  font-size: 1rem;
+}
+
+.horario-item .dia {
+  flex: 1;
+
+}
+
+.current-day {
+  font-weight: bold;
+}
+
+.horario-item .horas {
+  flex: 1;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.horario-item .horas p {
+  margin: 0;
 }

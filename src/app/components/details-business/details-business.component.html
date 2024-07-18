@@ -1,40 +1,71 @@
 <div class="wrapper">
   <app-navbar-fixed></app-navbar-fixed>
   <div class="content">
-    <div class="container bg-light py-5 position-relative">
+    <div class="container-fluid py-5 position-relative">
       <div *ngIf="business" class="row">
-        <!-- Columna principal -->
-        <div class="col-md-8">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{{ business.name }}</h1>
+        <div class="d-flex align-items-center justify-content-between mt-3">
+          <h1 class="h3 mb-2">{{ business.name }}</h1>
+          <div>
+            <button
+            class="btn btn-lg btn-danger rounded-pill btn-custom"
+            type="submit"
+            style="font-size: 0.8rem"
+          >
+          <i class="las la-hand-paper"></i> Reclamalo ahora
+          </button>
+          </div>
 
-          </div>
-          <p class="mb-3"><b>Dirección: </b>{{ business.address }}</p>
-          <img [src]="business.image" class="img-fluid fixed-img-size mb-4"/>
-          <h5>Sobre el salón</h5>
-          <p class="mt-4">{{ business.description }}</p>
-          <h5>Donde esta el salón</h5>
-          <div class="d-flex justify-content-left">
-            <div id="map" style="width: 600px; height: 300px; border-radius: 12px;" class="mt-4"></div>
-          </div>
         </div>
-        <!-- Columna secundaria -->
-        <div class="col-md-4">
-          <div class="border p-3 rounded">
-            <button class="btn btn-lg rounded-pill save-btn mb-3">
-              <i class="la la-heart"></i> Guardar
-            </button>
-            <p class="mb-3 bg-light">¿Eres propietario de este salón? <a href="/reclamation">Reclámalo aquí</a></p>
-            <h5>Horarios</h5>
-            <ul class="list-unstyled">
-              <li>{{business.hours_old}}</li>
-            </ul>
-            <h5>Detalles</h5>
+        <p class="mb-3">{{ business.address }}</p>
+        <!-- Columna de imagen y detalles principales -->
+        <div class="col-lg-8 col-md-7 mb-4">
+          <img
+            [src]="business.image"
+            class="img-fluid mb-3 fixed-img-size"
+            style="border: 0.1px solid #000; border-radius: 12px"
+          />
 
-            <p><i class="fas fa-phone"></i> <span> TEL: {{business.phone}}</span></p>
-            <p><i class="fas fa-envelope"></i> Email {{business.email}}</p>
-            <p><i class="fas fa-globe"></i>Web: {{business.url}}</p>
+          <!-- Nombre del negocio debajo de la imagen -->
+          <h4 class="mt-5">Sobre el salón</h4>
+          <p class="mt-4">{{ business.description }}</p>
+          <h4 class="mt-5">Reseñas</h4>
+        </div>
 
+        <!-- Columna de información secundaria -->
+        <div class="col-lg-3 col-md-5 border p-3 rounded">
+          <div class="d-flex align-items-center mt-3">
+            <span><i class="las la-phone"></i> {{business.phone}}</span>
+            <a href="tel:{{business.phone}}" class="btn border ms-auto">Llamar</a>
+          </div>
+          <div class="d-flex mb-5">
+            <div
+              id="map"
+              style="
+                width: 100%;
+                height: 335px;
+                border: 0.1px solid #000;
+                border-radius: 12px;
+              "
+              class="mt-3"
+            ></div>
+          </div>
+          <div class="horarios mb-5">
+            <div
+              *ngFor="let hour of business.hours_old.split('; ')"
+              class="horario-item"
+            >
+              <div
+                [ngClass]="{
+                  'current-day': hour.split(', ')[0] === currentDay
+                }"
+                class="dia"
+              >
+                {{ hour.split(", ")[0] }}
+              </div>
+              <div class="horas">
+                <p *ngFor="let time of hour.split(', ').slice(1)">{{ time }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

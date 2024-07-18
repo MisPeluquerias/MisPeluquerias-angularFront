@@ -11,11 +11,14 @@ import * as L from 'leaflet';
 export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   business: any;
   private map: L.Map | undefined;
+  currentDay: string;
 
   constructor(
     private route: ActivatedRoute,
     private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService
-  ) { }
+  ) {
+    this.currentDay = this.getCurrentDay();
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -25,6 +28,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
           data => {
             if (data.length > 0) {
               this.business = data[0];
+              this.business.hours_old = this.sortHours(this.business.hours_old);
               console.log(data);
               // Mover initMap() aquí para asegurarse de que el mapa se inicializa
               setTimeout(() => {
@@ -67,5 +71,23 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
     L.marker([this.business.latitud, this.business.longitud], { icon: customIcon }).addTo(this.map)
       .bindPopup(`<b>${this.business.name}</b><br>${this.business.address}`).openPopup();
+  }
+
+  private sortHours(hours: string): string {
+    const daysOrder = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+    const hoursArray = hours.split("; ").map(hour => {
+      const [day, ...times] = hour.split(", ");
+      return { day, times: times.join(", ") };
+    });
+
+    hoursArray.sort((a, b) => daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day));
+
+    return hoursArray.map(({ day, times }) => `${day}, ${times}`).join("; ");
+  }
+
+  private getCurrentDay(): string {
+    const daysOrder = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    const currentDayIndex = new Date().getDay();
+    return daysOrder[currentDayIndex];
   }
 }
