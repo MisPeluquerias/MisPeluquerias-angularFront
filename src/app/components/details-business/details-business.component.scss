@@ -3,14 +3,12 @@
   flex-direction: column;
   min-height: 100vh;
   font-size: 1rem;
-  font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 .content {
   flex: 1;
 }
-
 
 .container-fluid {
   margin-top: 50px; /* Ajusta esta altura para que coincida con la altura del navbar */
@@ -31,21 +29,19 @@ app-navbar-fixed {
 .fixed-img-size {
   width: 100%; /* Ajusta el ancho al 100% del contenedor */
   max-width: 1200px; /* Máximo ancho que deseas para la imagen */
-  height: 500px; /* Establece una altura fija */ /* Ajusta la imagen para que cubra todo el área sin distorsionarse */
+  height: 500px; /* Establece una altura fija */
   border-radius: 12px;
   object-fit: cover;
-   /* Opcional: añade bordes redondeados */
- /* Opcional: añade un borde */
 }
 
 .save-btn {
-  font-size: 0.8rem; /* Ajusta según sea necesario */; /* Ajusta según sea necesario */
+  font-size: 0.8rem; /* Ajusta según sea necesario */
   border: 1px solid black;
 }
+
 .horarios {
   display: flex;
   flex-direction: column;
-
 }
 
 .horario-item {
@@ -58,7 +54,6 @@ app-navbar-fixed {
 
 .horario-item .dia {
   flex: 1;
-
 }
 
 .current-day {
@@ -74,7 +69,7 @@ app-navbar-fixed {
 .horario-item .horas p {
   margin: 0;
 }
-/* Estilos para la estrella de calificación */
+
 /* Estilos para la estrella de calificación */
 .star-rating {
   display: flex;
@@ -112,3 +107,28 @@ app-navbar-fixed {
   color: #FFD700; /* Color dorado para estrellas al pasar el ratón */
 }
 
+/* Estilo para las tarjetas de reseñas */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 0.0625rem solid #ddd;
+  border-radius: 0.3125rem;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.card-body {
+  padding: 1rem;
+}
+.star-rating .star {
+  font-size: 1.5rem;
+
+  color: #ddd;
+}
+
+.star-rating .star.filled {
+  color: #FFD700;
+  display: flex;
+}

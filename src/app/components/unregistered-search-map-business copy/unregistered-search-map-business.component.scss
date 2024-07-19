@@ -105,9 +105,9 @@ html {
 }
 
 .card {
+  flex: 1 1 calc(33.333% - 1.25rem); /* Ajusta para tener tres tarjetas por fila */
   display: flex;
   flex-direction: column;
-  width: calc(33% - 1.25rem); /* Ajusta este valor para permitir dos tarjetas por fila */
   border: 0.0625rem solid #ddd; /* 1px en rem */
   border-radius: 0.3125rem; /* 5px en rem */
   overflow: hidden;
@@ -201,4 +201,12 @@ html {
 
 app-footer {
   margin-top: 13.75rem; /* 220px en rem */
+}
+.star-rating .star {
+  font-size: 1.5rem;
+  color: #ddd; /* Color de estrellas no seleccionadas */
+}
+
+.star-rating .star.filled {
+  color: #FFD700; /* Color de estrellas seleccionadas */
 }
