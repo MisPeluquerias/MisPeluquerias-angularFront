@@ -35,9 +35,20 @@ export class LoginComponent implements OnInit {
       this.http.post(`${this.baseUrl}/login`, this.loginForm.value)
         .subscribe({
           next: (response: any) => {
-            localStorage.setItem('Token', response.token);
-            this.router.navigate(['/business']);
-            this.activeModal.close();
+            console.log('Respuesta recibida del servidor:', response); // Log para depuración
+
+            if (response.token && response.userId && response.permiso) {
+              localStorage.setItem('Token', response.token);
+              localStorage.setItem('userId', response.userId);
+              localStorage.setItem('permiso', response.permiso);
+
+              console.log('Datos almacenados en local storage: Token, userId, permiso'); // Log para verificar almacenamiento
+
+              this.router.navigate(['/business']);
+              this.activeModal.close();
+            } else {
+              console.error('Faltan datos en la respuesta del servidor', response);
+            }
           },
           error: (error) => {
             console.error('Error en login', error);
@@ -64,6 +75,6 @@ export class LoginComponent implements OnInit {
   openRegisterModal(event: Event) {
     event.preventDefault();
     this.modalService.dismissAll();
-    this.modalService.open(RegisterComponent); 
+    this.modalService.open(RegisterComponent);
   }
 }

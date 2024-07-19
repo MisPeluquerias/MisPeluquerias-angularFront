@@ -74,3 +74,41 @@ app-navbar-fixed {
 .horario-item .horas p {
   margin: 0;
 }
+/* Estilos para la estrella de calificación */
+/* Estilos para la estrella de calificación */
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse; /* Invertir el orden visual de las estrellas */
+  font-size: 2rem;
+  color: #ddd;
+  cursor: pointer;
+  user-select: none; /* Evita la selección del texto */
+}
+
+.star-rating input {
+  display: none; /* Oculta los botones de radio */
+}
+
+.star-rating label {
+  margin: 0;
+  padding: 0;
+  color: #ddd;
+  transition: color 0.2s; /* Transición suave del color */
+}
+
+/* Aplica el color dorado a la estrella seleccionada y a todas las estrellas a la izquierda */
+.star-rating input:checked ~ label {
+  color: #FFD700; /* Color dorado para las estrellas seleccionadas */
+}
+
+.star-rating input:checked ~ label,
+.star-rating input:checked ~ label ~ label {
+  color: #FFD700; /* Color dorado para estrellas a la izquierda cuando se selecciona una */
+}
+
+/* Cambia el color de las estrellas al pasar el ratón sobre ellas */
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #FFD700; /* Color dorado para estrellas al pasar el ratón */
+}
+

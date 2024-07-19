@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet';
+import { DetailsBusinesstService } from '../../core/services/details-business.service';
 
 @Component({
   selector: 'app-details-business',
@@ -12,10 +13,13 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   business: any;
   private map: L.Map | undefined;
   currentDay: string;
+  reviews: any[] = [];
+  faqs: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService
+    private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService,
+    private detailsBusiness: DetailsBusinesstService
   ) {
     this.currentDay = this.getCurrentDay();
   }
@@ -30,6 +34,11 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
               this.business = data[0];
               this.business.hours_old = this.sortHours(this.business.hours_old);
               console.log(data);
+
+              // Cargar reseñas y preguntas frecuentes después de obtener los detalles del negocio
+              this.loadReviews(id);
+              this.loadFaq(id);
+
               // Mover initMap() aquí para asegurarse de que el mapa se inicializa
               setTimeout(() => {
                 this.initMap();
@@ -42,6 +51,26 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         );
       }
     });
+  }
+
+  private loadReviews(id: string): void {
+    this.detailsBusiness.loadReview(id).subscribe(
+      reviews => {
+        this.reviews = reviews;
+        console.log('Reseñas cargadas:', reviews);
+      },
+      error => console.error('Error loading reviews', error)
+    );
+  }
+
+  private loadFaq(id: string): void {
+    this.detailsBusiness.loadFaq(id).subscribe(
+      faqs => { // Cambiado a faqs en lugar de reviews
+        this.faqs = faqs;
+        console.log('Preguntas cargadas:', faqs);
+      },
+      error => console.error('Error loading faq', error)
+    );
   }
 
   ngAfterViewInit(): void {

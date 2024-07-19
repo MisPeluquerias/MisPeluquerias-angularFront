@@ -19,7 +19,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   public visibleMarkers: any[] = [];
   public paginatedMarkers: any[] = [];
   public currentPage: number = 1;
-  public itemsPerPage: number = 6;
+  public itemsPerPage: number = 9;
   public selectedMarker: any | null = null;
   private markersMap: Map<any, L.Marker> = new Map();
   private readonly minZoomToLoadMarkers: number = 14;
@@ -244,7 +244,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
       this.enableMapEvents();
     }, 2000);
   }
-  
+
   public viewDetails(id: any): void {
     if (id) {
       console.log('Navigating to details with ID:', id); // Para depuración

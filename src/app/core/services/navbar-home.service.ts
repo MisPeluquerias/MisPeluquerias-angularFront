@@ -36,6 +36,8 @@ export class SearchBarService {
       },
     });
   }
+  
+
   searchCity(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchBar/searchCity`, {
       params: {

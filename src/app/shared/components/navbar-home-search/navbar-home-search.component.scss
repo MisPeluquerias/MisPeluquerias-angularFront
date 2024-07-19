@@ -97,3 +97,20 @@
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+.custom-margin {
+  margin-right: 640px ;
+}
+@media (max-width: 991.98px) { /* Breakpoint para pantallas SM y MD */
+  .custom-margin {
+    margin-top: 12px;
+    margin-right: 0 !important; /* Anula el margen derecho */
+  }
+}
+
+/* Estilo para pantallas muy pequeñas */
+@media (max-width: 575.98px) { /* Breakpoint para pantallas XS */
+  .custom-margin {
+    margin-top: 12px;
+    margin-right: 0 !important; /* Anula el margen derecho */
+  }
+}

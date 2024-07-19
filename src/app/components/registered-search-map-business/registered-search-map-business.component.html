@@ -17,7 +17,7 @@
               <h5 class="card-title">{{marker.name}}</h5>
               <p class="card-text">{{marker.address}}</p>
               <p class="card-status" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
-              <a href="#">+info</a>
+              <a (click)="viewDetails(marker.id_salon); $event.stopPropagation()">+info</a>
             </div>
             <div class="card-favorite">
               <i class="fa fa-heart"></i>
