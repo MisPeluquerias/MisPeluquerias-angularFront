@@ -36,9 +36,17 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
     return this.http.post<any[]>(`${this.baseUrl}/details-business/saveReview`, body);
   }
 
-  
+
   loadServices(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadServices`, {
+      params: {
+        id
+      },
+    });
+  }
+
+  loadQuestions(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/loadQuestions`, {
       params: {
         id
       },
@@ -58,15 +66,15 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
     return this.http.post<any[]>(`${this.baseUrl}/details-business/deleteReview`, body);
   }
 
-  saveQuestion(id_user: string, id_salon: string, question: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/details-business/saveQuestion`, { id_user, id_salon, question });
+  saveFaq(id_salon: string, question: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/details-business/saveQuestion`, {id_salon, question });
   }
 
-  updateQuestion(id_faq: string, answer: string): Observable<any> {
+  updateFaq(id_faq: string, answer: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/details-business/updateQuestion`, { id_faq, answer });
   }
 
-  deleteQuestion(id_faq: string): Observable<any> {
+  deleteFaq(id_faq: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/details-business/deleteQuestion`, { id_faq });
   }
 

@@ -17,7 +17,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   public visibleMarkers: any[] = [];
   public paginatedMarkers: any[] = [];
   public currentPage: number = 1;
-  public itemsPerPage: number = 6;
+  public itemsPerPage: number = 9;
   public selectedMarker: any | null = null;
   private markersMap: Map<any, L.Marker> = new Map();
   private leaflet: any;

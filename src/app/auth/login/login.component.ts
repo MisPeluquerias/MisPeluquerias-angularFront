@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -35,14 +36,15 @@ export class LoginComponent implements OnInit {
       this.http.post(`${this.baseUrl}/login`, this.loginForm.value)
         .subscribe({
           next: (response: any) => {
-            console.log('Respuesta recibida del servidor:', response); // Log para depuración
 
-            if (response.token && response.userId && response.permiso) {
+            //console.log('Respuesta recibida del servidor:', response); // Log para depuración
+
+            if (response.token /*&& response.userId && response.permiso*/) {
               localStorage.setItem('Token', response.token);
-              localStorage.setItem('userId', response.userId);
+              localStorage.setItem('usuarioId', response.usuarioId);
               localStorage.setItem('permiso', response.permiso);
 
-              console.log('Datos almacenados en local storage: Token, userId, permiso'); // Log para verificar almacenamiento
+              // Log para verificar almacenamiento
 
               this.router.navigate(['/business']);
               this.activeModal.close();

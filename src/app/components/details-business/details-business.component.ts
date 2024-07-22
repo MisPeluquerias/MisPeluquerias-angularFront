@@ -162,7 +162,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       response => {
         console.log('Reseña guardada:', response);
         this.loadReviews(id_salon);
-        
+
       },
       error => console.error('Error guardando la reseña', error)
     );
@@ -220,7 +220,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     const id_salon = this.idSalon;
     const question = this.questionText;
 
-    this.detailsBusiness.saveQuestion(id_user, id_salon, question).subscribe(
+    this.detailsBusiness.saveFaq(id_salon, question).subscribe(
       response => {
         console.log('Pregunta guardada:', response);
         this.loadFaq(id_salon);
@@ -235,7 +235,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       answer: this.editAnswerText
     };
 
-    this.detailsBusiness.updateQuestion(updatedQuestion.id_faq, updatedQuestion.answer).subscribe(
+    this.detailsBusiness.updateFaq(updatedQuestion.id_faq, updatedQuestion.answer).subscribe(
       response => {
         console.log('Pregunta actualizada:', response);
         this.loadFaq(this.idSalon!);
@@ -254,7 +254,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   deleteQuestion(id_faq: string): void {
     console.log('Eliminar pregunta con ID:', id_faq);
     if (this.idSalon) {
-      this.detailsBusiness.deleteQuestion(id_faq).subscribe(
+      this.detailsBusiness.deleteFaq(id_faq).subscribe(
         response => {
           console.log('Pregunta eliminada:', response);
           this.loadFaq(this.idSalon!);

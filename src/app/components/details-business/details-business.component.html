@@ -30,8 +30,7 @@
                 <div *ngIf="services.length > 0">
                   <ul class="list-unstyled">
                     <li *ngFor="let service of services">
-                      <strong>{{ service.author }}</strong
-                      > {{ service.comment }}
+                      <strong>{{ service.author }}</strong> {{ service.comment }}
                     </li>
                   </ul>
                 </div>
@@ -101,48 +100,50 @@
             <p>No hay reseñas disponibles.</p>
           </div>
 
-          <div class="row d-flex">
-            <div class="row d-flex align-items-center mt-5">
-              <div class="col">
-                <h4 class="mb-3">Preguntas Frecuentes</h4>
-                <div *ngIf="faqs.length > 0">
-                  <ul class="list-unstyled">
-                    <li *ngFor="let faq of faqs">
-                      <strong>{{ faq.question }}</strong
-                      > {{ faq.answer }}
-                      <div class="d-flex justify-content-end mt-2">
-                        <button
-                          class="btn btn-primary btn-sm me-2"
-                          data-bs-toggle="modal"
-                          data-bs-target="#editQuestionModal"
-                          (click)="editQuestion(faq)"
-                        >
-                          Responder
-                        </button>
-                        <button
-                          class="btn btn-danger btn-sm"
-                          (click)="deleteQuestion(faq.id_faq)"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div *ngIf="faqs.length === 0">
-                  <p>No hay preguntas disponibles.</p>
-                </div>
-              </div>
+          <div class="row d-flex align-items-center mt-5">
+            <div class="col">
+              <h4 class="mb-3">Preguntas Frecuentes</h4>
+            </div>
+            <div class="col-auto">
+              <button
+                class="btn bg-danger rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#questionModal"
+                style="color: white"
+              >
+                Formular pregunta
+              </button>
+            </div>
+          </div>
 
-              <div class="col-auto">
-                <button
-                  class="btn bg-danger rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#questionModal"
-                  style="color: white"
-                >
-                  Formular pregunta
-                </button>
+          <div class="row d-flex">
+            <div class="col">
+              <div *ngIf="faqs.length > 0">
+                <ul class="list-unstyled faq-list">
+                  <li *ngFor="let faq of faqs" class="faq-item mt-5">
+                    <div class="faq-question"> <strong>Cliente Mis Peluquerias</strong> <span> {{ faq.question }}</span> </div>
+                    <div class="faq-answer"><strong> Repuesta del Propietario: </strong> <span> {{ faq.answer }}</span></div>
+                    <div class="d-flex justify-content-end mt-2">
+                      <button
+                        class="btn btn-primary btn-sm me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editQuestionModal"
+                        (click)="editQuestion(faq)"
+                      >
+                        Responder
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        (click)="deleteQuestion(faq.id_faq)"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div *ngIf="faqs.length === 0">
+                <p>No hay preguntas disponibles.</p>
               </div>
             </div>
           </div>
@@ -200,7 +201,7 @@
   <app-footer></app-footer>
 </div>
 
-<!-- Modal Opiones-->
+<!-- Modal Opiniones-->
 <div
   class="modal fade"
   id="reviewModal"
