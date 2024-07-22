@@ -37,7 +37,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('userId');
+    this.userId = localStorage.getItem('usuarioId');
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.idSalon = id;
@@ -220,14 +220,16 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     const id_salon = this.idSalon;
     const question = this.questionText;
 
-    this.detailsBusiness.saveFaq(id_salon, question).subscribe(
+    this.detailsBusiness.saveFaq(id_user, id_salon, question).subscribe(
       response => {
         console.log('Pregunta guardada:', response);
         this.loadFaq(id_salon);
+        this.questionText = ''; // Limpiar la pregunta después de guardar
       },
       error => console.error('Error guardando la pregunta', error)
     );
-  }
+}
+
 
   updateQuestion(): void {
     const updatedQuestion = {

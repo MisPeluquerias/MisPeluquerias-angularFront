@@ -12,14 +12,14 @@ export class UnRegisteredSearchBuusinessService {
 
   constructor(private http: HttpClient) {}
 
-  searchCategoryServiceAndZone(name: string): Observable<any[]> {
+  searchCategoryServiceAndZone(id_city: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/`, {
       params: {
-        name
+        id_city
       },
     });;
   }
-  
+
   viewDetailsBusiness(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {
       params: {

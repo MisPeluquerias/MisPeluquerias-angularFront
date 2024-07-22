@@ -151,13 +151,14 @@
 
         <!-- Columna de información secundaria -->
         <div class="col-lg-3 col-md-5 border p-3 rounded">
-          <button
+          <a
             class="btn btn-lg btn-danger rounded-pill btn-custom me-5"
             type="submit"
             style="font-size: 0.8rem"
+            href="/reclamation"
           >
             <i class="las la-hand-paper"></i> Reclamalo ahora
-          </button>
+          </a>
           <div class="d-flex align-items-center mt-3">
             <span><i class="las la-phone"></i> {{ business.phone }}</span>
             <a href="tel:{{ business.phone }}" class="btn border ms-auto"

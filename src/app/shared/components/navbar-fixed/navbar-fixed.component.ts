@@ -136,6 +136,7 @@ export class NavbarFixedComponent implements OnInit {
   onSearch(): void {
     if (!this.id_city) {
       console.error('No se ha seleccionado una ciudad');
+
       return;
     }
 
@@ -144,7 +145,9 @@ export class NavbarFixedComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.router.navigate(['/unregistered-search'], { queryParams: { id_city: this.id_city } });
+          console.log('ID de ciudad enviado:' + this.id_city);
           console.log('Resultados de la búsqueda:', response);
+
         },
         error: (error) => {
           console.error('Error al realizar la búsqueda:', error);

@@ -64,10 +64,10 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
       id_review
     };
     return this.http.post<any[]>(`${this.baseUrl}/details-business/deleteReview`, body);
-  }
+  } 
 
-  saveFaq(id_salon: string, question: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/details-business/saveQuestion`, {id_salon, question });
+  saveFaq(id_user:string,id_salon: string, question: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/details-business/saveFaq`, {id_user,id_salon, question });
   }
 
   updateFaq(id_faq: string, answer: string): Observable<any> {
