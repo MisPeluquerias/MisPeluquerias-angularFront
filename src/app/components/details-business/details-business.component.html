@@ -30,7 +30,8 @@
                 <div *ngIf="services.length > 0">
                   <ul class="list-unstyled">
                     <li *ngFor="let service of services">
-                      <strong>{{ service.author }}</strong> {{ service.comment }}
+                      <strong>{{ service.author }}</strong>
+                      {{ service.comment }}
                     </li>
                   </ul>
                 </div>
@@ -48,6 +49,7 @@
               </div>
               <div class="col-auto">
                 <button
+                  *ngIf="authService.isAuthenticated(); else loginButton"
                   class="btn bg-danger rounded-pill"
                   data-bs-toggle="modal"
                   data-bs-target="#reviewModal"
@@ -55,6 +57,15 @@
                 >
                   Escribir reseña
                 </button>
+                <ng-template #loginButton>
+                  <button
+                    class="btn bg-danger rounded-pill"
+                    style="color: white"
+                    (click)="openLoginModal()"
+                  >
+                    Escribir reseña
+                  </button>
+                </ng-template>
               </div>
             </div>
           </div>
@@ -77,6 +88,7 @@
                   <p class="mb-0">{{ review.observacion }}</p>
                   <div class="d-flex justify-content-end mt-2">
                     <button
+                    *ngIf="userType !== 'client' && userType !== 'salon'"
                       class="btn btn-primary btn-sm me-2"
                       data-bs-toggle="modal"
                       data-bs-target="#editReviewModal"
@@ -85,6 +97,7 @@
                       Modificar
                     </button>
                     <button
+                    *ngIf="userType !== 'client' && userType !== 'salon'"
                       class="btn btn-danger btn-sm"
                       (click)="deleteReview(review.id_review)"
                     >
@@ -106,6 +119,7 @@
             </div>
             <div class="col-auto">
               <button
+                *ngIf="authService.isAuthenticated(); else loginButton"
                 class="btn bg-danger rounded-pill"
                 data-bs-toggle="modal"
                 data-bs-target="#questionModal"
@@ -121,19 +135,27 @@
               <div *ngIf="faqs.length > 0">
                 <ul class="list-unstyled faq-list">
                   <li *ngFor="let faq of faqs" class="faq-item mt-5">
-                    <div class="faq-question"> <strong>Cliente Mis Peluquerias</strong> <span> {{ faq.question }}</span> </div>
-                    <div class="faq-answer"><strong> Repuesta del Propietario: </strong> <span> {{ faq.answer }}</span></div>
+                    <div class="faq-question">
+                      <strong>Cliente Mis Peluquerias</strong>
+                      <span> {{ faq.question }}</span>
+                    </div>
+                    <div class="faq-answer">
+                      <strong> Repuesta del Propietario: </strong>
+                      <span> {{ faq.answer }}</span>
+                    </div>
                     <div class="d-flex justify-content-end mt-2">
                       <button
                         class="btn btn-primary btn-sm me-2"
                         data-bs-toggle="modal"
                         data-bs-target="#editQuestionModal"
                         (click)="editQuestion(faq)"
+                        *ngIf="userType !== 'client' && userType !== 'salon'"
                       >
                         Responder
                       </button>
                       <button
                         class="btn btn-danger btn-sm"
+                        *ngIf="userType !== 'client' && userType !== 'salon'"
                         (click)="deleteQuestion(faq.id_faq)"
                       >
                         Eliminar
@@ -425,7 +447,9 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editQuestionModalLabel">Responder Pregunta</h5>
+        <h5 class="modal-title" id="editQuestionModalLabel">
+          Responder Pregunta
+        </h5>
         <button
           type="button"
           class="btn-close"

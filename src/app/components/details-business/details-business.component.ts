@@ -3,6 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet';
 import { DetailsBusinesstService } from '../../core/services/details-business.service';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../../core/services/AuthService.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginComponent } from '../../auth/login/login.component';
 
 @Component({
   selector: 'app-details-business',
@@ -27,17 +31,32 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   editQuestionText: string = '';
   editAnswerText: string = '';
   faqToEdit: any;
+  userType: string = 'client';
+
+  loginForm: FormGroup;
+  errorMessage: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService,
-    private detailsBusiness: DetailsBusinesstService
+    private detailsBusiness: DetailsBusinesstService,
+    private modalService: NgbModal,
+    public authService: AuthService,
+    private fb: FormBuilder
   ) {
     this.currentDay = this.getCurrentDay();
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
   }
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
+    this.authService.getUserType().subscribe(userType => {
+      this.userType = userType;
+      console.log('User Type:', this.userType); // Mostrar en la consola para depuración
+    });
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.idSalon = id;
@@ -142,6 +161,10 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     return daysOrder[currentDayIndex];
   }
 
+  openLoginModal(): void {
+    this.modalService.open(LoginComponent);
+  }
+
   submitReview(): void {
     const id_user = this.userId;
     if (!id_user) {
@@ -162,7 +185,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       response => {
         console.log('Reseña guardada:', response);
         this.loadReviews(id_salon);
-
       },
       error => console.error('Error guardando la reseña', error)
     );
@@ -228,8 +250,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       },
       error => console.error('Error guardando la pregunta', error)
     );
-}
-
+  }
 
   updateQuestion(): void {
     const updatedQuestion = {
@@ -245,7 +266,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       error => console.error('Error actualizando la pregunta', error)
     );
   }
-
 
   editQuestion(faq: any): void {
     this.faqToEdit = faq;
