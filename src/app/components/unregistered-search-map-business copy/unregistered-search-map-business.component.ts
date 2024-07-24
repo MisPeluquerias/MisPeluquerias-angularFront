@@ -49,6 +49,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
         this.route.queryParams.subscribe(params => {
           const id_city = params['id_city'];
+          const name = params['name']; // Añadido para manejar búsqueda por nombre
           if (id_city && id_city !== this.currentIdCity) {
             this.currentIdCity = id_city;
             if (this.map) {
@@ -56,13 +57,19 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
             } else {
               this.initMap(id_city); // Inicializar el mapa por primera vez
             }
+          } else if (name) {
+            if (this.map) {
+              this.loadMarkers(undefined, name); // Cargar nuevos marcadores en el mapa existente
+            } else {
+              this.initMap(undefined, name); // Inicializar el mapa por primera vez
+            }
           }
         });
       });
     }
   }
 
-  private initMap(id_city: string): void {
+  private initMap(id_city?: string, name?: string): void {
     this.map = L.map('map', {
       center: [0, 0],
       zoom: 19,
@@ -75,16 +82,28 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
     this.markerLayer = L.layerGroup().addTo(this.map);
 
-    this.loadMarkers(id_city);
+    this.loadMarkers(id_city, name);
     this.enableMapEvents();
   }
 
-  private loadMarkers(id_city: string): void {
+  private loadMarkers(id_city?: string, name?: string): void {
     if (!this.map || !this.markerLayer) return;
 
     this.isLoading = true;
 
-    this.unRegisteredSearchBusinessService.searchCategoryServiceAndZone(id_city).subscribe((markers: any[]) => {
+    let markerObservable;
+
+    if (id_city) {
+      markerObservable = this.unRegisteredSearchBusinessService.searchByCity(id_city);
+    } else if (name) {
+      markerObservable = this.unRegisteredSearchBusinessService.searchByCityName(name);
+    } else {
+      console.error('Neither id_city nor name provided for marker loading.');
+      this.fadeOutLoadingSpinner();
+      return;
+    }
+
+    markerObservable.subscribe((markers: any[]) => {
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();
@@ -109,6 +128,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
           this.markersMap.set(marker, markerInstance);
         }
       });
+
       this.currentPage = 1;
       this.paginateMarkers();
       this.fadeOutLoadingSpinner();

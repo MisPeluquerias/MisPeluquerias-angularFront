@@ -12,13 +12,29 @@ export class UnRegisteredSearchBuusinessService {
 
   constructor(private http: HttpClient) {}
 
-  searchCategoryServiceAndZone(id_city: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/`, {
+  searchByCity(id_city: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityById`, {
       params: {
         id_city
       },
     });;
   }
+
+  searchByName(name: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByName`, {
+      params: {
+        name
+      },
+    });;
+  }
+  searchByCityName(name: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityName`, {
+      params: {
+        name
+      },
+    });;
+  }
+
 
   viewDetailsBusiness(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {

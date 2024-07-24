@@ -23,6 +23,7 @@ export class NavbarFixedComponent implements OnInit {
   private searchTermsCity = new Subject<string>();
   isAuthenticated: boolean = false;
   id_city: string = '';
+  salonName:string = '';
 
   constructor(
     private navBarFixedService: NavBarFixedService,
@@ -113,10 +114,13 @@ export class NavbarFixedComponent implements OnInit {
   }
 
   onSelectSalon(salon: string): void {
-    const inputElement = document.getElementById('serviceOrSalon') as HTMLInputElement;
+    const inputElement = document.getElementById(
+      'serviceOrSalon'
+    ) as HTMLInputElement;
     inputElement.value = salon;
     this.services = [];
     this.salons = [];
+    this.salonName = salon;
   }
 
   handleAuthAction(): void {
@@ -133,25 +137,35 @@ export class NavbarFixedComponent implements OnInit {
     this.modalService.open(LoginComponent);
   }
 
-  onSearch(): void {
-    if (!this.id_city) {
-      console.error('No se ha seleccionado una ciudad');
-
-      return;
-    }
-
-    this.unRegisteredSearchBusiness
-      .searchCategoryServiceAndZone(this.id_city)
-      .subscribe({
+  onSearch() {
+    // Validar que id_city no esté vacío y convertir a cadena de forma segura
+    if (this.id_city && String(this.id_city).trim() !== '') {
+      this.unRegisteredSearchBusiness.searchByCity(this.id_city).subscribe({
         next: (response) => {
           this.router.navigate(['/unregistered-search'], { queryParams: { id_city: this.id_city } });
-          console.log('ID de ciudad enviado:' + this.id_city);
-          console.log('Resultados de la búsqueda:', response);
-
+          console.log('Resultados de la búsqueda por ciudad:', response);
         },
         error: (error) => {
-          console.error('Error al realizar la búsqueda:', error);
+          console.error('Error al realizar la búsqueda por ciudad:', error);
         },
       });
+    } else {
+      console.warn('id_city está vacío, no se ejecuta la búsqueda por ciudad.');
+    }
+
+    // Validar que salonName no esté vacío y convertir a cadena de forma segura
+    if (this.salonName && String(this.salonName).trim() !== '') {
+      this.unRegisteredSearchBusiness.searchByName(this.salonName).subscribe({
+        next: (response) => {
+          this.router.navigate(['/unregistered-search'], { queryParams: { name: this.salonName } });
+          console.log('Resultados de la búsqueda por nombre:', response);
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por nombre:', error);
+        },
+      });
+    } else {
+      console.warn('salonName está vacío, no se ejecuta la búsqueda por nombre.');
+    }
   }
 }

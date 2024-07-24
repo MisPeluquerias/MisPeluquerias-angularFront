@@ -66,8 +66,8 @@ import { DetailsBusinessComponent } from './components/details-business/details-
     FormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
+
+      positionClass: 'toast-center-center',
       preventDuplicates: true,
     }),
   ],

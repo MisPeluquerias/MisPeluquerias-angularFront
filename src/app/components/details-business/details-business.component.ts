@@ -55,7 +55,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.userId = localStorage.getItem('usuarioId');
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
-      console.log('User Type:', this.userType); // Mostrar en la consola para depuración
+      //console.log('User Type:', this.userType); // Mostrar en la consola para depuración
     });
     this.route.params.subscribe(params => {
       const id = params['id'];
