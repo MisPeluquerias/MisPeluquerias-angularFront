@@ -25,7 +25,7 @@ export class HomeComponent {
         this.router.navigate(['/unregistered-search'], { queryParams: { name: cityName } });
       },
       (error) => {
-        this.toastr.error('Actualmente, no tenemos salones en esta provincia, estamos trabajando en ello.');
+        this.toastr.error('<i class="las la-info-circle"></i> Actualmente, no tenemos salones en esta provincia, estamos trabajando en ello.');
         console.error('Error al buscar por nombre de ciudad:', error);
       }
     );

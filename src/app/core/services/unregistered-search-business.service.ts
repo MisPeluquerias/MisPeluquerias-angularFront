@@ -27,6 +27,7 @@ export class UnRegisteredSearchBuusinessService {
       },
     });;
   }
+  
   searchByCityName(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityName`, {
       params: {

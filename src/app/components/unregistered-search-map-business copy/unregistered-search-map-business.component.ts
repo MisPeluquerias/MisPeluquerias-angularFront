@@ -96,7 +96,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     if (id_city) {
       markerObservable = this.unRegisteredSearchBusinessService.searchByCity(id_city);
     } else if (name) {
-      markerObservable = this.unRegisteredSearchBusinessService.searchByCityName(name);
+      markerObservable = this.unRegisteredSearchBusinessService.searchByName(name);
     } else {
       console.error('Neither id_city nor name provided for marker loading.');
       this.fadeOutLoadingSpinner();
@@ -104,6 +104,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     }
 
     markerObservable.subscribe((markers: any[]) => {
+      // Verificar los datos recibidos
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();

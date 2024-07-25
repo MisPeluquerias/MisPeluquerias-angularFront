@@ -114,6 +114,11 @@ html {
   box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2px 5px en rem */
   position: relative;
   cursor: pointer;
+  max-width: calc(33.333% - 1.25rem); /* Asegura que la tarjeta tenga un ancho máximo */
+}
+
+.card:nth-last-child(1):nth-child(3n + 1) {
+  flex: 1 1 calc(33.333% - 1.25rem); /* Si hay una tarjeta en una fila, ocupa el mismo ancho máximo */
 }
 
 .card-image {
@@ -201,4 +206,13 @@ html {
 
 app-footer {
   margin-top: 13.75rem; /* 220px en rem */
+}
+
+.star-rating .star {
+  font-size: 1.5rem;
+  color: #ddd; /* Color de estrellas no seleccionadas */
+}
+
+.star-rating .star.filled {
+  color: #FFD700; /* Color de estrellas seleccionadas */
 }
