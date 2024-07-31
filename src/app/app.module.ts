@@ -34,6 +34,7 @@ import { DetailsBusinessComponent } from './components/details-business/details-
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +55,7 @@ import { DetailsBusinessComponent } from './components/details-business/details-
     RegisterComponent,
     RegisteredSearchBusinessComponent,
     UnRegisteredSearchBusinessComponent,
-    DetailsBusinessComponent
+    DetailsBusinessComponent,
   ],
   imports: [
     BrowserModule,
