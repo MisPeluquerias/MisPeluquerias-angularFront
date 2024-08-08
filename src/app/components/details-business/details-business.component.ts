@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet';
 import { DetailsBusinesstService } from '../../core/services/details-business.service';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
@@ -20,6 +20,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   reviews: any[] = [];
   faqs: any[] = [];
   services: any[] = [];
+  images: any[] = [];
   reviewText: string = '';
   rating: string = '';
   userId: string | null = null;
@@ -32,6 +33,8 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   editAnswerText: string = '';
   faqToEdit: any;
   userType: string = 'client';
+  mainImageUrl: string ="";
+  businessImageUrl: string = 'ruta/default/image.jpg'; // Ruta alternativa de la imagen
 
   loginForm: FormGroup;
   errorMessage: string = '';
@@ -55,7 +58,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.userId = localStorage.getItem('usuarioId');
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
-      //console.log('User Type:', this.userType); // Mostrar en la consola para depuración
     });
     this.route.params.subscribe(params => {
       const id = params['id'];
@@ -70,6 +72,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
               this.loadReviews(id);
               this.loadFaq(id);
+              this.loadImages(id);
 
               setTimeout(() => {
                 this.initMap();
@@ -112,6 +115,28 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       },
       error => console.error('Error loading services', error)
     );
+  }
+
+  private loadImages(id: string): void {
+    this.detailsBusiness.getImages(id).subscribe(
+      images => {
+        if (images.length > 0) {
+          console.log('Imágenes cargadas:', images);
+          this.images = images;
+          this.setMainImageUrl();
+        } else {
+          console.log('No se encontraron imágenes para este salón.');
+          this.images = [];
+          this.mainImageUrl = this.businessImageUrl; // Usar imagen alternativa si no hay imágenes
+        }
+      },
+      error => console.error('Error loading images', error)
+    );
+  }
+
+  private setMainImageUrl(): void {
+    const principalImage = this.images.find(image => image.file_principal === '1');
+    this.mainImageUrl = principalImage ? principalImage.file_url : this.businessImageUrl;
   }
 
   ngAfterViewInit(): void {

@@ -9,11 +9,11 @@
         <p class="mb-3">{{ business.address }}</p>
         <!-- Columna de imagen y detalles principales -->
         <div class="col-lg-8 col-md-7 mb-4">
-          <img
-            [src]="business.image"
-            class="img-fluid mb-3 fixed-img-size"
-            style="border: 0.1px solid #000; border-radius: 12px"
-          />
+          <div *ngIf="mainImageUrl">
+            <img [src]="mainImageUrl"
+                 class="img-fluid mb-3 fixed-img-size"
+                 style="border: 0.1px solid #000; border-radius: 12px" />
+          </div>
 
           <!-- Nombre del negocio debajo de la imagen -->
           <h4 class="mt-5">Sobre el salón</h4>
