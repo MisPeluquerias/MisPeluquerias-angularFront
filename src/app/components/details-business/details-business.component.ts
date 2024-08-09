@@ -33,8 +33,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   editAnswerText: string = '';
   faqToEdit: any;
   userType: string = 'client';
-  mainImageUrl: string ="";
-  businessImageUrl: string = 'ruta/default/image.jpg'; // Ruta alternativa de la imagen
+
 
   loginForm: FormGroup;
   errorMessage: string = '';
@@ -72,7 +71,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
               this.loadReviews(id);
               this.loadFaq(id);
-              this.loadImages(id);
+              this.getImagesAdmin(id)
 
               setTimeout(() => {
                 this.initMap();
@@ -86,6 +85,18 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  private getImagesAdmin(id: string): void {
+    this.detailsBusiness.getImagesAdmin(id).subscribe(
+      images => {
+        // Ordenar imágenes para que la principal esté primero
+        this.images = images.sort((a, b) => b.file_principal - a.file_principal);
+        console.log('Imágenes cargadas y ordenadas:', this.images);
+      },
+      error => console.error('Error loading images', error)
+    );
+  }
+
 
   private loadReviews(id: string): void {
     this.detailsBusiness.loadReview(id).subscribe(
@@ -115,28 +126,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       },
       error => console.error('Error loading services', error)
     );
-  }
-
-  private loadImages(id: string): void {
-    this.detailsBusiness.getImages(id).subscribe(
-      images => {
-        if (images.length > 0) {
-          console.log('Imágenes cargadas:', images);
-          this.images = images;
-          this.setMainImageUrl();
-        } else {
-          console.log('No se encontraron imágenes para este salón.');
-          this.images = [];
-          this.mainImageUrl = this.businessImageUrl; // Usar imagen alternativa si no hay imágenes
-        }
-      },
-      error => console.error('Error loading images', error)
-    );
-  }
-
-  private setMainImageUrl(): void {
-    const principalImage = this.images.find(image => image.file_principal === '1');
-    this.mainImageUrl = principalImage ? principalImage.file_url : this.businessImageUrl;
   }
 
   ngAfterViewInit(): void {

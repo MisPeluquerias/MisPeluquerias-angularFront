@@ -12,7 +12,7 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
 
   constructor(private http: HttpClient) {}
 
-  
+
 
   loadReview(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadReview`, {
@@ -30,8 +30,8 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
   }
 
 
-  getImages(salon_id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImages`, {
+  getImagesAdmin(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImagesAdmin`, {
       params: {
         salon_id
       }

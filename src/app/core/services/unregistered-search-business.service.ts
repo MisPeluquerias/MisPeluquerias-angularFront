@@ -27,7 +27,7 @@ export class UnRegisteredSearchBuusinessService {
       },
     });;
   }
-  
+
   searchByCityName(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityName`, {
       params: {
@@ -43,6 +43,13 @@ export class UnRegisteredSearchBuusinessService {
         id
       },
     });;
+  }
+  getImagesAdmin(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImagesAdmin`, {
+      params: {
+        salon_id
+      }
+    });
   }
 }
 

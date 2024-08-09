@@ -44,6 +44,25 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     }
   }
 
+  private getImagesAdmin(id: string): void {
+    console.log(`Cargando imágenes para el salón con ID: ${id}`);
+    this.registeredSearchBusinessService.getImagesAdmin(id).subscribe(
+      images => {
+        if (images.length > 0) {
+          // Busca el marcador correspondiente y asocia sus imágenes
+          const marker = this.visibleMarkers.find(m => m.id_salon === id);
+          if (marker) {
+            marker.images = images.sort((a, b) => b.file_principal - a.file_principal);
+            console.log(`Imágenes asociadas al marcador con ID: ${id}`, marker.images);
+          }
+        } else {
+          console.log(`No se encontraron imágenes para el marcador con ID: ${id}`);
+        }
+      },
+      error => console.error('Error loading images', error)
+    );
+  }
+
   private async initMap(L: any): Promise<void> {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -127,6 +146,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
           markerInstance.on('click', () => this.onMarkerClick(marker));
           this.visibleMarkers.push(marker);
           this.markersMap.set(marker, markerInstance);
+          this.getImagesAdmin(marker.id_salon);
         }
       });
       this.currentPage = 1; // Volver a la primera página

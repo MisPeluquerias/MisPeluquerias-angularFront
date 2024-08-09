@@ -1,7 +1,7 @@
 <div class="wrapper">
   <app-navbar-fixed></app-navbar-fixed>
   <div class="content">
-    <div class="container-fluid py-5 position-relative">
+    <div class="container-fluid py-5 position-relative bg-light">
       <div *ngIf="business" class="row">
         <div class="d-flex align-items-center justify-content-between mt-3">
           <h1 class="h3 mb-2">{{ business.name }}</h1>
@@ -9,11 +9,34 @@
         <p class="mb-3">{{ business.address }}</p>
         <!-- Columna de imagen y detalles principales -->
         <div class="col-lg-8 col-md-7 mb-4">
-          <div *ngIf="mainImageUrl">
-            <img [src]="mainImageUrl"
-                 class="img-fluid mb-3 fixed-img-size"
-                 style="border: 0.1px solid #000; border-radius: 12px" />
+
+          <div *ngIf="images.length > 0; else noImagesTemplate">
+            <!-- Carrusel con imágenes -->
+            <div id="carouselExampleIndicators" class="carousel slide">
+              <div class="carousel-indicators">
+                <button *ngFor="let img of images; let i = index" type="button" [attr.data-bs-slide-to]="i" [ngClass]="{'active': i === 0}" aria-current="true" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+              </div>
+              <div class="carousel-inner">
+                <div *ngFor="let img of images; let i = index" [ngClass]="{'carousel-item': true, 'active': i === 0}">
+                  <img [src]="img.file_url" class="d-block w-100 fixed-image-size" [alt]="img.file_description || 'Imagen del salón'">
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+              </button>
+            </div>
           </div>
+          <ng-template #noImagesTemplate>
+            <!-- Imagen principal del negocio si no hay imágenes cargadas -->
+            <div class="no-images">
+              <img [src]="business.image" class="d-block w-100 fixed-image-size" alt="Imagen principal del salón">
+            </div>
+          </ng-template>
 
           <!-- Nombre del negocio debajo de la imagen -->
           <h4 class="mt-5">Sobre el salón</h4>
@@ -59,7 +82,7 @@
                 </button>
                 <ng-template #loginButton>
                   <button
-                    class="btn bg-danger rounded-pill"
+                    class="btn bg-danger rounded-pill "
                     style="color: white"
                     (click)="openLoginModal()"
                   >
