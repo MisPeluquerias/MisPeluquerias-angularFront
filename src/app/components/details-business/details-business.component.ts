@@ -179,6 +179,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.modalService.open(LoginComponent);
   }
 
+
   submitReview(): void {
     const id_user = this.userId;
     if (!id_user) {
@@ -204,6 +205,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     );
   }
 
+
   updateReview(): void {
     const updatedReview = {
       ...this.reviewToEdit,
@@ -226,6 +228,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.editRating = review.qualification;
   }
 
+  
   deleteReview(reviewId: string): void {
     console.log('Eliminar reseña con ID:', reviewId);
     if (this.idSalon) {

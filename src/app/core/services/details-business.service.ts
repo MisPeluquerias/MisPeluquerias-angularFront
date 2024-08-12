@@ -21,6 +21,7 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
       },
     });
   }
+
   loadFaq(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadFaq`, {
       params: {
