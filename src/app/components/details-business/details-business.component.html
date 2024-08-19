@@ -3,22 +3,25 @@
   <div class="content">
     <div class="container-fluid py-5 position-relative bg-light">
       <div *ngIf="business" class="row">
-        <div class="d-flex align-items-center justify-content-between mt-3">
-          <h1 class="h3 mb-2">{{ business.name }}</h1>
+        <!-- Título y dirección -->
+        <div class="col-12 mb-3">
+          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mt-3">
+            <h1 class="h3 mb-2">{{ business.name }}</h1>
+            <p class="mb-3">{{ business.address }}</p>
+          </div>
         </div>
-        <p class="mb-3">{{ business.address }}</p>
+
         <!-- Columna de imagen y detalles principales -->
         <div class="col-lg-8 col-md-7 mb-4">
-
           <div *ngIf="images.length > 0; else noImagesTemplate">
             <!-- Carrusel con imágenes -->
-            <div id="carouselExampleIndicators" class="carousel slide">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-indicators">
-                <button *ngFor="let img of images; let i = index" type="button" [attr.data-bs-slide-to]="i" [ngClass]="{'active': i === 0}" aria-current="true" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+                <button *ngFor="let img of images; let i = index" type="button" [attr.data-bs-target]="'#carouselExampleIndicators'" [attr.data-bs-slide-to]="i" [ngClass]="{'active': i === 0}" aria-current="true" [attr.aria-label]="'Slide ' + (i + 1)"></button>
               </div>
               <div class="carousel-inner">
                 <div *ngFor="let img of images; let i = index" [ngClass]="{'carousel-item': true, 'active': i === 0}">
-                  <img [src]="img.file_url" class="d-block w-100 fixed-image-size" [alt]="img.file_description || 'Imagen del salón'">
+                  <img [src]="img.file_url" class="d-block w-100 fixed-image-size" [alt]="img.file_description || 'Imagen del salón'" >
                 </div>
               </div>
               <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -34,11 +37,11 @@
           <ng-template #noImagesTemplate>
             <!-- Imagen principal del negocio si no hay imágenes cargadas -->
             <div class="no-images">
-              <img [src]="business.image" class="d-block w-100 fixed-image-size" alt="Imagen principal del salón">
+              <img [src]="business.image" class="d-block w-100" alt="Imagen principal del salón">
             </div>
           </ng-template>
 
-          <!-- Nombre del negocio debajo de la imagen -->
+          <!-- Descripción del negocio -->
           <h4 class="mt-5">Sobre el salón</h4>
           <p class="mt-4">
             {{ business.name }} es un salón ubicado en {{ business.address }}.
@@ -46,50 +49,34 @@
             {{ business.address }}.
           </p>
 
-          <div class="row d-flex">
-            <div class="row d-flex align-items-center mt-5">
-              <div class="col">
-                <h4 class="mb-3">Servicios</h4>
-                <div *ngIf="services.length > 0">
-                  <ul class="list-unstyled">
-                    <li *ngFor="let service of services">
-                      <strong>{{ service.author }}</strong>
-                      {{ service.comment }}
-                    </li>
-                  </ul>
-                </div>
-                <div *ngIf="services.length === 0">
-                  <p>No hay servicios disponibles.</p>
-                </div>
+          <!-- Servicios -->
+          <div class="row d-flex mt-5">
+            <div class="col">
+              <h4 class="mb-3">Servicios</h4>
+              <div *ngIf="services.length > 0">
+                <ul class="list-group">
+                  <li *ngFor="let service of services" class="list-group-item">
+                    <h6>{{ service.service_name }}</h6>
+                    <small class="text-muted">Tipos: {{ service.service_type_names }}</small>
+                  </li>
+                </ul>
+              </div>
+              <div *ngIf="services.length === 0">
+                <p>No hay servicios disponibles.</p>
               </div>
             </div>
           </div>
 
-          <div class="row d-flex">
-            <div class="row d-flex align-items-center mt-5">
-              <div class="col">
-                <h4 class="mb-0">Opiniones</h4>
-              </div>
-              <div class="col-auto">
-                <button
-                  *ngIf="authService.isAuthenticated(); else loginButton"
-                  class="btn bg-danger rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#reviewModal"
-                  style="color: white"
-                >
-                  Escribir reseña
-                </button>
-                <ng-template #loginButton>
-                  <button
-                    class="btn bg-danger rounded-pill "
-                    style="color: white"
-                    (click)="openLoginModal()"
-                  >
-                    Escribir reseña
-                  </button>
-                </ng-template>
-              </div>
+          <!-- Opiniones -->
+          <div class="row d-flex mt-5">
+            <div class="col">
+              <h4 class="mb-0">Opiniones</h4>
+            </div>
+            <div class="col-auto">
+              <button *ngIf="authService.isAuthenticated(); else loginButton" class="btn bg-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#reviewModal" style="color: white">Escribir reseña</button>
+              <ng-template #loginButton>
+                <button class="btn bg-danger rounded-pill" style="color: white" (click)="openLoginModal()">Escribir reseña</button>
+              </ng-template>
             </div>
           </div>
 
@@ -100,56 +87,33 @@
                   <div class="d-flex align-items-center mb-2">
                     <div class="star-rating">
                       <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-                        <i
-                          class="star"
-                          [class.filled]="star <= review.qualification"
-                          >&#9733;</i
-                        >
+                        <i class="star" [class.filled]="star <= review.qualification">&#9733;</i>
                       </ng-container>
                     </div>
                   </div>
                   <p class="mb-0">{{ review.observacion }}</p>
                   <div class="d-flex justify-content-end mt-2">
-                    <button
-                    *ngIf="userType !== 'client' && userType !== 'salon'"
-                      class="btn btn-primary btn-sm me-2"
-                      data-bs-toggle="modal"
-                      data-bs-target="#editReviewModal"
-                      (click)="editReview(review)"
-                    >
-                      Modificar
-                    </button>
-                    <button
-                    *ngIf="userType !== 'client' && userType !== 'salon'"
-                      class="btn btn-danger btn-sm"
-                      (click)="deleteReview(review.id_review)"
-                    >
-                      Eliminar
-                    </button>
+                    <button *ngIf="userType !== 'client' && userType !== 'salon'" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editReviewModal" (click)="editReview(review)">Modificar</button>
+                    <button *ngIf="userType !== 'client' && userType !== 'salon'" class="btn btn-danger btn-sm" (click)="deleteReview(review.id_review)">Eliminar</button>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
-
           <div *ngIf="reviews.length === 0">
             <p>No hay reseñas disponibles.</p>
           </div>
 
+          <!-- Preguntas Frecuentes -->
           <div class="row d-flex align-items-center mt-5">
             <div class="col">
               <h4 class="mb-3">Preguntas Frecuentes</h4>
             </div>
             <div class="col-auto">
-              <button
-                *ngIf="authService.isAuthenticated(); else loginButton"
-                class="btn bg-danger rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#questionModal"
-                style="color: white"
-              >
-                Formular pregunta
-              </button>
+              <button *ngIf="authService.isAuthenticated(); else loginButtonFaq" class="btn bg-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#questionModal" style="color: white">Formular pregunta</button>
+              <ng-template #loginButtonFaq>
+                <button class="btn bg-danger rounded-pill" style="color: white" (click)="openLoginModal()">Formular pregunta</button>
+              </ng-template>
             </div>
           </div>
 
@@ -163,26 +127,12 @@
                       <span> {{ faq.question }}</span>
                     </div>
                     <div class="faq-answer">
-                      <strong> Repuesta del Propietario: </strong>
+                      <strong> Respuesta del Propietario: </strong>
                       <span> {{ faq.answer }}</span>
                     </div>
                     <div class="d-flex justify-content-end mt-2">
-                      <button
-                        class="btn btn-primary btn-sm me-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editQuestionModal"
-                        (click)="editQuestion(faq)"
-                        *ngIf="userType !== 'client' && userType !== 'salon'"
-                      >
-                        Responder
-                      </button>
-                      <button
-                        class="btn btn-danger btn-sm"
-                        *ngIf="userType !== 'client' && userType !== 'salon'"
-                        (click)="deleteQuestion(faq.id_faq)"
-                      >
-                        Eliminar
-                      </button>
+                      <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editQuestionModal" (click)="editQuestion(faq)" *ngIf="userType !== 'client' && userType !== 'salon'">Responder</button>
+                      <button class="btn btn-danger btn-sm" *ngIf="userType !== 'client' && userType !== 'salon'" (click)="deleteQuestion(faq.id_faq)">Eliminar</button>
                     </div>
                   </li>
                 </ul>
@@ -195,44 +145,20 @@
         </div>
 
         <!-- Columna de información secundaria -->
-        <div class="col-lg-3 col-md-5 border p-3 rounded">
-          <a
-            class="btn btn-lg btn-danger rounded-pill btn-custom me-5"
-            type="submit"
-            style="font-size: 0.8rem"
-            href="/reclamation"
-          >
+        <div class="col-lg-4 col-md-5 border p-3 rounded">
+          <a class="btn btn-lg btn-danger rounded-pill btn-custom me-5 w-100 mb-3" href="/reclamation">
             <i class="las la-hand-paper"></i> Reclamalo ahora
           </a>
-          <div class="d-flex align-items-center mt-3">
+          <div class="d-flex align-items-center mb-3">
             <span><i class="las la-phone"></i> {{ business.phone }}</span>
-            <a href="tel:{{ business.phone }}" class="btn border ms-auto"
-              >Llamar</a
-            >
+            <a href="tel:{{ business.phone }}" class="btn btn-outline-secondary ms-auto">Llamar</a>
           </div>
-          <div class="d-flex mb-5">
-            <div
-              id="map"
-              style="
-                width: 100%;
-                height: 335px;
-                border: 0.1px solid #000;
-                border-radius: 12px;
-              "
-              class="mt-3"
-            ></div>
+          <div class="mb-3">
+            <div id="map" class="w-100" style="height: 335px; border: 0.1px solid #000; border-radius: 12px;"></div>
           </div>
           <div class="horarios mb-5">
-            <div
-              *ngFor="let hour of business.hours_old.split('; ')"
-              class="horario-item"
-            >
-              <div
-                [ngClass]="{
-                  'current-day': hour.split(', ')[0] === currentDay
-                }"
-                class="dia"
-              >
+            <div *ngFor="let hour of business.hours_old.split('; ')" class="horario-item">
+              <div [ngClass]="{'current-day': hour.split(', ')[0] === currentDay}" class="dia">
                 {{ hour.split(", ")[0] }}
               </div>
               <div class="horas">
@@ -245,272 +171,4 @@
     </div>
   </div>
   <app-footer></app-footer>
-</div>
-
-<!-- Modal Opiniones-->
-<div
-  class="modal fade"
-  id="reviewModal"
-  tabindex="-1"
-  aria-labelledby="reviewModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="reviewModalLabel">Escribir Reseña</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="submitReview()">
-          <div class="mb-3">
-            <label for="reviewText" class="form-label">Tu Reseña</label>
-            <textarea
-              class="form-control"
-              id="reviewText"
-              rows="4"
-              [(ngModel)]="reviewText"
-              name="reviewText"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-3 d-flex flex-column align-items-end">
-            <label class="form-label">Puntuación</label>
-            <div class="d-flex justify-content-end">
-              <div class="star-rating">
-                <input
-                  type="radio"
-                  name="rating"
-                  id="star1"
-                  value="5"
-                  [(ngModel)]="rating"
-                /><label for="star1" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="rating"
-                  id="star2"
-                  value="4"
-                  [(ngModel)]="rating"
-                /><label for="star2" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="rating"
-                  id="star3"
-                  value="3"
-                  [(ngModel)]="rating"
-                /><label for="star3" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="rating"
-                  id="star4"
-                  value="2"
-                  [(ngModel)]="rating"
-                /><label for="star4" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="rating"
-                  id="star5"
-                  value="1"
-                  [(ngModel)]="rating"
-                /><label for="star5" class="star">&#9733;</label>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-danger">Enviar Reseña</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal preguntas-->
-<div
-  class="modal fade"
-  id="questionModal"
-  tabindex="-1"
-  aria-labelledby="questionModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="questionModalLabel">Escribir Pregunta</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="submitQuestion()">
-          <div class="mb-3">
-            <label for="questionText" class="form-label">Tu pregunta</label>
-            <textarea
-              class="form-control"
-              id="questionText"
-              rows="4"
-              [(ngModel)]="questionText"
-              name="questionText"
-              required
-            ></textarea>
-          </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-danger">
-              Enviar pregunta
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de Modificación de Reseñas -->
-<div
-  class="modal fade"
-  id="editReviewModal"
-  tabindex="-1"
-  aria-labelledby="editReviewModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editReviewModalLabel">Modificar Reseña</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="updateReview()">
-          <div class="mb-3">
-            <label for="editReviewText" class="form-label">Tu Reseña</label>
-            <textarea
-              class="form-control"
-              id="editReviewText"
-              rows="4"
-              [(ngModel)]="editReviewText"
-              name="editReviewText"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-3 d-flex flex-column align-items-end">
-            <label class="form-label">Puntuación</label>
-            <div class="d-flex justify-content-end">
-              <div class="star-rating">
-                <input
-                  type="radio"
-                  name="editRating"
-                  id="editStar1"
-                  value="5"
-                  [(ngModel)]="editRating"
-                /><label for="editStar1" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="editRating"
-                  id="editStar2"
-                  value="4"
-                  [(ngModel)]="editRating"
-                /><label for="editStar2" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="editRating"
-                  id="editStar3"
-                  value="3"
-                  [(ngModel)]="editRating"
-                /><label for="editStar3" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="editRating"
-                  id="editStar4"
-                  value="2"
-                  [(ngModel)]="editRating"
-                /><label for="editStar4" class="star">&#9733;</label>
-                <input
-                  type="radio"
-                  name="editRating"
-                  id="editStar5"
-                  value="1"
-                  [(ngModel)]="editRating"
-                /><label for="editStar5" class="star">&#9733;</label>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">
-              Guardar Cambios
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de Modificación de Preguntas -->
-<div
-  class="modal fade"
-  id="editQuestionModal"
-  tabindex="-1"
-  aria-labelledby="editQuestionModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editQuestionModalLabel">
-          Responder Pregunta
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="updateQuestion()">
-          <div class="mb-3">
-            <label for="editQuestionText" class="form-label">Pregunta</label>
-            <textarea
-              class="form-control"
-              id="editQuestionText"
-              rows="2"
-              [(ngModel)]="editQuestionText"
-              name="editQuestionText"
-              readonly
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="editAnswerText" class="form-label">Respuesta</label>
-            <textarea
-              class="form-control"
-              id="editAnswerText"
-              rows="4"
-              [(ngModel)]="editAnswerText"
-              name="editAnswerText"
-              required
-            ></textarea>
-          </div>
-          <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">
-              Guardar Respuesta
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>

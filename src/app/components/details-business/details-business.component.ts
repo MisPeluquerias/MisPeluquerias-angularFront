@@ -8,6 +8,7 @@ import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 
+
 @Component({
   selector: 'app-details-business',
   templateUrl: './details-business.component.html',
@@ -67,11 +68,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
             if (data.length > 0) {
               this.business = data[0];
               this.business.hours_old = this.sortHours(this.business.hours_old);
-              console.log(data);
+             // console.log(data);
 
               this.loadReviews(id);
               this.loadFaq(id);
-              this.getImagesAdmin(id)
+              this.getImagesAdmin(id);
+              this.getServicesSalon(id);
 
               setTimeout(() => {
                 this.initMap();
@@ -84,14 +86,16 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         );
       }
     });
+
   }
+
 
   private getImagesAdmin(id: string): void {
     this.detailsBusiness.getImagesAdmin(id).subscribe(
       images => {
         // Ordenar imágenes para que la principal esté primero
         this.images = images.sort((a, b) => b.file_principal - a.file_principal);
-        console.log('Imágenes cargadas y ordenadas:', this.images);
+        //console.log('Imágenes cargadas y ordenadas:', this.images);
       },
       error => console.error('Error loading images', error)
     );
@@ -102,7 +106,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.detailsBusiness.loadReview(id).subscribe(
       reviews => {
         this.reviews = reviews;
-        console.log('Reseñas cargadas:', reviews);
+        //console.log('Reseñas cargadas:', reviews);
       },
       error => console.error('Error loading reviews', error)
     );
@@ -112,19 +116,27 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.detailsBusiness.loadFaq(id).subscribe(
       faqs => {
         this.faqs = faqs;
-        console.log('Preguntas cargadas:', faqs);
+       //console.log('Preguntas cargadas:', faqs);
       },
       error => console.error('Error loading faq', error)
     );
   }
 
-  private loadServices(id: string): void {
-    this.detailsBusiness.loadServices(id).subscribe(
-      services => {
-        this.services = services;
-        console.log('Servicios cargados:', services);
+  private getServicesSalon(id_salon: string): void {
+    this.detailsBusiness.getServicesSalon(id_salon).subscribe(
+      (response: any) => { // Aquí usamos `any` para la respuesta completa
+        if (response && Array.isArray(response.services)) {
+          this.services = response.services;
+        } else {
+          console.error('La propiedad `services` no es un array:', response);
+          this.services = [];
+        }
+        console.log('Servicios cargados:', this.services);
       },
-      error => console.error('Error loading services', error)
+      error => {
+        console.error('Error loading services', error);
+        this.services = []; // Asegurar que la lista esté vacía si hay un error
+      }
     );
   }
 
@@ -228,7 +240,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.editRating = review.qualification;
   }
 
-  
+
   deleteReview(reviewId: string): void {
     console.log('Eliminar reseña con ID:', reviewId);
     if (this.idSalon) {
