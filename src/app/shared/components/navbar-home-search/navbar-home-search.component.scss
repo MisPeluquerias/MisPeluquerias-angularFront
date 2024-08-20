@@ -29,9 +29,10 @@
   border: 1px solid #ccc;
   max-height: 200px; /* Ajusta según sea necesario */
   overflow-y: auto;
-  z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+  z-index: 1000;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 
 .results-list ul {
   list-style-type: none;
@@ -56,10 +57,11 @@
   width: 100%;
   background-color: white;
   border: 1px solid #ccc;
-  max-height: 500px; /* Ajusta según sea necesario */
+  max-height: 90px; /* Ajusta según sea necesario */
   overflow-y: auto;
-  z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+  z-index: 4; /* Asegúrate de que esté encima de otros elementos */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f0f0f0;
 }
 
 .results-list ul {
@@ -97,20 +99,69 @@
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-.custom-margin {
-  margin-right: 640px ;
+
+/* Ajustes generales para todos los tamaños de pantalla */
+/* Ajustes generales */
+nav{
+  z-index: 1;
 }
-@media (max-width: 991.98px) { /* Breakpoint para pantallas SM y MD */
-  .custom-margin {
-    margin-top: 12px;
-    margin-right: 0 !important; /* Anula el margen derecho */
+
+/* Ajustes específicos para pantallas móviles */
+@media (max-width: 576px) {
+  nav {
+    height: 40vh; /* Mantén la altura al 40% del viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Alinea el contenido en la parte superior */
+    padding-top: 1rem; /* Añadir un pequeño padding en la parte superior */
+
+  }
+
+  .container {
+    transform: scale(0.7); /* Escala el contenido para ajustarse al tamaño */
+    margin-top: -8rem; /* Subir el contenido un poco más */
+  }
+
+  .container img {
+    max-width: 200px;
+    margin-top: 1rem;
+     /* Tamaño del logo en móviles */
+  }
+
+  h1 {
+    font-size: 1rem; /* Tamaño del título en móviles */
+    margin-bottom: -0.2rem; /* Reducir el margen inferior */
+  }
+
+  p.lead {
+    font-size: 0.7rem; /* Tamaño del subtítulo en móviles */
+    margin-bottom: -1.2rem; /* Reducir el margen inferior */
+  }
+
+  button.btn {
+    font-size: 0.7rem; /* Tamaño del botón en móviles */
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.1rem;
+    margin-bottom: -1rem; /* Reducir margen inferior */
+  }
+
+  .btnLogin {
+    font-size: 0.7rem; /* Tamaño del botón en móviles */
+    padding: 0.25rem 0.5rem;
+    margin-top: -0.7rem !important;
+    margin-bottom: 0.1rem; /* Reducir margen inferior */
+  }
+
+  input.form-control {
+
+    font-size: 0.7rem; /* Tamaño del texto en los inputs en móviles */
+    padding: 0.3rem; /* Reducir padding interno de los inputs en móviles */
+  }
+
+  .tResponsive{
+    margin-top: -1rem !important;
+    font-size: 0.6rem;
   }
 }
 
-/* Estilo para pantallas muy pequeñas */
-@media (max-width: 575.98px) { /* Breakpoint para pantallas XS */
-  .custom-margin {
-    margin-top: 12px;
-    margin-right: 0 !important; /* Anula el margen derecho */
-  }
-}
+
