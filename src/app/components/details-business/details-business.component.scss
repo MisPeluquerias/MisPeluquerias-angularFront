@@ -132,3 +132,82 @@ app-navbar-fixed {
   color: #FFD700;
   display: flex;
 }
+
+.fixed-image-size {
+  width: 100%;.carousel-indicators button {
+    width: 12px; /* Ajusta el tamaño del indicador */
+    height: 12px; /* Ajusta el tamaño del indicador */
+    border-radius: 50%; /* Hace que los indicadores sean circulares */
+    background-color: #6c757d; /* Color de fondo del indicador no activo */
+    border: none; /* Elimina el borde predeterminado */
+  }
+
+  .carousel-indicators .active {
+    background-color: #007bff; /* Color del indicador activo */
+  }
+
+  .carousel-indicators button.custom-indicator {
+    /* Estilos adicionales para personalizar los indicadores */
+    transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
+  }
+
+  .carousel-indicators button.custom-indicator:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
+  }
+  height: 400px; /* Fija la altura del carrusel según tus necesidades */
+  object-fit: cover; /* Ajusta la imagen para cubrir el contenedor manteniendo la relación de aspecto */
+  object-position: center; /* Centra la imagen en el contenedor */
+  border-radius: 12px;
+}.carousel-indicators button {
+  width: 12px; /* Ajusta el tamaño del indicador */
+  height: 12px; /* Ajusta el tamaño del indicador */
+  border-radius: 50%; /* Hace que los indicadores sean circulares */
+  background-color: #6c757d; /* Color de fondo del indicador no activo */
+  border: none; /* Elimina el borde predeterminado */
+}
+
+.carousel-indicators .active {
+  background-color: #007bff; /* Color del indicador activo */
+}
+
+.carousel-indicators button.custom-indicator {
+  /* Estilos adicionales para personalizar los indicadores */
+  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
+}
+
+.carousel-indicators button.custom-indicator:hover {
+  background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
+}
+
+.carousel-indicators button {
+  width: 12px; /* Ajusta el tamaño del indicador */
+  height: 12px; /* Ajusta el tamaño del indicador */
+  border-radius: 50%; /* Hace que los indicadores sean circulares */
+  background-color: #6c757d; /* Color de fondo del indicador no activo */
+  border: none; /* Elimina el borde predeterminado */
+}
+
+.carousel-indicators .active {
+  background-color: #FFFFFF;
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+.carousel-indicators button.custom-indicator {
+  /* Estilos adicionales para personalizar los indicadores */
+  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */;
+}
+
+.carousel-indicators button.custom-indicator:hover {
+  background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
+}
+
+.carousel-indicators button {
+  width: 12px; /* Ajusta el tamaño del indicador */
+  height: 12px; /* Ajusta el tamaño del indicador */
+  border-radius: 50%; /* Hace que los indicadores sean circulares */
+  background-color: #6c757d; /* Color de fondo del indicador no activo */
+  border: none; /* Elimina el borde predeterminado */
+  margin: 0 4px; /* Espacio entre los indicadores */
+  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
+}

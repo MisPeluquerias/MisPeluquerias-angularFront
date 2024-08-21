@@ -12,7 +12,7 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
 
   constructor(private http: HttpClient) {}
 
-  
+
 
   loadReview(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadReview`, {
@@ -21,6 +21,7 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
       },
     });
   }
+
   loadFaq(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadFaq`, {
       params: {
@@ -30,14 +31,21 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
   }
 
 
-  getImages(salon_id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImages`, {
+  getImagesAdmin(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImagesAdmin`, {
       params: {
         salon_id
       }
     });
   }
 
+  getServicesSalon(id_salon:string){
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getServicesSalon`, {
+      params:{
+      id_salon
+    }
+  });
+}
 
 
   saveReview(id_user: string, id_salon: string, observacion: string, qualification: string): Observable<any[]> {
@@ -48,15 +56,6 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
       qualification
     };
     return this.http.post<any[]>(`${this.baseUrl}/details-business/saveReview`, body);
-  }
-
-
-  loadServices(id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/loadServices`, {
-      params: {
-        id
-      },
-    });
   }
 
   loadQuestions(id: string): Observable<any[]> {

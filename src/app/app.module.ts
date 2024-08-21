@@ -4,7 +4,6 @@ import { HttpClientModule,provideHttpClient,withFetch } from '@angular/common/ht
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { NavbarHomeBackgroundComponent } from './shared/components/navbar-home-background/navbar-home-background.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarHomeSearchComponent } from './shared/components/navbar-home-search/navbar-home-search.component';
@@ -39,7 +38,6 @@ import { DetailsBusinessComponent } from './components/details-business/details-
   declarations: [
     AppComponent,
     HomeComponent,
-    NavbarHomeBackgroundComponent,
     FooterComponent,
     NavbarHomeSearchComponent,
     TermsComponent,
