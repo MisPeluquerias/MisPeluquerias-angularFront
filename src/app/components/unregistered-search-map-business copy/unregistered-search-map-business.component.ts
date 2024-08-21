@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
-import * as L from 'leaflet'; // Importar Leaflet
 import { Router } from '@angular/router';
+import * as L from 'leaflet';  // Importa Leaflet directamente
 
 @Component({
   selector: 'app-unregistered-search-business',
@@ -28,45 +28,38 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
     private route: ActivatedRoute,
-    private router : Router
+    private router: Router
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    if (typeof window !== 'undefined') {
-      const L = await import('leaflet');
-    }
-  }
+  ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-    if (typeof window !== 'undefined') {
-      import('leaflet').then(L => {
-        this.customIcon = L.icon({
-          iconUrl: '../../../assets/img/web/icon-map-finder.png',
-          iconSize: [38, 38],
-          iconAnchor: [19, 30],
-          popupAnchor: [0, -45]
-        });
+    this.customIcon = L.icon({
+      iconUrl: '../../../assets/img/web/icon-map-finder.png',
+      iconSize: [38, 38],
+      iconAnchor: [19, 30],
+      popupAnchor: [0, -45]
+    });
 
-        this.route.queryParams.subscribe(params => {
-          const id_city = params['id_city'];
-          const name = params['name']; // Añadido para manejar búsqueda por nombre
-          if (id_city && id_city !== this.currentIdCity) {
-            this.currentIdCity = id_city;
-            if (this.map) {
-              this.loadMarkers(id_city); // Cargar nuevos marcadores en el mapa existente
-            } else {
-              this.initMap(id_city); // Inicializar el mapa por primera vez
-            }
-          } else if (name) {
-            if (this.map) {
-              this.loadMarkers(undefined, name); // Cargar nuevos marcadores en el mapa existente
-            } else {
-              this.initMap(undefined, name); // Inicializar el mapa por primera vez
-            }
-          }
-        });
-      });
-    }
+    this.route.queryParams.subscribe(params => {
+      const id_city = params['id_city'];
+      const name = params['name'];
+
+      if (id_city && id_city !== this.currentIdCity) {
+        this.currentIdCity = id_city;
+        if (this.map) {
+          this.loadMarkers(id_city);
+        } else {
+          this.initMap(id_city);
+        }
+      } else if (name) {
+        if (this.map) {
+          this.loadMarkers(undefined, name);
+        } else {
+          this.initMap(undefined, name);
+        }
+      }
+    });
   }
 
   private initMap(id_city?: string, name?: string): void {
@@ -86,6 +79,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     this.enableMapEvents();
   }
 
+
   private loadMarkers(id_city?: string, name?: string): void {
     if (!this.map || !this.markerLayer) return;
 
@@ -104,7 +98,6 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     }
 
     markerObservable.subscribe((markers: any[]) => {
-      // Verificar los datos recibidos
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();
@@ -117,10 +110,9 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
       }
 
       markers.forEach((marker) => {
-        if (this.customIcon && marker.latitud && marker.longitud) { // Validación de coordenadas
+        if (this.customIcon && marker.latitud && marker.longitud) {
           const markerInstance = L.marker([marker.latitud, marker.longitud], { icon: this.customIcon }).addTo(this.markerLayer!)
             .bindPopup(() => {
-              // Verificar si hay imágenes cargadas
               const imageUrl = marker.images && marker.images.length > 0
                 ? marker.images[0].file_url
                 : marker.image;
@@ -135,7 +127,6 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
           this.visibleMarkers.push(marker);
           this.markersMap.set(marker, markerInstance);
 
-          // Cargar imágenes para el marcador
           this.getImagesAdmin(marker.id_salon);
         }
       });

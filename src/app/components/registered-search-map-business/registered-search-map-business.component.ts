@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
 import { Router } from '@angular/router';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-registered-search-business',
@@ -30,18 +31,15 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-    if (typeof window !== 'undefined') {
-      import('leaflet').then(L => {
-        this.leaflet = L;
-        this.customIcon = L.icon({
-          iconUrl: '../../../assets/img/web/icon-map-finder.png',
-          iconSize: [38, 38],
-          iconAnchor: [19, 30],
-          popupAnchor: [0, -45]
-        });
-        this.initMap(L);
-      });
-    }
+    // Configura el ícono personalizado
+    this.customIcon = L.icon({
+      iconUrl: '../../../assets/img/web/icon-map-finder.png',
+      iconSize: [38, 38],
+      iconAnchor: [19, 30],
+      popupAnchor: [0, -45]
+    });
+
+    this.initMap();
   }
 
   private getImagesAdmin(id: string): void {
@@ -63,24 +61,25 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     );
   }
 
-  private async initMap(L: any): Promise<void> {
+
+  private async initMap(): Promise<void> {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
-          this.initializeMap(L, [lat, lon]);
+          this.initializeMap([lat, lon]);
         },
         () => {
-          this.initializeMap(L, [36.8381, -2.4597]);
+          this.initializeMap([36.8381, -2.4597]);
         }
       );
     } else {
-      this.initializeMap(L, [36.8381, -2.4597]);
+      this.initializeMap([36.8381, -2.4597]);
     }
   }
 
-  private initializeMap(L: any, center: [number, number]): void {
+  private initializeMap(center: [number, number]): void {
     this.map = L.map('map', {
       center,
       zoom: 16,
@@ -99,11 +98,11 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
         .openPopup();
     }
 
-    this.loadMarkers(L);
+    this.loadMarkers();
     this.enableMapEvents();
   }
 
-  private loadMarkers(L: any): void {
+  private loadMarkers(): void {
     if (!this.map || !this.markerLayer) return;
 
     const currentZoom = this.map.getZoom();
@@ -186,7 +185,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private enableMapEvents(): void {
     if (this.map) {
       this.map.on('moveend', () => {
-        this.loadMarkers(this.leaflet);
+        this.loadMarkers();
         this.selectedMarker = null;
         this.currentPage = 1; // Volver a la primera página
       });
@@ -194,7 +193,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       this.map.on('click', () => {
         this.isMapLoading = true;
         this.applyBlurEffect(true);
-        setTimeout(() => this.loadMarkers(this.leaflet), 100);
+        setTimeout(() => this.loadMarkers(), 100);
       });
     }
   }
