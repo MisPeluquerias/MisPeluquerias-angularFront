@@ -27,4 +27,12 @@ export class RegisteredSearchBuusinessService {
       },
     });;
   }
+  
+  getImagesAdmin(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getImagesAdmin`, {
+      params: {
+        salon_id
+      }
+    });
+  }
 }

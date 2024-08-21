@@ -8,6 +8,7 @@ import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 
+
 @Component({
   selector: 'app-details-business',
   templateUrl: './details-business.component.html',
@@ -33,8 +34,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   editAnswerText: string = '';
   faqToEdit: any;
   userType: string = 'client';
-  mainImageUrl: string ="";
-  businessImageUrl: string = 'ruta/default/image.jpg'; // Ruta alternativa de la imagen
+
 
   loginForm: FormGroup;
   errorMessage: string = '';
@@ -68,11 +68,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
             if (data.length > 0) {
               this.business = data[0];
               this.business.hours_old = this.sortHours(this.business.hours_old);
-              console.log(data);
+             // console.log(data);
 
               this.loadReviews(id);
               this.loadFaq(id);
-              this.loadImages(id);
+              this.getImagesAdmin(id);
+              this.getServicesSalon(id);
 
               setTimeout(() => {
                 this.initMap();
@@ -85,13 +86,27 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         );
       }
     });
+
   }
+
+
+  private getImagesAdmin(id: string): void {
+    this.detailsBusiness.getImagesAdmin(id).subscribe(
+      images => {
+        // Ordenar imágenes para que la principal esté primero
+        this.images = images.sort((a, b) => b.file_principal - a.file_principal);
+        //console.log('Imágenes cargadas y ordenadas:', this.images);
+      },
+      error => console.error('Error loading images', error)
+    );
+  }
+
 
   private loadReviews(id: string): void {
     this.detailsBusiness.loadReview(id).subscribe(
       reviews => {
         this.reviews = reviews;
-        console.log('Reseñas cargadas:', reviews);
+        //console.log('Reseñas cargadas:', reviews);
       },
       error => console.error('Error loading reviews', error)
     );
@@ -101,42 +116,28 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.detailsBusiness.loadFaq(id).subscribe(
       faqs => {
         this.faqs = faqs;
-        console.log('Preguntas cargadas:', faqs);
+       //console.log('Preguntas cargadas:', faqs);
       },
       error => console.error('Error loading faq', error)
     );
   }
 
-  private loadServices(id: string): void {
-    this.detailsBusiness.loadServices(id).subscribe(
-      services => {
-        this.services = services;
-        console.log('Servicios cargados:', services);
-      },
-      error => console.error('Error loading services', error)
-    );
-  }
-
-  private loadImages(id: string): void {
-    this.detailsBusiness.getImages(id).subscribe(
-      images => {
-        if (images.length > 0) {
-          console.log('Imágenes cargadas:', images);
-          this.images = images;
-          this.setMainImageUrl();
+  private getServicesSalon(id_salon: string): void {
+    this.detailsBusiness.getServicesSalon(id_salon).subscribe(
+      (response: any) => { // Aquí usamos `any` para la respuesta completa
+        if (response && Array.isArray(response.services)) {
+          this.services = response.services;
         } else {
-          console.log('No se encontraron imágenes para este salón.');
-          this.images = [];
-          this.mainImageUrl = this.businessImageUrl; // Usar imagen alternativa si no hay imágenes
+          console.error('La propiedad `services` no es un array:', response);
+          this.services = [];
         }
+        console.log('Servicios cargados:', this.services);
       },
-      error => console.error('Error loading images', error)
+      error => {
+        console.error('Error loading services', error);
+        this.services = []; // Asegurar que la lista esté vacía si hay un error
+      }
     );
-  }
-
-  private setMainImageUrl(): void {
-    const principalImage = this.images.find(image => image.file_principal === '1');
-    this.mainImageUrl = principalImage ? principalImage.file_url : this.businessImageUrl;
   }
 
   ngAfterViewInit(): void {
@@ -190,6 +191,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.modalService.open(LoginComponent);
   }
 
+
   submitReview(): void {
     const id_user = this.userId;
     if (!id_user) {
@@ -215,6 +217,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     );
   }
 
+
   updateReview(): void {
     const updatedReview = {
       ...this.reviewToEdit,
@@ -236,6 +239,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.editReviewText = review.observacion;
     this.editRating = review.qualification;
   }
+
 
   deleteReview(reviewId: string): void {
     console.log('Eliminar reseña con ID:', reviewId);
