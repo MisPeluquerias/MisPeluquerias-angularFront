@@ -7,6 +7,8 @@ import { AuthService } from '../../../core/services/AuthService.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from '../../../auth/login/login.component';
 import { UnRegisteredSearchBuusinessService } from '../../../core/services/unregistered-search-business.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-navbar-fixed',
@@ -30,7 +32,8 @@ export class NavbarFixedComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private modalService: NgbModal,
-    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService
+    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService,
+    private toasrt : ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -138,7 +141,13 @@ export class NavbarFixedComponent implements OnInit {
   }
 
   onSearch() {
-    // Validar que id_city no esté vacío y convertir a cadena de forma segura
+
+    if (this.id_city === "" || this.salonName === "") {
+      this.toasrt.error('Por favor seleccione una opción del menú');
+      return; // Detener la ejecución si hay un error
+    }
+
+
     if (this.id_city && String(this.id_city).trim() !== '') {
       this.unRegisteredSearchBusiness.searchByCity(this.id_city).subscribe({
         next: (response) => {

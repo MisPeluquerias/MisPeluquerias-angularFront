@@ -196,16 +196,18 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
         }
       });
 
-      this.map.on('click', () => {
-        this.isMapLoading = true;
-        this.applyBlurEffect(true);
-        setTimeout(() => {
-          const id_city = this.route.snapshot.queryParamMap.get('id_city')!;
-          if (id_city && id_city !== this.currentIdCity) {
-            this.currentIdCity = id_city;
-            this.loadMarkers(id_city);
-          }
-        }, 100);
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        // Registrar el clic en el mapa para depuración
+        console.log('Map clicked at', e.latlng);
+
+        // Verificar si el clic fue en un marcador o no
+        if (!this.selectedMarker) {
+          // Si no se ha seleccionado un marcador, no aplicar desenfoque
+          this.applyBlurEffect(false);
+        }
+
+        // Desactivar la carga del mapa ya que no es necesario
+        this.isMapLoading = false;
       });
     }
   }

@@ -20,6 +20,16 @@ export class UnRegisteredSearchBuusinessService {
     });;
   }
 
+
+  searchByService(id_city:string,name:string):Observable<any[]>{
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchSalonByService`, {
+      params: {
+        id_city,
+        name
+      },
+    });;
+  }
+
   searchByName(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByName`, {
       params: {

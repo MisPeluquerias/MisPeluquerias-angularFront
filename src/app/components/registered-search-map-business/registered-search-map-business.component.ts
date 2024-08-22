@@ -190,10 +190,18 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
         this.currentPage = 1; // Volver a la primera página
       });
 
-      this.map.on('click', () => {
-        this.isMapLoading = true;
-        this.applyBlurEffect(true);
-        setTimeout(() => this.loadMarkers(), 100);
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        // Registrar el clic en el mapa para depuración
+        console.log('Map clicked at', e.latlng);
+
+        // Verificar si el clic fue en un marcador o no
+        if (!this.selectedMarker) {
+          // Si no se ha seleccionado un marcador, no aplicar desenfoque
+          this.applyBlurEffect(false);
+        }
+
+        // Desactivar la carga del mapa ya que no es necesario
+        this.isMapLoading = false;
       });
     }
   }
