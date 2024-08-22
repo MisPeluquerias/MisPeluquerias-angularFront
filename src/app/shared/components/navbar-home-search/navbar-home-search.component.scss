@@ -1,4 +1,4 @@
-*{
+* {
   box-sizing: border-box;
 }
 
@@ -22,77 +22,34 @@
 
 .results-list {
   position: absolute;
-  top: 100%; /* Ajusta según sea necesario */
+  top: 100%;
   left: 0;
   width: 100%;
   background-color: white;
   border: 1px solid #ccc;
-  max-height: 200px; /* Ajusta según sea necesario */
-  overflow-y: auto;
-  z-index: 1000;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-
-.results-list ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.results-list li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.results-list li:hover {
-  background-color: #f0f0f0;
-}
-
-
-.results-list {
-  position: absolute;
-  top: 100%; /* Justo debajo del input */
-  left: 0;
-  width: 100%;
-  background-color: white;
-  border: 1px solid #ccc;
-  max-height: 90px; /* Ajusta según sea necesario */
-  overflow-y: auto;
-  z-index: 4; /* Asegúrate de que esté encima de otros elementos */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #f0f0f0;
-}
-
-.results-list ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.results-list li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.results-list li:hover {
-  background-color: #f0f0f0;
-}
-
-//lista doble
-
-.results-list-double {
-  position: absolute;
-  top: 100%; /* Justo debajo del input */
-  left: -50%;
-  width: 250%;
-  background-color: white;
-  border-bottom: 1px solid #ccc;
   max-height: 300px; /* Ajusta según sea necesario */
   overflow-y: auto;
-  z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+  z-index: 1100; /* Asegúrate de que esté encima de otros elementos */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
 }
+
+.results-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.results-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.results-list li:hover {
+  background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
+}
+
+
 
 .form-control:focus {
   border-color: inherit;
@@ -101,9 +58,9 @@
 }
 
 /* Ajustes generales para todos los tamaños de pantalla */
-/* Ajustes generales */
-nav{
+nav {
   z-index: 1;
+  height: 21rem;
 }
 
 /* Ajustes específicos para pantallas móviles */
@@ -113,8 +70,7 @@ nav{
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Alinea el contenido en la parte superior */
-    padding-top: 1rem; /* Añadir un pequeño padding en la parte superior */
-
+    padding-top: 3.5rem; /* Añadir un pequeño padding en la parte superior */
   }
 
   .container {
@@ -123,9 +79,8 @@ nav{
   }
 
   .container img {
-    max-width: 200px;
+    max-width: 200px; /* Tamaño del logo en móviles */
     margin-top: 1rem;
-     /* Tamaño del logo en móviles */
   }
 
   h1 {
@@ -153,15 +108,12 @@ nav{
   }
 
   input.form-control {
-
     font-size: 0.7rem; /* Tamaño del texto en los inputs en móviles */
     padding: 0.3rem; /* Reducir padding interno de los inputs en móviles */
   }
 
-  .tResponsive{
+  .tResponsive {
     margin-top: -1rem !important;
     font-size: 0.6rem;
   }
 }
-
-

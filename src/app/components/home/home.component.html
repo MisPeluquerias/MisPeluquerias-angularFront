@@ -9,19 +9,15 @@
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 mb-4">
         <div class="card custom-card-height">
-          <img src="./assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias" />
-          <div class="card-body">
-            <h2 class="h3 card-title">Peluquerias</h2>
-          </div>
+          <img src="../../../assets/img/web/Peluquerías.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias" />
         </div>
+        <h2 class="h3 card-title">Peluquerias</h2>
       </div>
       <div class="col-12 col-md-6 mb-4">
         <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias" />
-          <div class="card-body">
-            <h2 class="h3 card-title">Barberias</h2>
-          </div>
+          <img src="../../../assets/img/web/Barberías.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias" />
         </div>
+        <h2 class="h3 card-title">Barberias</h2>
       </div>
     </div>
 
@@ -29,35 +25,27 @@
     <div class="row justify-content-center">
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Academias</h2>
-          </div>
+          <img src="../../../assets/img/web/Academias_de_Peluquería.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
         </div>
+        <h2 class="h4 card-title text-center mt-2">Academias</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Depilación láser</h2>
-          </div>
+          <img src="../../../assets/img/web/Depilación_Láser.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
         </div>
+        <h2 class="h4 card-title">Depilación láser</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Estética</h2>
-          </div>
+          <img src="../../../assets/img/web/Estéticas.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
         </div>
+        <h2 class="h4 card-title">Estética</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Salón de manicura y pedicura" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Salón de manicura y pedicura</h2>
-          </div>
+          <img src="../../../assets/img/web/Manicura_y_Pedicura.webp" class="card-img-top img-fluid custom-img-height" alt="Salón de manicura y pedicura" />
         </div>
+        <h2 class="h4 card-title">Manicura y pedicura</h2>
       </div>
     </div>
     <div class="d-flex justify-content-center mt-3">
@@ -97,7 +85,7 @@
                     <div class="card-body p-4">
                       <h4 class="card-title fw-bold">¿Tienes un negocio de peluquería y belleza?</h4>
                       <p class="card-text small">AHORA PUEDES DARLE VISIBILIDAD ONLINE</p>
-                      <a href="/reclamation" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">SUBE TU SALON, ES GRATIS</a>
+                      <a routerLink="/reclamation" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">SUBE TU SALON, ES GRATIS</a>
                     </div>
                   </div>
                   <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 position-relative">
@@ -118,67 +106,72 @@
       <h2 class="fw-bold text-center mt-5">Búsqueda por Provincias</h2>
       <div class="container my-1 align-items-center mb-5">
         <div class="row mt-4 justify-content-center text-center">
-          <div class="col-12 col-md-6 col-lg-3 mb-2">
+          <div class="col-12 col-md-6 col-lg-3 mb-2 d-flex justify-content-center">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('alava')">Álava</a></li>
+              <li><a class="text-black" (click)="searchByCityName('A coruña')">A coruña</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Alicante')">Alicante</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Albacete')">Abacete</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Almeria')">Almería</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Alava')">Alava</a></li>
               <li><a class="text-black" (click)="searchByCityName('Asturias')">Asturias</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Avila')">Ávila</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Badajoz')">Badajoz</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Islas Baleares')">Islas Baleares</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Barcelona')">Barcelona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Bizkaia')">Bizkaia</a></li>
               <li><a class="text-black" (click)="searchByCityName('Burgos')">Burgos</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Castellon')">Castellón</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Cuenca')">Cuenca</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Guipuzcoa')">Guipúzcoa</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Jaen')">Jaén</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Leon')">León</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Malaga')">Málaga</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Ourense')">Ourense</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Santa Cruz de Tenerife</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Tarragona')">Tarragona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Valladolid')">Valladolid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Caceres')">Cáceres</a></li>
             </ul>
           </div>
           <div class="col-12 col-md-6 col-lg-3 mb-2">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('Albacete')">Albacete</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Avila')">Ávila</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Caceres')">Cáceres</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Calabria')">Calabria</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Cadiz')">Cádiz</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Cantabria')">Cantabria</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Castellon')">Castellon</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Ceuta')">Ceuta</a></li>
               <li><a class="text-black" (click)="searchByCityName('Ciudad Real')">Ciudad Real</a></li>
               <li><a class="text-black" (click)="searchByCityName('Cordoba')">Córdoba</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Cuenca')">Cuenca</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Girona')">Girona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Granada')">Granada</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Guadalajara')">Guadalajara</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Gipuzkua')">Gipuzkua</a></li>
               <li><a class="text-black" (click)="searchByCityName('Huelva')">Huelva</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Lugo')">Lugo</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Mendoza')">Mendoza</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Salamanca')">Salamanca</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Segovia')">Segovia</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Soria')">Soria</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Teruel')">Teruel</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Toledo')">Toledo</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Zamora')">Zamora</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Huesca')">Huesca</a></li>
             </ul>
           </div>
           <div class="col-12 col-md-6 col-lg-3 mb-2">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('Alicante')">Alicante</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Almería')">Almería</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Barcelona')">Barcelona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Badajoz')">Badajoz</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Huesca')">Huesca</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Jaen')">Jaén</a></li>
               <li><a class="text-black" (click)="searchByCityName('La Rioja')">La Rioja</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Las Palmas')">Las Palmas</a></li>
+              <li><a class="text-black" (click)="searchByCityName('León')">León</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Lleida')">Lleida</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Lugo')">Lugo</a></li>
               <li><a class="text-black" (click)="searchByCityName('Madrid')">Madrid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Malaga')">Málaga</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Melilla')">Melilla</a></li>
               <li><a class="text-black" (click)="searchByCityName('Murcia')">Murcia</a></li>
               <li><a class="text-black" (click)="searchByCityName('Navarra')">Navarra</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Pontevedra')">Pontevedra</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Ourense')">Ourense</a></li>
               <li><a class="text-black" (click)="searchByCityName('Palencia')">Palencia</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Girona')">Girona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Lleida')">Lleida</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Santa Cruz de Tenerife</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Segovia')">Segovia</a></li>
             </ul>
           </div>
           <div class="col-12 col-md-6 col-lg-3 mb-2">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('Cantabria')">Cantabria</a></li>
-              <li><a class="text-black" (click)="searchByCityName('La Palma')">La Palma</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Ceuta')">Ceuta</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Melilla')">Melilla</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Pontevedra')">Pontevedra</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Salamanca')">Salamanca</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Segovia')">Segovia</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Sevilla')">Sevilla</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Soria')">Soria</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Santa Cruz de Tenerife</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Tarragona')">Tarragona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Teruel')">Teruel</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Toledo')">Toledo</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Valencia')">Valencia</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Valladolid')">Valladolid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Zamora')">Zamora</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Zaragoza')">Zaragoza</a></li>
             </ul>
           </div>
         </div>

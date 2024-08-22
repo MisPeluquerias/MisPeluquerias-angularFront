@@ -1,10 +1,10 @@
-*{
+* {
   box-sizing: border-box;
-
 }
-.search-bar{
+
+.search-bar {
   position: sticky;
-  top:-78px;
+  top: -78px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -18,24 +18,19 @@
 }
 
 .custom-img-height {
-  height: 150px;
+  height: 250px;
   object-fit: cover;
+  cursor: pointer;
 }
-li,a
-{
+
+li, a {
   text-decoration: none;
   text-align: left;
   cursor: pointer;
 }
+
 .card {
   margin: 10px;
-
-}
-
-
-.custom-img-height {
-  height: 150px;
-  object-fit: cover;
 }
 
 .carousel-inner {
@@ -56,6 +51,7 @@ li,a
 .carousel-control-prev, .carousel-control-next {
   width: 5%;
 }
+
 .separator-line {
   margin: 0 auto;
   width: 55%;
@@ -63,13 +59,16 @@ li,a
   background-color: #ccc; /* Color de la línea */
   margin: 20px 0; /* Margen superior e inferior de la línea */
 }
+
 .card-img-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
 }
+
 .rating {
   font-size: 1.5rem;
 }
+
 .border-bottom-only {
   border: none;
   border-bottom: 2px solid #000;
@@ -79,33 +78,26 @@ li,a
 
 app-search-bar {
   position: absolute;
-  top: 0; /* Posiciona el elemento en la parte superior del contenedor */
-  left: 0; /* Posiciona el elemento a la izquierda */
-  right: 0; /* Extiende el elemento hasta el borde derecho del contenedor */
+  top: 0;
+  left: 0;
+  right: 0;
 }
+
 .container {
-  position: relative; /* Asegúrate de que el contenedor se ajuste */
- margin-top: 25rem;
+  position: relative;
+  margin-top: 20rem;
 }
 
 @media (max-width: 576px) {
   .container {
-    margin-top: 21rem; /* Ajusta este valor según tus necesidades */
+    margin-top: 21rem;
   }
 }
 
 /* Margen superior para pantallas entre 576px y 1400px */
 @media (min-width: 577px) and (max-width: 1400px) {
   .container {
-    margin-top: 30rem; /* Ajusta este valor según tus necesidades */
+    margin-top: 21rem;
   }
+
 }
-
-
-
-
-
-
-
-
-
