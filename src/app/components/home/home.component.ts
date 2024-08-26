@@ -1,19 +1,13 @@
-import { Component, } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SearchBarService } from '../../core/services/navbar-home.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  map,
-} from 'rxjs/operators';
-import { Subject, of, forkJoin, zip } from 'rxjs';
+import {debounceTime,distinctUntilChanged,switchMap,map,} from 'rxjs/operators';
+import { Subject, of} from 'rxjs';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from '../../auth/login/login.component';
 import { AuthService } from '../../core/services/AuthService.service';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import { ToastrService } from 'ngx-toastr';
-import { Console } from 'node:console';
+import { Modal } from 'bootstrap';
 
 
 @Component({
@@ -23,6 +17,7 @@ import { Console } from 'node:console';
 })
 export class HomeComponent {
 
+  @ViewChild('searchCategoriesModal') searchCategoriesModal!: ElementRef;
   categories: any[] = [];
   services: any[] = [];
   salons: any[] = [];
@@ -31,12 +26,15 @@ export class HomeComponent {
   private searchTermsServiceOrSalon = new Subject<string>();
   private searchTermsCity = new Subject<string>();
   isAuthenticated: boolean = false;
-
+  modalCategory:any;
   category: string = '';
   serviceOrSalon: string = '';
   zone: string = '';
   id_city: string = '';
   salonName:string = '';
+  private modalInstance!: Modal;
+  selectedCategory: string = '';
+
 
   constructor(  private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
     private searchBarService: SearchBarService,
@@ -46,6 +44,45 @@ export class HomeComponent {
     private modalService: NgbModal,
     private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService
   ){}
+
+
+
+  ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated();
+    this.searchTermsCity
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.searchBarService.searchCity(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (cities) => {
+          this.cities = cities;
+        },
+        error: (error) => {
+          console.error('Error al buscar ciudades:', error);
+        },
+      });
+  }
+
+  ngAfterViewInit() {
+    this.modalInstance = new Modal(this.searchCategoriesModal.nativeElement);
+  }
+
+  openModal(category: string) {
+    this.selectedCategory = category;
+    this.modalInstance.show();
+  }
+
+  closeModal() {
+    this.modalInstance.hide();
+  }
 
   searchByCityName(cityName: string): void {
     this.unRegisteredSearchBusinessService.searchByCityName(cityName).subscribe(
@@ -71,6 +108,54 @@ export class HomeComponent {
   }
 
 
+  onInputCity(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value.trim();
+
+    // Si el campo de ciudad se limpia, también limpiar el id_city
+    if (value === '') {
+      this.id_city = '';  // Limpiar id_city si se borra el campo
+    }
+
+    this.searchCity(value);
+  }
+
+  searchCity(term: string): void {
+    this.searchTermsCity.next(term);
+  }
+
+  onSelectCity(city: any): void {
+    this.zone = `${city.name} - ${city.zip_code}`;
+    this.id_city = city.id_city;
+    this.cities = [];
+  }
+
+
+  onSearch() {
+    if (this.id_city !== "") {
+      this.unRegisteredSearchBusiness.searchByCityAndCategory(this.id_city, this.selectedCategory).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para la ciudad y categoría seleccionadas.');
+          } else {
+            // Cerrar el modal usando NgbModal
+            this.closeModal();
+
+            // Navegar a la página de resultados con los parámetros de consulta adecuados
+            this.router.navigate(['/unregistered-search'], {
+              queryParams: { id_city: this.id_city, categoria: this.selectedCategory },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por ciudad y categoría:', error);
+          this.toastr.error('Ocurrió un error al realizar la búsqueda. Por favor, intente nuevamente.');
+        },
+      });
+    } else {
+      this.toastr.error('Seleccione una localidad para realizar la búsqueda.');
+    }
+  }
 
   slides = [
     {
@@ -115,7 +200,4 @@ export class HomeComponent {
     }
   ];
 
-  ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated();
-  }
 }

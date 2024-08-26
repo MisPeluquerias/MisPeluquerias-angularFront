@@ -23,6 +23,7 @@
     "@angular/ssr": "^17.3.8",
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@popperjs/core": "^2.11.8",
+    "@types/bootstrap": "^5.2.10",
     "bootstrap": "^5.3.3",
     "core-js": "^3.37.1",
     "dynamic-import-polyfill": "^0.1.1",

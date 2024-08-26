@@ -65,5 +65,14 @@ export class UnRegisteredSearchBuusinessService {
       }
     });
   }
+
+  searchByCityAndCategory(id_city: string, categoria: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityAndCategory`, {
+      params: {
+        id_city,
+        categoria
+      },
+    });
+  }
 }
 

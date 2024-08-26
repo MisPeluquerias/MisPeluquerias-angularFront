@@ -12,45 +12,46 @@
           <div class="col-md-12">
             <div class="form-group py-3">
               <label for="businessName" class="label small fw-light text-danger">Nombre del Negocio</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessName" id="businessName"  required>
-              <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('businessName').invalid && reclamationForm.get('businessName').touched">Campo obligatorio</p>
-              -->
+              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessName" id="businessName" required>
+              <div *ngIf="reclamationForm.get('businessName')?.invalid && (reclamationForm.get('businessName')?.dirty || reclamationForm.get('businessName')?.touched)" class="text-danger">
+                <small>El nombre del negocio es obligatorio.</small>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="form-group py-3">
               <label for="id_provincia" class="label small fw-light text-danger">Provincia</label>
-              <select formControlName="id_province" id="id_provincia" class="form-select form-select-lg rounded-0"  required>
+              <select formControlName="id_province" id="id_provincia" class="form-select form-select-lg rounded-0" required>
                 <option value="">Seleccione una provincia</option>
-                <!--
-                <option *ngFor="let province of provinces" [value]="province.id_province">{{ province.name }}</option>
-             --> </select> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('id_province').invalid && reclamationForm.get('id_province').touched">Campo obligatorio</p>
-              -->
+                <!-- <option *ngFor="let province of provinces" [value]="province.id_province">{{ province.name }}</option> -->
+              </select>
+              <div *ngIf="reclamationForm.get('id_province')?.invalid && (reclamationForm.get('id_province')?.dirty || reclamationForm.get('id_province')?.touched)" class="text-danger">
+                <small>La provincia es obligatoria.</small>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="form-group py-3">
               <label for="id_city" class="label small fw-light text-danger">Localidad</label>
-              <select formControlName="id_city" id="id_city" class="form-select form-select-lg rounded-0"  required>
+              <select formControlName="id_city" id="id_city" class="form-select form-select-lg rounded-0" required>
                 <option value="">Seleccione una localidad</option>
-                <!--
-                <option *ngFor="let city of cities" [value]="city.id_city">{{ city.name }}</option>
-              --></select><!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('id_city').invalid && reclamationForm.get('id_city').touched">Campo obligatorio</p>
-              -->
+                <!-- <option *ngFor="let city of cities" [value]="city.id_city">{{ city.name }}</option> -->
+              </select>
+              <div *ngIf="reclamationForm.get('id_city')?.invalid && (reclamationForm.get('id_city')?.dirty || reclamationForm.get('id_city')?.touched)" class="text-danger">
+                <small>La localidad es obligatoria.</small>
+              </div>
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-group py-3">
               <label for="businessAddress" class="label small fw-light text-danger">Dirección Completa</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessAddress" id="businessAddress"  required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('businessAddress').invalid && reclamationForm.get('businessAddress').touched">Campo obligatorio</p>
-              -->
+              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessAddress" id="businessAddress" required>
+              <div *ngIf="reclamationForm.get('businessAddress')?.invalid && (reclamationForm.get('businessAddress')?.dirty || reclamationForm.get('businessAddress')?.touched)" class="text-danger">
+                <small>La dirección es obligatoria.</small>
+              </div>
             </div>
           </div>
 
@@ -63,9 +64,10 @@
           <div class="col-md-12">
             <div class="form-group py-3">
               <label for="contactName" class="label small fw-light text-danger">Nombre</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="contactName" id="contactName" required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactName').invalid && reclamationForm.get('contactName').touched">Campo obligatorio</p>
-              -->
+              <input type="text" class="form-control form-control-lg rounded-0" formControlName="contactName" id="contactName" required>
+              <div *ngIf="reclamationForm.get('contactName')?.invalid && (reclamationForm.get('contactName')?.dirty || reclamationForm.get('contactName')?.touched)" class="text-danger">
+                <small>El nombre es obligatorio.</small>
+              </div>
             </div>
           </div>
 
@@ -73,18 +75,19 @@
             <div class="form-group py-3">
               <label for="contactLastname" class="label small fw-light text-danger">Apellidos</label>
               <input type="text" class="form-control form-control-lg rounded-0" formControlName="contactLastname" id="contactLastname" required>
-              <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactLastname').invalid && reclamationForm.get('contactLastname').touched">Campo obligatorio</p>
-              -->
+              <div *ngIf="reclamationForm.get('contactLastname')?.invalid && (reclamationForm.get('contactLastname')?.dirty || reclamationForm.get('contactLastname')?.touched)" class="text-danger">
+                <small>Los apellidos son obligatorios.</small>
+              </div>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group py-3">
               <label for="contactPhone" class="label small fw-light text-danger">Teléfono</label>
-              <input type="text" maxlength="9" pattern="[0-9]{9}" class="form-control form-control-lg rounded-0" formControlName="contactPhone" id="contactPhone" required><!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactPhone').invalid && reclamationForm.get('contactPhone').touched">Campo obligatorio</p>
-              -->
+              <input type="text" maxlength="9" pattern="[0-9]{9}" class="form-control form-control-lg rounded-0" formControlName="contactPhone" id="contactPhone" required>
+              <div *ngIf="reclamationForm.get('contactPhone')?.invalid && (reclamationForm.get('contactPhone')?.dirty || reclamationForm.get('contactPhone')?.touched)" class="text-danger">
+                <small>El teléfono es obligatorio y debe tener 9 dígitos.</small>
+              </div>
             </div>
           </div>
 
@@ -92,24 +95,29 @@
             <div class="form-group py-3">
               <label for="contactMail" class="label small fw-light text-danger">Correo Electrónico</label>
               <input type="email" class="form-control form-control-lg rounded-0" formControlName="contactMail" id="contactMail" required>
+              <div *ngIf="reclamationForm.get('contactMail')?.invalid && (reclamationForm.get('contactMail')?.dirty || reclamationForm.get('contactMail')?.touched)" class="text-danger">
+                <small>El correo electrónico es obligatorio y debe ser válido.</small>
+              </div>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group py-3">
               <label for="dni" class="label small fw-light text-danger">DNI</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="dni" id="dni" required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('dni').invalid && reclamationForm.get('dni').touched">Campo obligatorio</p>
-              -->
+              <input type="text" class="form-control form-control-lg rounded-0" formControlName="dni" id="dni" required>
+              <div *ngIf="reclamationForm.get('dni')?.invalid && (reclamationForm.get('dni')?.dirty || reclamationForm.get('dni')?.touched)" class="text-danger">
+                <small>El DNI es obligatorio.</small>
+              </div>
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-group py-3">
               <label for="contactMessagge" class="label small fw-light text-danger">Mensaje</label>
-              <textarea class="form-control form-control-lg rounded-0" formControlName="contactMessagge" id="contactMessagge" rows="5" required style="resize: none;"></textarea> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactMessagge').invalid && reclamationForm.get('contactMessagge').touched">Campo obligatorio</p>
-              -->
+              <textarea class="form-control form-control-lg rounded-0" formControlName="contactMessagge" id="contactMessagge" rows="5" required style="resize: none;"></textarea>
+              <div *ngIf="reclamationForm.get('contactMessagge')?.invalid && (reclamationForm.get('contactMessagge')?.dirty || reclamationForm.get('contactMessagge')?.touched)" class="text-danger">
+                <small>El mensaje es obligatorio.</small>
+              </div>
             </div>
           </div>
 
@@ -117,15 +125,24 @@
             <div class="form-group py-3">
               <label for="dni_delante">DNI por delante</label>
               <input type="file" class="form-control file" formControlName="dni_delante" id="dni_delante" (change)="checkFiles()" required />
+              <div *ngIf="reclamationForm.get('dni_delante')?.invalid && (reclamationForm.get('dni_delante')?.dirty || reclamationForm.get('dni_delante')?.touched)" class="text-danger">
+                <small>Debe adjuntar una imagen del DNI por delante.</small>
+              </div>
             </div>
 
             <div class="form-group py-3 mb-2">
               <label for="dni_detras">DNI por detrás</label>
               <input type="file" class="form-control file" formControlName="dni_detras" id="dni_detras" (change)="checkFiles()" required />
+              <div *ngIf="reclamationForm.get('dni_detras')?.invalid && (reclamationForm.get('dni_detras')?.dirty || reclamationForm.get('dni_detras')?.touched)" class="text-danger">
+                <small>Debe adjuntar una imagen del DNI por detrás.</small>
+              </div>
             </div>
 
             <div class="form-group py-3">
               <input type="file" class="form-control file" formControlName="files" id="files" multiple (change)="checkFiles()" required />
+              <div *ngIf="reclamationForm.get('files')?.invalid && (reclamationForm.get('files')?.dirty || reclamationForm.get('files')?.touched)" class="text-danger">
+                <small>Debe adjuntar al menos un archivo.</small>
+              </div>
             </div>
 
             <div class="col-md-12">
@@ -141,13 +158,13 @@
                 <label class="form-check-label" for="invalidCheck">
                   Aceptar <a class="text-danger" href="/terminos-y-condiciones" target="_blank"> Términos y Condiciones</a>
                 </label>
-                <div class="invalid-feedback">
-                  Debes Aceptar nuestros Términos y Condiciones.
+                <div *ngIf="reclamationForm.get('terms')?.invalid && reclamationForm.get('terms')?.touched" class="text-danger">
+                  <small>Debes aceptar nuestros Términos y Condiciones.</small>
                 </div>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-5">Enviar</button>
+            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-5" [disabled]="!reclamationForm.valid">Enviar</button>
           </div>
         </div>
       </form>

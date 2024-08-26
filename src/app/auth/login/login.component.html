@@ -15,7 +15,12 @@
       alt="logo-mis-peluquerias"
     />
   </div>
-  <form class="d-flex flex-column align-items-center w-100" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <form
+    class="d-flex flex-column align-items-center w-100"
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- Campo de correo electrónico -->
     <div class="mb-3 w-75" style="max-width: 400px;">
       <label for="exampleInputEmail1" class="form-label fw-bold">Correo electrónico</label>
       <input
@@ -30,7 +35,14 @@
       <div id="emailHelp" class="form-text text-center">
         Nunca compartiremos tu correo con nadie más.
       </div>
+      <!-- Mensajes de error de validación para el campo de correo -->
+      <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="text-danger">
+        <small *ngIf="email?.errors?.['required']">El correo es obligatorio.</small>
+        <small *ngIf="email?.errors?.['email']">Debe ser un correo válido.</small>
+      </div>
     </div>
+
+    <!-- Campo de contraseña -->
     <div class="mb-3 w-75" style="max-width: 400px;">
       <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
       <input
@@ -41,13 +53,23 @@
         placeholder="********"
         formControlName="password"
       />
+      <!-- Mensajes de error de validación para el campo de contraseña -->
+      <div *ngIf="password!.invalid && (password!.dirty || password!.touched)" class="text-danger">
+        <small *ngIf="password!.errors?.['required']">La contraseña es obligatoria.</small>
+      </div>
     </div>
+
+    <!-- Botón de envío -->
     <div class="text-center">
       <button type="submit" class="btn btn-danger rounded-pill px-4 mb-4" [disabled]="!loginForm.valid">
         <i class="las la-door-open"></i>Login
       </button>
     </div>
+
+    <!-- Mensaje de error general -->
     <small id="error" class="text-danger mb-4">{{ errorMessage }}</small>
+
+    <!-- Enlace para registrarse -->
     <div class="row">
       <small>Si no posees una cuenta <a href="" (click)="openRegisterModal($event)">regístrate aquí</a></small>
     </div>

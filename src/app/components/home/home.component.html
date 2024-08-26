@@ -8,42 +8,42 @@
     <!-- Fila para las dos primeras imágenes -->
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/Peluquerías.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias"  data-bs-toggle="modal" data-bs-target="#searchCategoriesModal" />
+        <div class="card custom-card-height" (click)="openModal('Peluquería')">
+          <img src="../../../assets/img/web/Peluquerías.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias"  />
         </div>
-        <h2 class="h3 card-title">Peluquerias</h2>
+        <h2 class="h3 card-title">Peluquerías</h2>
       </div>
       <div class="col-12 col-md-6 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/Barberías.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias" />
+        <div class="card custom-card-height" (click)="openModal('Barbería')">
+          <img src="../../../assets/img/web/Barberías.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias"  />
         </div>
-        <h2 class="h3 card-title">Barberias</h2>
+        <h2 class="h3 card-title">Barberías</h2>
       </div>
     </div>
 
     <!-- Fila para las cuatro imágenes siguientes -->
     <div class="row justify-content-center">
       <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
+        <div class="card custom-card-height" (click)="openModal('Academia')">
           <img src="../../../assets/img/web/Academias_de_Peluquería.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
         </div>
         <h2 class="h4 card-title text-center mt-2">Academias</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
+        <div class="card custom-card-height" (click)="openModal('Depilación láser')">
           <img src="../../../assets/img/web/Depilación_Láser.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
         </div>
         <h2 class="h4 card-title">Depilación láser</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
+        <div class="card custom-card-height" (click)="openModal('Estética')">
           <img src="../../../assets/img/web/Estéticas.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
         </div>
         <h2 class="h4 card-title">Estética</h2>
       </div>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/Manicura_y_Pedicura.webp" class="card-img-top img-fluid custom-img-height" alt="Salón de manicura y pedicura" />
+        <div class="card custom-card-height" (click)="openModal('Manicura y pedicura')">
+          <img src="../../../assets/img/web/Manicura_y_Pedicura.webp" class="card-img-top img-fluid custom-img-height" alt="Manicura y pedicura" />
         </div>
         <h2 class="h4 card-title">Manicura y pedicura</h2>
       </div>
@@ -182,12 +182,11 @@
 <app-footer></app-footer>
 
 <!--Modal para buscar por categorias-->
-
-<div class="modal" tabindex="-1" id="searchCategoriesModal">
+<div id="searchCategoriesModal" #searchCategoriesModal class="modal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Búsqueda por categorías</h5>
+        <h5 class="modal-title">Búsqueda por categoría: {{ selectedCategory }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
@@ -198,10 +197,35 @@
             alt="logo-mis-peluquerias"
           />
         </div>
+        <div class="col-12 mt-5">
+          <div class="input-container" style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <input
+              type="text"
+              id="zoneInput"
+              style="outline: none; box-shadow: none;"
+              class="form-control form-control-lg w-100 border-bottom-only text-center"
+              placeholder="¿Dónde? Ciudad o C.P."
+              (input)="onInputCity($event)"
+              [(ngModel)]="zone"
+            />
+            <div *ngIf="cities.length > 0" class="results-list w-100" style="display: flex; justify-content: center;">
+              <ul class="list-group" style="width: auto; min-width: 200px; text-align: center;">
+                <li
+                  class="list-group-item"
+                  *ngFor="let city of cities"
+                  (click)="onSelectCity(city)"
+                  style="cursor: pointer;"
+                >
+                  <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                </li>
+              </ul>
+            </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger">Buscar</button>
+        <button type="button" class="btn btn-danger" (click)="onSearch()">Buscar</button>
       </div>
     </div>
   </div>
 </div>
+
