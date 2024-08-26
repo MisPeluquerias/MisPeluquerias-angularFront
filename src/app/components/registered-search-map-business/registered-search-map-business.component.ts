@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit,ChangeDetectorRef } from '@angular/core';
 import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
@@ -25,7 +25,8 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private readonly minZoomToLoadMarkers: number = 14;
 
   constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void { }
@@ -38,7 +39,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       iconAnchor: [19, 30],
       popupAnchor: [0, -45]
     });
-
+    this.cdr.detectChanges();
     this.initMap();
   }
 
@@ -213,6 +214,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       spinner.classList.add('fade-out');
       setTimeout(() => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }, 500);
     } else {
       this.isLoading = false;
@@ -223,10 +225,12 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       setTimeout(() => {
         this.isMapLoading = false;
         this.applyBlurEffect(false);
+        this.cdr.detectChanges();
       }, 500);
     } else {
       this.isMapLoading = false;
       this.applyBlurEffect(false);
+      this.cdr.detectChanges();
     }
   }
 

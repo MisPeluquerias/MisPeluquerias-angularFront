@@ -14,13 +14,14 @@
               <img *ngIf="marker.images && marker.images.length > 0; else defaultImage" [src]="marker.images[0].file_url" [alt]="marker.name">
               <ng-template #defaultImage>
                 <img [src]="marker.image || '../../../assets/img/web/sello.jpg'" [alt]="marker.name"
-                    [ngStyle]="{
-                    display: 'block',
-                    margin: marker.image ? '0' : '0 auto',
-                    height: marker.image ? 'auto' : '1o%',
-                    width: marker.image ? '100%' : 'auto',
-                   'object-fit': marker.image ? 'cover' : 'contain'
-                  }"/>
+                [ngStyle]="{
+                  display: 'block',
+                  margin: marker.image ? '0' : '0 auto',
+                  height: marker.image ? 'auto' : '1o%',
+                  width: marker.image ? '100%' : 'auto',
+                  'object-fit': marker.image ? 'cover' : 'contain'
+                }"
+              />
               </ng-template>
             </div>
             <div class="card-body">

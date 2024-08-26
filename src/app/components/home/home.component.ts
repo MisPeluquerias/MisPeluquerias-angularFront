@@ -13,6 +13,7 @@ import { LoginComponent } from '../../auth/login/login.component';
 import { AuthService } from '../../core/services/AuthService.service';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import { ToastrService } from 'ngx-toastr';
+import { Console } from 'node:console';
 
 
 @Component({
@@ -48,9 +49,19 @@ export class HomeComponent {
 
   searchByCityName(cityName: string): void {
     this.unRegisteredSearchBusinessService.searchByCityName(cityName).subscribe(
-      (response) => {
+      (response: any) => {
         console.log('Resultados de la búsqueda:', response);
-        this.router.navigate(['/unregistered-search'], { queryParams: { name: cityName } });
+
+        // Verificar que response tiene la propiedad 'salons' y que contiene salones
+        if (response && Array.isArray(response.salons) && response.salons.length > 0) {
+          console.log('Número total de salones recibidos:', response.salons.length);
+          console.log(cityName);
+
+          // Navegar a la página de resultados
+          this.router.navigate(['/unregistered-search'], { queryParams: { name: cityName } });
+        } else {
+          this.toastr.info('No se encontraron salones en esta ciudad.');
+        }
       },
       (error) => {
         this.toastr.error('<i class="las la-info-circle"></i> Actualmente, no tenemos salones en esta provincia, estamos trabajando en ello.');
@@ -58,6 +69,8 @@ export class HomeComponent {
       }
     );
   }
+
+
 
   slides = [
     {
