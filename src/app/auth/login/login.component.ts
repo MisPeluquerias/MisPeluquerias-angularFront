@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
   openRegisterModal(event: Event) {
     event.preventDefault();
     this.modalService.dismissAll();
-    this.modalService.open(RegisterComponent);
+    this.modalService.open(RegisterComponent, { size: 'xl', centered: true });
+
   }
 }
