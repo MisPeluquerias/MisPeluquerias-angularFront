@@ -10,20 +10,20 @@
         </div>
         <div class="card-container" *ngIf="paginatedMarkers.length > 0">
           <div class="card" *ngFor="let marker of paginatedMarkers; let i = index" (click)="onCardClick(marker)" [class.selected]="selectedMarker === marker">
-            <div class="card-image">
+            <div class="card-image position-relative">
               <img *ngIf="marker.images && marker.images.length > 0; else defaultImage" [src]="marker.images[0].file_url" [alt]="marker.name">
               <ng-template #defaultImage>
-                <img [src]="marker.image" [alt]="marker.name">
+                <img [src]="marker.image || '../../../assets/img/web/sello.jpg'" [alt]="marker.name" />
               </ng-template>
+              <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
+               <button class="favorite-btn" (click)="addFavorite(marker); $event.stopPropagation()">
+                <i class="las la-heart"></i>
+              </button>
             </div>
             <div class="card-body">
-              <h5 class="card-title">{{marker.name}}</h5>
-              <p class="card-text">{{marker.address}}</p>
-              <p class="card-status" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
-              <a (click)="viewDetails(marker.id_salon); $event.stopPropagation()">+info</a>
-            </div>
-            <div class="card-favorite">
-              <i class="fa fa-heart"></i>
+              <h5 class="text-center">{{marker.name}}</h5>
+              <p class="card-text text-center">{{marker.address}}</p>
+              <p class="card-status text-center" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
       </div>
       <div class="col-md-6 d-flex flex-column">
         <div class="map-frame flex-grow-1 position-relative">
-          <div id="map" class="map-content"></div>
+          <div id="registered-map" class="map-content"></div>
           <div id="loading-spinner" class="loading-spinner" *ngIf="isLoading"></div>
           <div id="map-cover" class="map-cover" *ngIf="isMapLoading"></div>
         </div>

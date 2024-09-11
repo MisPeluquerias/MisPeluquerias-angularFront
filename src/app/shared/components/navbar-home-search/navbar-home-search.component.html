@@ -1,95 +1,91 @@
-<nav class="position-fixed overflow-hidden w-100">
+<nav class="position-fixed w-100">
   <div class="video-background position-absolute top-0 start-0 w-100 h-100">
     <video [autoplay]="true" [muted]="true" [loop]="true" playsinline class="w-100 h-100" style="object-fit: cover;">
-      <source src="../../../../assets/video/nav_video.mp4"controls  type="video/mp4">
-      <source src="../../../../assets//video//nav_video.webm" type="video/webm">
+      <source src="../../../../assets/video/nav_video.mp4" controls type="video/mp4">
+      <source src="../../../../assets/video/nav_video.webm" type="video/webm">
       Tu navegador no soporta el elemento de video.
     </video>
   </div>
 
-    <div class="container text-center position-relative z-1 text-white py-5">
+  <div class="container text-center position-relative z-1 text-white mt-2">
+    <div class="mt-n5">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <img
+          src="../../../../assets/img/web/logo-mis-peluquerias.svg"
+          width="450"
+          class="img-fluid mb-4 mb-md-0"
+          alt="Log mis Peluquerias"
+        />
+        <button
+          class="btn btn-lg btn-danger rounded-pill btn-custom mb-4 mb-md-0 ms-md-auto btnLogin"
+          type="button"
+          (click)="handleAuthAction()"
+        >
+          <i class="las la-user"></i> {{ isAuthenticated ? 'Salir' : 'Iniciar Sesión' }}
+        </button>
+      </div>
 
-      <div class="mt-n5">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <img
-            src="../../../../assets/img/web/logo-mis-peluquerias.svg"
-            width="450"
-            class="img-fluid mb-4 mb-md-0"
-            alt="Log mis Peluquerias"
-          />
-          <button
-            class="btn btn-lg btn-danger rounded-pill btn-custom mb-4 mb-md-0 ms-md-auto btnLogin"
-            type="button"
-            (click)="handleAuthAction()"
-          >
-            <i class="las la-user"></i> {{ isAuthenticated ? 'Salir' : 'Iniciar Sesión' }}
-          </button>
-        </div>
-        <section class="mb-4">
-          <h1 class="display-4 fw-bold">
-            Busca y encuentra el mejor salón de tu ciudad
-          </h1>
-          <p class="lead fw-bold">
-            Somos el mayor directorio de salones de peluquería y belleza en español
-          </p>
-        </section>
-        <section id="card-search-section" class="d-flex justify-content-center ">
-          <div class="card card-search shadow mb-4 w-100 w-md-75 w-lg-50 ">
-            <div class="card-body">
-              <div class="row g-2">
-                <!-- Campo Categoría -->
-                <div class="col-md-3">
+      <section class="mb-4">
+        <h1 class="display-6 fw-bold">
+          Busca y encuentra el mejor salón de tu ciudad
+        </h1>
+        <p class="lead fw-bold">
+          Somos el mayor directorio de salones de peluquería y belleza en español
+        </p>
+      </section>
+
+      <section id="card-search-section" class="d-flex justify-content-center">
+        <div class="card card-search shadow mb-4 w-100 w-md-75 w-lg-50">
+          <div class="card-body">
+            <div class="row g-2">
+              <!-- Campo Servicio -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
                   <input
                     type="text"
-                    id="category"
+                    id="serviceInput"
                     class="form-control form-control-lg border-bottom-only"
                     placeholder="Servicios"
-                    (input)="onInputCategory($event)"
-                    [(ngModel)]="category"
+                    (input)="onInputService($event)"
+                    [(ngModel)]="service"
                   />
-                  <div *ngIf="categories.length > 0" class="results-list">
+                  <div *ngIf="services.length > 0" class="results-list">
                     <ul class="list-group">
-                      <li class="list-group-item" *ngFor="let category of categories" (click)="onSelectCategory(category.name)">
-                        <i class="las la-tags"></i> {{ category.name }}
+                      <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
+                        <i class="la la-scissors"></i> {{ service.name }}
                       </li>
                     </ul>
                   </div>
                 </div>
-                <!-- Campo Servicio o Salón -->
-                <div class="col-md-3">
+              </div>
+
+              <!-- Campo Salón -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
                   <input
                     type="text"
-                    name="serviceOrSalon"
-                    id="serviceOrSalon"
+                    id="salonInput"
                     class="form-control form-control-lg border-bottom-only"
                     placeholder="Salones"
-                    (input)="onInputServiceOrSalon($event)"
-                    [(ngModel)]="serviceOrSalon"
+                    (input)="onInputSalon($event)"
+                    [(ngModel)]="salon"
                   />
-                  <div *ngIf="services.length > 0 || salons.length > 0" class="results-list-double row">
-                    <div class="col-6">
-                      <ul class="list-group">
-                        <h3>Servicios</h3>
-                        <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
-                          <i class="la la-scissors"></i> {{ service.name }}
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="col-6">
-                      <ul class="list-group">
-                        <h3>Salones</h3>
-                        <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon.name)">
-                          <i class="la la-home"></i> {{ salon.name }}
-                        </li>
-                      </ul>
-                    </div>
+                  <div *ngIf="salons.length > 0" class="results-list">
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon)">
+                        <i class="la la-home"></i> {{ salon.name }}
+                      </li>
+                    </ul>
                   </div>
                 </div>
-                <!-- Campo Ciudad o C.P. -->
-                <div class="col-md-3">
+              </div>
+
+              <!-- Campo Ciudad o C.P. -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
                   <input
                     type="text"
-                    id="zone"
+                    id="zoneInput"
                     class="form-control form-control-lg border-bottom-only"
                     placeholder="¿Dónde? Ciudad o C.P."
                     (input)="onInputCity($event)"
@@ -103,24 +99,26 @@
                     </ul>
                   </div>
                 </div>
-                <!-- Botón Buscar -->
-                <div class="col-md-3 d-flex align-items-center justify-content-center">
-                  <button
-                    class="btn btn-lg btn-danger rounded-pill"
-                    type="submit"
-                    (click)="onSearch()"
-                  >
-                    <i class="las la-search"></i> Buscar
-                  </button>
-                </div>
+              </div>
+              <!-- Botón Buscar -->
+              <div class="col-md-3 d-flex align-items-center justify-content-center">
+                <button
+                  class="btn btn-lg btn-danger rounded-pill"
+                  type="submit"
+                  (click)="onSearch()"
+                >
+                  <i class="las la-search"></i> Buscar
+                </button>
               </div>
             </div>
           </div>
-        </section>
-      </div>
-      <p class="tResponsive">
-        ¿Eres una peluquería y te gustaría aparecer aquí?
-        <a href="/contacto" class="text-white">Contacta con nosotros</a> y daremos de alta tu salón gratis
-      </p>
+        </div>
+      </section>
     </div>
-  </nav>
+
+    <p class="tResponsive">
+      ¿Eres una peluquería y te gustaría aparecer aquí?
+      <a routerLink="/contacto" class="text-white">Contacta con nosotros</a> y daremos de alta tu salón gratis
+    </p>
+  </div>
+</nav>

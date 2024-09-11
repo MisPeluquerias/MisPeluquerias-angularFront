@@ -18,7 +18,7 @@
   <form class="w-100" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="nombre" class="form-label fw-bold">Nombre</label>
+        <label for="name" class="form-label fw-bold">Nombre</label>
         <input
           type="text"
           class="form-control text-center"
@@ -26,9 +26,12 @@
           placeholder="Nombre"
           formControlName="name"
         />
+        <div *ngIf="registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('name')?.errors?.['required']">El nombre es obligatorio.</small>
+        </div>
       </div>
       <div class="col-md-6">
-        <label for="apellidos" class="form-label fw-bold">Apellidos</label>
+        <label for="lastname" class="form-label fw-bold">Apellidos</label>
         <input
           type="text"
           class="form-control text-center"
@@ -36,34 +39,101 @@
           placeholder="Apellidos"
           formControlName="lastname"
         />
+        <div *ngIf="registerForm.get('lastname')?.invalid && (registerForm.get('lastname')?.dirty || registerForm.get('lastname')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('lastname')?.errors?.['required']">Los apellidos son obligatorios.</small>
+        </div>
       </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 py-3">
       <div class="col-md-6">
-        <label for="fechaNacimiento" class="form-label fw-bold"
-          >Fecha de nacimiento</label
-        >
+        <label for="birth_date" class="form-label fw-bold">Fecha de nacimiento</label>
         <input
           type="date"
           class="form-control text-center"
-          id="fechaNacimiento"
-          placeholder="dd/mm/aaaa"
+          id="birth_date"
           formControlName="birth_date"
         />
+        <div *ngIf="registerForm.get('birth_date')?.invalid && (registerForm.get('birth_date')?.dirty || registerForm.get('birth_date')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('birth_date')?.errors?.['required']">La fecha de nacimiento es obligatoria.</small>
+        </div>
       </div>
       <div class="col-md-6">
-        <label for="telefono" class="form-label fw-bold">Teléfono</label>
+        <label for="phone" class="form-label fw-bold">Teléfono</label>
         <input
           type="tel"
           class="form-control text-center"
-          id="telefono"
+          id="phone"
           placeholder="Teléfono"
           formControlName="phone"
         />
+        <div *ngIf="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('phone')?.errors?.['pattern']">Debe ser un número de teléfono válido (9 dígitos).</small>
+        </div>
       </div>
     </div>
-    <div class="row mb-3 mt-3">
-      <div class="col-md-12">
+    <div class="row">
+      <!-- Select de Provincia -->
+      <div class="col-md-6 form-group py-3">
+        <label for="province" class="form-label">Provincia</label>
+        <select
+          class="form-select"
+          id="id_province"
+          formControlName="id_province"
+          (change)="onProvinceChange($any($event.target).value)"
+          required
+        >
+          <option value="">Seleccione una provincia...</option>
+          <option
+            *ngFor="let province of provinces"
+            [value]="province.id_province"
+          >
+            {{ province.name }}
+          </option>
+        </select>
+      </div>
+
+
+      <!-- Select de Ciudad -->
+      <div class="col-md-6 form-group py-3">
+        <label for="city" class="form-label">Ciudad-CP</label>
+        <select
+          class="form-select"
+          id="id_city"
+          formControlName="id_city"
+          required
+        >
+          <option value="">Seleccione una ciudad...</option>
+          <option *ngFor="let city of cities" [value]="city.id_city">
+            {{ city.city_name }} - {{ city.zip_code }}
+          </option>
+        </select>
+      </div>
+      </div>
+
+      <div class="row mb-3 py-3">
+        <div class="col-md-6 offset-md-3 d-flex justify-content-center">
+          <div class="w-100">
+            <label for="dni" class="form-label fw-bold text-center">DNI</label>
+            <input
+              type="text"
+              class="form-control text-center"
+              id="dni"
+              placeholder="DNI"
+              formControlName="dni"
+            />
+            <div
+              *ngIf="registerForm.get('dni')?.invalid && (registerForm.get('dni')?.dirty || registerForm.get('dni')?.touched)"
+              class="text-danger text-center"
+            >
+              <small *ngIf="registerForm.get('dni')?.errors?.['required']">El DNI es obligatorio.</small>
+              <small *ngIf="registerForm.get('dni')?.errors?.['pattern']">El DNI no es válido.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="row mb-3 mt-3 py-3">
+      <div class="col-md-6">
         <label for="email" class="form-label fw-bold">Correo electrónico</label>
         <input
           type="email"
@@ -72,81 +142,50 @@
           placeholder="Correo electrónico"
           formControlName="email"
         />
-      </div>
-    </div>
-    <div class="row mb-3" style="position: relative;">
-      <div class="col-md-6" style="position: relative;">
-        <label for="ciudad" class="form-label fw-bold">Ciudad</label>
-        <input type="hidden" formControlName="id_city" />
-        <input
-          type="text"
-          id="ciudad"
-          class="form-control form-control-lg border-bottom-only"
-          name="ciudad"
-          placeholder="¿Dónde? Ciudad o C.P."
-          (input)="onInputCity($event)"
-        />
-        <div *ngIf="cities.length > 0" id="city-results" class="results-list">
-          <ul class="list-group">
-            <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
-              <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
-            </li>
-          </ul>
+        <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</small>
+          <small *ngIf="registerForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</small>
         </div>
       </div>
-      <div class="col-md-6" style="position: relative;">
-        <input type="hidden" formControlName="id_province" />
-        <label for="provincia" class="form-label fw-bold">Provincia</label>
-        <input
-          type="text"
-          id="provincia"
-          class="form-control form-control-lg border-bottom-only"
-          name="provincia"
-          placeholder="¿Dónde? Ciudad o C.P."
-          (input)="onInputProvince($event)"
-        />
-        <div *ngIf="provinces.length > 0" id="province-results" class="results-list">
-          <ul class="list-group">
-            <li class="list-group-item" *ngFor="let province of provinces" (click)="onSelectProvince(province)">
-              <i class="las la-map-marker"></i> {{ province.name }}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
-    <div class="mb-3">
-      <label for="direccion" class="form-label fw-bold">Dirección</label>
+    <div class="mb-3 col-md-6">
+      <label for="address" class="form-label fw-bold">Dirección</label>
       <input
         type="text"
         class="form-control text-center"
-        id="direccion"
+        id="address"
         placeholder="Dirección"
         formControlName="address"
       />
     </div>
+    </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="contrasena" class="form-label fw-bold">Contraseña</label>
+        <label for="password" class="form-label fw-bold">Contraseña</label>
         <input
           type="password"
           class="form-control text-center"
-          id="contrasena"
+          id="password"
           placeholder="Contraseña"
           formControlName="password"
         />
+        <div *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)" class="text-danger">
+          <small *ngIf="registerForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</small>
+          <small *ngIf="registerForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres.</small>
+        </div>
       </div>
       <div class="col-md-6">
-        <label for="confirmarContrasena" class="form-label fw-bold"
-          >Confirmar contraseña</label
-        >
+        <label for="confirmPassword" class="form-label fw-bold">Confirmar contraseña</label>
         <input
           type="password"
           class="form-control text-center"
-          id="confirmarContrasena"
+          id="confirmPassword"
           placeholder="Confirmar contraseña"
           formControlName="confirmPassword"
         />
+        <div *ngIf="registerForm.hasError('mismatch') && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)" class="text-danger">
+          <small>Las contraseñas no coinciden.</small>
+        </div>
       </div>
     </div>
     <div class="text-center">
@@ -158,8 +197,8 @@
         Registrar Usuario
       </button>
     </div>
-    <small id="error" class="text-danger mb-4">{{errorMessage}}</small>
-    <small id="error" class="text-success mb-4">{{successMessage}}</small>
+    <small id="error" class="text-danger mb-4">{{ errorMessage }}</small>
+    <small id="success" class="text-success mb-4">{{ successMessage }}</small>
     <div class="row mt-3">
       <small
         >Si ya posees una cuenta puedes ir a

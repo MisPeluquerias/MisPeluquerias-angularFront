@@ -8,7 +8,6 @@ import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 
-
 @Component({
   selector: 'app-details-business',
   templateUrl: './details-business.component.html',
@@ -22,6 +21,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   faqs: any[] = [];
   services: any[] = [];
   images: any[] = [];
+  descriptionSalon: any[] = [];
   reviewText: string = '';
   rating: string = '';
   userId: string | null = null;
@@ -35,14 +35,13 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   faqToEdit: any;
   userType: string = 'client';
 
-
   loginForm: FormGroup;
   errorMessage: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService,
-    private detailsBusiness: DetailsBusinesstService,
+    private detailsBusinessService: DetailsBusinesstService,
     private modalService: NgbModal,
     public authService: AuthService,
     private fb: FormBuilder
@@ -56,98 +55,122 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
+  
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
     });
+  
     this.route.params.subscribe(params => {
-      const id = params['id'];
+      const slug = params['salonSlug'];  // Extrae el slug
+      const id = params['id'];  // Extrae el ID numérico
+      //console.log('Slug extraído de la URL:', slug); // Depuración
+      //console.log('ID extraído de la URL:', id);  // Depuración
+  
       this.idSalon = id;
+  
       if (id) {
+        //console.log('Solicitando datos para el ID:', id); // Depuración
         this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id).subscribe(
           data => {
+            //console.log('Datos recibidos del negocio:', data); // Depuración
             if (data.length > 0) {
               this.business = data[0];
               this.business.hours_old = this.sortHours(this.business.hours_old);
-             // console.log(data);
-
+  
               this.loadReviews(id);
               this.loadFaq(id);
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
-
+              this.getDescriptionSalon(id);
+  
               setTimeout(() => {
                 this.initMap();
               }, 0);
             } else {
-              console.error('No business data found');
+              console.error('No se encontraron datos del negocio para el ID:', id);
             }
           },
-          error => console.error('Error loading business details', error)
+          error => {
+            console.error('Error al cargar los detalles del negocio:', error);
+          }
         );
+      } else {
+        console.error('No se encontró el ID en la URL');
       }
     });
-
   }
+
 
 
   private getImagesAdmin(id: string): void {
-    this.detailsBusiness.getImagesAdmin(id).subscribe(
+    //console.log('Cargando imágenes para el ID:', id); // Depuración: Verifica cuando se cargan las imágenes
+    this.detailsBusinessService.getImagesAdmin(id).subscribe(
       images => {
-        // Ordenar imágenes para que la principal esté primero
         this.images = images.sort((a, b) => b.file_principal - a.file_principal);
-        //console.log('Imágenes cargadas y ordenadas:', this.images);
+        //console.log('Imágenes cargadas:', this.images); // Depuración: Verifica las imágenes cargadas
       },
-      error => console.error('Error loading images', error)
+      error => console.error('Error al cargar imágenes para el ID:', id, error)
     );
   }
 
+  getDescriptionSalon(id: string): void {
+    //console.log('Cargando descripción para el ID:', id); // Depuración: Verifica cuando se carga la descripción
+    this.detailsBusinessService.getDescrptionSalon(id).subscribe(
+      description => {
+        this.descriptionSalon = description;
+        //console.log('Descripción del salón cargada:', this.descriptionSalon); // Depuración: Verifica la descripción cargada
+      },
+      error => console.error('Error al cargar la descripción del salón para el ID:', id, error)
+    );
+  }
 
   private loadReviews(id: string): void {
-    this.detailsBusiness.loadReview(id).subscribe(
+    //console.log('Cargando reseñas para el ID:', id); // Depuración: Verifica cuando se cargan las reseñas
+    this.detailsBusinessService.loadReview(id).subscribe(
       reviews => {
         this.reviews = reviews;
-        //console.log('Reseñas cargadas:', reviews);
+        //console.log('Reseñas cargadas:', this.reviews); // Depuración: Verifica las reseñas cargadas
       },
-      error => console.error('Error loading reviews', error)
+      error => console.error('Error al cargar reseñas para el ID:', id, error)
     );
   }
 
   private loadFaq(id: string): void {
-    this.detailsBusiness.loadFaq(id).subscribe(
+    //console.log('Cargando preguntas frecuentes para el ID:', id); // Depuración: Verifica cuando se cargan las preguntas frecuentes
+    this.detailsBusinessService.loadFaq(id).subscribe(
       faqs => {
         this.faqs = faqs;
-       //console.log('Preguntas cargadas:', faqs);
+        //console.log('Preguntas frecuentes cargadas:', this.faqs); // Depuración: Verifica las preguntas frecuentes cargadas
       },
-      error => console.error('Error loading faq', error)
+      error => console.error('Error al cargar preguntas frecuentes para el ID:', id, error)
     );
   }
 
   private getServicesSalon(id_salon: string): void {
-    this.detailsBusiness.getServicesSalon(id_salon).subscribe(
-      (response: any) => { // Aquí usamos `any` para la respuesta completa
+    //console.log('Cargando servicios para el ID:', id_salon); // Depuración: Verifica cuando se cargan los servicios
+    this.detailsBusinessService.getServicesSalon(id_salon).subscribe(
+      (response: any) => {
         if (response && Array.isArray(response.services)) {
           this.services = response.services;
+          //console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
         } else {
-          console.error('La propiedad `services` no es un array:', response);
+          console.error('La propiedad `services` no es un array para el ID:', id_salon, response); // Depuración: Verifica si hay un error en la respuesta
           this.services = [];
         }
-        console.log('Servicios cargados:', this.services);
       },
       error => {
-        console.error('Error loading services', error);
-        this.services = []; // Asegurar que la lista esté vacía si hay un error
+        console.error('Error al cargar servicios para el ID:', id_salon, error);
+        this.services = [];
       }
     );
   }
 
-  ngAfterViewInit(): void {
-    // Esperar a que los datos del negocio se carguen antes de inicializar el mapa
-    // this.initMap() ya se llama en ngOnInit después de obtener los datos del negocio
-  }
+  ngAfterViewInit(): void {}
 
   private initMap(): void {
     if (!this.business) return;
 
+    //console.log('Inicializando mapa con latitud:', this.business.latitud, 'y longitud:', this.business.longitud); // Depuración: Verifica las coordenadas del mapa
     this.map = L.map('map', {
       center: [this.business.latitud, this.business.longitud],
       zoom: 16
@@ -169,7 +192,9 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       .bindPopup(`<b>${this.business.name}</b><br>${this.business.address}`).openPopup();
   }
 
-  private sortHours(hours: string): string {
+  private sortHours(hours: string | null): string {
+    if (!hours) return '';
+
     const daysOrder = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
     const hoursArray = hours.split("; ").map(hour => {
       const [day, ...times] = hour.split(", ");
@@ -191,7 +216,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.modalService.open(LoginComponent);
   }
 
-
   submitReview(): void {
     const id_user = this.userId;
     if (!id_user) {
@@ -208,15 +232,14 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     const observacion = this.reviewText;
     const qualification = this.rating;
 
-    this.detailsBusiness.saveReview(id_user, id_salon, observacion, qualification).subscribe(
+    this.detailsBusinessService.saveReview(id_user, id_salon, observacion, qualification).subscribe(
       response => {
-        console.log('Reseña guardada:', response);
+        //console.log('Reseña guardada:', response);
         this.loadReviews(id_salon);
       },
-      error => console.error('Error guardando la reseña', error)
+      error => console.error('Error al guardar la reseña', error)
     );
   }
-
 
   updateReview(): void {
     const updatedReview = {
@@ -225,12 +248,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       qualification: this.editRating
     };
 
-    this.detailsBusiness.updateReview(updatedReview).subscribe(
+    this.detailsBusinessService.updateReview(updatedReview).subscribe(
       response => {
-        console.log('Reseña actualizada:', response);
+        //console.log('Reseña actualizada:', response);
         this.loadReviews(this.idSalon!);
       },
-      error => console.error('Error actualizando la reseña', error)
+      error => console.error('Error al actualizar la reseña', error)
     );
   }
 
@@ -240,16 +263,15 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.editRating = review.qualification;
   }
 
-
   deleteReview(reviewId: string): void {
-    console.log('Eliminar reseña con ID:', reviewId);
+    //console.log('Eliminar reseña con ID:', reviewId);
     if (this.idSalon) {
-      this.detailsBusiness.deleteReview(reviewId).subscribe(
+      this.detailsBusinessService.deleteReview(reviewId).subscribe(
         response => {
-          console.log('Reseña eliminada:', response);
+          //console.log('Reseña eliminada:', response);
           this.loadReviews(this.idSalon!);
         },
-        error => console.error('Error eliminando la reseña', error)
+        error => console.error('Error al eliminar la reseña', error)
       );
     } else {
       console.error('No se encontró el ID del salón.');
@@ -271,13 +293,13 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     const id_salon = this.idSalon;
     const question = this.questionText;
 
-    this.detailsBusiness.saveFaq(id_user, id_salon, question).subscribe(
+    this.detailsBusinessService.saveFaq(id_user, id_salon, question).subscribe(
       response => {
-        console.log('Pregunta guardada:', response);
+        //console.log('Pregunta guardada:', response);
         this.loadFaq(id_salon);
-        this.questionText = ''; // Limpiar la pregunta después de guardar
+        this.questionText = '';
       },
-      error => console.error('Error guardando la pregunta', error)
+      error => console.error('Error al guardar la pregunta', error)
     );
   }
 
@@ -287,12 +309,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       answer: this.editAnswerText
     };
 
-    this.detailsBusiness.updateFaq(updatedQuestion.id_faq, updatedQuestion.answer).subscribe(
+    this.detailsBusinessService.updateFaq(updatedQuestion.id_faq, updatedQuestion.answer).subscribe(
       response => {
-        console.log('Pregunta actualizada:', response);
+        //console.log('Pregunta actualizada:', response);
         this.loadFaq(this.idSalon!);
       },
-      error => console.error('Error actualizando la pregunta', error)
+      error => console.error('Error al actualizar la pregunta', error)
     );
   }
 
@@ -305,12 +327,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   deleteQuestion(id_faq: string): void {
     console.log('Eliminar pregunta con ID:', id_faq);
     if (this.idSalon) {
-      this.detailsBusiness.deleteFaq(id_faq).subscribe(
+      this.detailsBusinessService.deleteFaq(id_faq).subscribe(
         response => {
-          console.log('Pregunta eliminada:', response);
+          //console.log('Pregunta eliminada:', response);
           this.loadFaq(this.idSalon!);
         },
-        error => console.error('Error eliminando la pregunta', error)
+        error => console.error('Error al eliminar la pregunta', error)
       );
     } else {
       console.error('No se encontró el ID del salón.');

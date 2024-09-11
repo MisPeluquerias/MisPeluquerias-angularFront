@@ -13,9 +13,10 @@
 .container-fluid {
   margin-top: 50px; /* Ajusta esta altura para que coincida con la altura del navbar */
   padding: 1em;
-  width: 65%;
-  z-index: 1; /* Asegúrate de que el z-index esté correcto */
-  position: relative; /* Asegura que el contenedor sea el contenedor de referencia para el posicionamiento absoluto */
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho en pantallas pequeñas */
+  max-width: 1200px; /* Controla el ancho máximo para pantallas grandes */
+  z-index: 1;
+  position: relative;
 }
 
 app-navbar-fixed {
@@ -23,19 +24,19 @@ app-navbar-fixed {
   width: 100%;
   top: 0;
   height: 70px; /* Ajusta esta altura según la altura de tu navbar */
-  z-index: 1000; /* Asegúrate de que el z-index esté correcto */
+  z-index: 1000;
 }
 
-.fixed-img-size {
-  width: 100%; /* Ajusta el ancho al 100% del contenedor */
-  max-width: 1200px; /* Máximo ancho que deseas para la imagen */
-  height: 500px; /* Establece una altura fija */
-  border-radius: 12px;
+.fixed-image-size {
+  width: 100%;
+  height: 400px; /* Fija la altura del carrusel según tus necesidades */
   object-fit: cover;
+  object-position: center;
+  border-radius: 12px;
 }
 
 .save-btn {
-  font-size: 0.8rem; /* Ajusta según sea necesario */
+  font-size: 0.8rem;
   border: 1px solid black;
 }
 
@@ -47,7 +48,7 @@ app-navbar-fixed {
 .horario-item {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0; /* Ajusta el padding según tus necesidades */
+  padding: 5px 0;
   min-height: 50px;
   font-size: 1rem;
 }
@@ -70,44 +71,25 @@ app-navbar-fixed {
   margin: 0;
 }
 
-/* Estilos para la estrella de calificación */
 .star-rating {
   display: flex;
-  flex-direction: row-reverse; /* Invertir el orden visual de las estrellas */
+  flex-direction: row-reverse;
   font-size: 2rem;
   color: #ddd;
   cursor: pointer;
-  user-select: none; /* Evita la selección del texto */
+  user-select: none;
 }
 
-.star-rating input {
-  display: none; /* Oculta los botones de radio */
-}
-
-.star-rating label {
-  margin: 0;
-  padding: 0;
+.star-rating .star {
+  font-size: 1.5rem;
   color: #ddd;
-  transition: color 0.2s; /* Transición suave del color */
+  transition: color 0.2s;
 }
 
-/* Aplica el color dorado a la estrella seleccionada y a todas las estrellas a la izquierda */
-.star-rating input:checked ~ label {
-  color: #FFD700; /* Color dorado para las estrellas seleccionadas */
+.star-rating .star.filled {
+  color: #ffd700;
 }
 
-.star-rating input:checked ~ label,
-.star-rating input:checked ~ label ~ label {
-  color: #FFD700; /* Color dorado para estrellas a la izquierda cuando se selecciona una */
-}
-
-/* Cambia el color de las estrellas al pasar el ratón sobre ellas */
-.star-rating label:hover,
-.star-rating label:hover ~ label {
-  color: #FFD700; /* Color dorado para estrellas al pasar el ratón */
-}
-
-/* Estilo para las tarjetas de reseñas */
 .card {
   display: flex;
   flex-direction: column;
@@ -122,92 +104,45 @@ app-navbar-fixed {
 .card-body {
   padding: 1rem;
 }
-.star-rating .star {
-  font-size: 1.5rem;
-
-  color: #ddd;
-}
-
-.star-rating .star.filled {
-  color: #FFD700;
-  display: flex;
-}
-
-.fixed-image-size {
-  width: 100%;.carousel-indicators button {
-    width: 12px; /* Ajusta el tamaño del indicador */
-    height: 12px; /* Ajusta el tamaño del indicador */
-    border-radius: 50%; /* Hace que los indicadores sean circulares */
-    background-color: #6c757d; /* Color de fondo del indicador no activo */
-    border: none; /* Elimina el borde predeterminado */
-  }
-
-  .carousel-indicators .active {
-    background-color: #007bff; /* Color del indicador activo */
-  }
-
-  .carousel-indicators button.custom-indicator {
-    /* Estilos adicionales para personalizar los indicadores */
-    transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
-  }
-
-  .carousel-indicators button.custom-indicator:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
-  }
-  height: 400px; /* Fija la altura del carrusel según tus necesidades */
-  object-fit: cover; /* Ajusta la imagen para cubrir el contenedor manteniendo la relación de aspecto */
-  object-position: center; /* Centra la imagen en el contenedor */
-  border-radius: 12px;
-}.carousel-indicators button {
-  width: 12px; /* Ajusta el tamaño del indicador */
-  height: 12px; /* Ajusta el tamaño del indicador */
-  border-radius: 50%; /* Hace que los indicadores sean circulares */
-  background-color: #6c757d; /* Color de fondo del indicador no activo */
-  border: none; /* Elimina el borde predeterminado */
-}
-
-.carousel-indicators .active {
-  background-color: #007bff; /* Color del indicador activo */
-}
-
-.carousel-indicators button.custom-indicator {
-  /* Estilos adicionales para personalizar los indicadores */
-  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
-}
-
-.carousel-indicators button.custom-indicator:hover {
-  background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
-}
 
 .carousel-indicators button {
-  width: 12px; /* Ajusta el tamaño del indicador */
-  height: 12px; /* Ajusta el tamaño del indicador */
-  border-radius: 50%; /* Hace que los indicadores sean circulares */
-  background-color: #6c757d; /* Color de fondo del indicador no activo */
-  border: none; /* Elimina el borde predeterminado */
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #6c757d;
+  border: none;
+  margin: 0 4px;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .carousel-indicators .active {
-  background-color: #FFFFFF;
+  background-color: #007bff;
   margin-right: 12px;
   margin-left: 12px;
 }
 
-.carousel-indicators button.custom-indicator {
-  /* Estilos adicionales para personalizar los indicadores */
-  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */;
-}
-
 .carousel-indicators button.custom-indicator:hover {
-  background-color: #0056b3; /* Color de fondo al pasar el ratón sobre el indicador */
+  background-color: #0056b3;
 }
 
-.carousel-indicators button {
-  width: 12px; /* Ajusta el tamaño del indicador */
-  height: 12px; /* Ajusta el tamaño del indicador */
-  border-radius: 50%; /* Hace que los indicadores sean circulares */
-  background-color: #6c757d; /* Color de fondo del indicador no activo */
-  border: none; /* Elimina el borde predeterminado */
-  margin: 0 4px; /* Espacio entre los indicadores */
-  transition: background-color 0.2s ease-in-out; /* Transición suave para el color de fondo */
+@media (max-width: 576px) {
+
+  .fixed-image-size {
+    height: auto; /* Deja que la altura de la imagen se ajuste automáticamente */
+    height: 200px; /* Limita la altura máxima de la imagen */
+  }
+
+.text-responsive{
+  font-size: 0.9rem;
+}
+
+  .btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  /* Ajustar el tamaño del ícono dentro del botón */
+  .btn i {
+    font-size: 0.875rem;
+  }
+
 }

@@ -1,7 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit,ChangeDetectorRef } from '@angular/core';
 import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-registered-search-business',
@@ -25,7 +27,10 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private readonly minZoomToLoadMarkers: number = 14;
 
   constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
-    private router: Router
+    private favoriteSalonService:FavoriteSalonService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private toasrt : ToastrService
   ) { }
 
   ngOnInit(): void { }
@@ -38,12 +43,12 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       iconAnchor: [19, 30],
       popupAnchor: [0, -45]
     });
-
+    this.cdr.detectChanges();
     this.initMap();
   }
 
   private getImagesAdmin(id: string): void {
-    console.log(`Cargando imágenes para el salón con ID: ${id}`);
+    //console.log(`Cargando imágenes para el salón con ID: ${id}`);
     this.registeredSearchBusinessService.getImagesAdmin(id).subscribe(
       images => {
         if (images.length > 0) {
@@ -51,10 +56,10 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
           const marker = this.visibleMarkers.find(m => m.id_salon === id);
           if (marker) {
             marker.images = images.sort((a, b) => b.file_principal - a.file_principal);
-            console.log(`Imágenes asociadas al marcador con ID: ${id}`, marker.images);
+            //console.log(`Imágenes asociadas al marcador con ID: ${id}`, marker.images);
           }
         } else {
-          console.log(`No se encontraron imágenes para el marcador con ID: ${id}`);
+          //console.log(`No se encontraron imágenes para el marcador con ID: ${id}`);
         }
       },
       error => console.error('Error loading images', error)
@@ -80,7 +85,10 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   }
 
   private initializeMap(center: [number, number]): void {
-    this.map = L.map('map', {
+     if (this.map) {
+      this.map.remove(); // Eliminar el mapa existente si ya ha sido inicializado
+    }
+    this.map = L.map('registered-map', {
       center,
       zoom: 16,
     });
@@ -107,7 +115,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
 
     const currentZoom = this.map.getZoom();
     if (currentZoom < this.minZoomToLoadMarkers) {
-      console.log(`El nivel de zoom es ${currentZoom}, que es inferior al mínimo necesario (${this.minZoomToLoadMarkers}) para cargar markers.`);
+      //console.log(`El nivel de zoom es ${currentZoom}, que es inferior al mínimo necesario (${this.minZoomToLoadMarkers}) para cargar markers.`);
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.currentPage = 1; // Volver a la primera página
@@ -190,10 +198,18 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
         this.currentPage = 1; // Volver a la primera página
       });
 
-      this.map.on('click', () => {
-        this.isMapLoading = true;
-        this.applyBlurEffect(true);
-        setTimeout(() => this.loadMarkers(), 100);
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        // Registrar el clic en el mapa para depuración
+        console.log('Map clicked at', e.latlng);
+
+        // Verificar si el clic fue en un marcador o no
+        if (!this.selectedMarker) {
+          // Si no se ha seleccionado un marcador, no aplicar desenfoque
+          this.applyBlurEffect(false);
+        }
+
+        // Desactivar la carga del mapa ya que no es necesario
+        this.isMapLoading = false;
       });
     }
   }
@@ -205,6 +221,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       spinner.classList.add('fade-out');
       setTimeout(() => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }, 500);
     } else {
       this.isLoading = false;
@@ -215,10 +232,12 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       setTimeout(() => {
         this.isMapLoading = false;
         this.applyBlurEffect(false);
+        this.cdr.detectChanges();
       }, 500);
     } else {
       this.isMapLoading = false;
       this.applyBlurEffect(false);
+      this.cdr.detectChanges();
     }
   }
 
@@ -272,12 +291,53 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       this.enableMapEvents();
     }, 2000);
   }
-  public viewDetails(id: any): void {
-    if (id) {
-      console.log('Navigating to details with ID:', id); // Para depuración
-      this.router.navigate(['/details-business', id]);
+  public viewDetails(id: any, salonName: string): void {
+    if (id && salonName) {
+        // Generar el slug del salón a partir del nombre
+        const salonSlug = salonName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+
+        console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
+
+        // Navegar a la URL con el slug y el ID
+        this.router.navigate([`/centro/${salonSlug}/${id}`]);
     } else {
-      console.error('Marker ID is undefined');
+        console.error('Marker ID or salon name is undefined');
     }
-  }
+}
+
+
+
+   addFavorite(marker: any): void {
+    const userId = localStorage.getItem('usuarioId');
+    
+    if (!userId) {
+        console.error('User ID is not available.');
+        return; // Termina la ejecución si no hay un ID de usuario disponible
+    }
+
+    const favorite = { id_user: userId, id_salon: marker.id_salon };
+
+    console.log('Attempting to add favorite:', favorite); // Depuración
+
+    this.favoriteSalonService.addFavorite(favorite).subscribe(
+        (response: any) => {
+            console.log('Add favorite response:', response); // Depuración
+
+            if (response && response.id_user_favorite) {
+                marker.isFavorite = true;
+                marker.id_user_favorite = response.id_user_favorite;
+                //console.log('Favorite added successfully');
+                this.toasrt.success('El salón se añadio a su lista de favoritos');
+            } else {
+                console.error('Unexpected response format:', response);
+                this.toasrt.success('Error,intentelo de nuevo mas tarde');
+                
+            }
+        },
+        error => {
+          this.toasrt.success('El salón ya esta en su lista de favoritos');
+            console.error('Error adding favorite', error);
+        }
+    );
+}
 }

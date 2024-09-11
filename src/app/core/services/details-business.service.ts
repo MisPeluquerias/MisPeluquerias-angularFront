@@ -47,6 +47,13 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
   });
 }
 
+getDescrptionSalon(id_salon:string){
+  return this.http.get<any[]>(`${this.baseUrl}/details-business/getDescriptionSalon`, {
+    params:{
+    id_salon
+  }
+});
+}
 
   saveReview(id_user: string, id_salon: string, observacion: string, qualification: string): Observable<any[]> {
     const body = {

@@ -1,0 +1,175 @@
+<app-navbar-fixed></app-navbar-fixed>
+
+<main class="container">
+    <div class="card-body">
+        <h1>Mi perfil</h1>
+        <div *ngIf="userData">
+            <form (ngSubmit)="UpdateUserData()">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="name"
+                            name="name"
+                            [(ngModel)]="userData.name"
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apellidos" class="form-label">Apellidos</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="lastname"
+                            name="lastname"
+                            [(ngModel)]="userData.lastname"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            [(ngModel)]="userData.email"
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="telefono" class="form-label">Nº de Teléfono</label>
+                        <input
+                            type="tel"
+                            class="form-control"
+                            id="phone"
+                            name="phone"
+                            [(ngModel)]="userData.phone"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="address"
+                            name="address"
+                            [(ngModel)]="userData.address"
+                        />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="provincia" class="form-label">Provincia</label>
+                        <select
+                            class="form-select"
+                            id="id_province"
+                            name="id_province"
+                            [(ngModel)]="userData.id_province"
+                            (change)="onProvinceChange($event)"
+                        >
+                            <option *ngFor="let province of provinces" [value]="province.id_province">
+                                {{ province.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="poblacion" class="form-label">Población</label>
+                        <select
+                            class="form-select"
+                            id="id_city"
+                            name="id_city"
+                            [(ngModel)]="userData.id_city"
+                            (change)="onCityChange(userData.id_city)"
+                            #city="ngModel"
+                            required
+                        >
+                            <option *ngFor="let city of cities" [value]="city.id_city">
+                                {{ city.city_name }} - {{ city.zip_code }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                
+
+                <button type="submit" class="btn btn-danger me-2">
+                    Guardar
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    Cancelar
+                </button>
+            </form>
+
+            <!-- Cambiar contraseña -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>Cambiar contraseña</h5>
+                    <form (ngSubmit)="changePassword()">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Introduce nueva contraseña..."
+                                    [(ngModel)]="password"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirmPassword" class="form-label">Repetir contraseña</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="confirmPassword"
+                                    placeholder="Repetir contraseña..."
+                                    name="confirmPassword"
+                                    [(ngModel)]="confirmPassword"
+                                />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            Cambiar contraseña
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Desactivar cuenta -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>Desactivar cuenta</h5>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>¿Estás seguro de que quieres desactivar tu cuenta?</strong><br />
+                        Una vez que desactives tu cuenta, no hay vuelta atrás. Por favor, esté seguro.
+                    </div>
+                    <div class="form-check mb-3">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="confirmDeactivation"
+                            [(ngModel)]="isConfirmed"
+                        />
+                        <label class="form-check-label" for="confirmDeactivation">
+                            Confirmo la desactivación de mi cuenta
+                        </label>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        [disabled]="!isConfirmed"
+                        (click)="desactivateAccount(id_user)"
+                    >
+                        Desactivar cuenta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<app-footer></app-footer>

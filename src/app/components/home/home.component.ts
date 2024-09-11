@@ -1,64 +1,361 @@
-import { Component, } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SearchBarService } from '../../core/services/navbar-home.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  map,
-} from 'rxjs/operators';
-import { Subject, of, forkJoin, zip } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from '../../auth/login/login.component';
 import { AuthService } from '../../core/services/AuthService.service';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { Modal } from 'bootstrap';
+import { LoginComponent } from '../../auth/login/login.component';
+import { HomeService } from '../../core/services/home.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
 
+  @ViewChild('searchCategoriesModal') searchCategoriesModal!: ElementRef;
   categories: any[] = [];
   services: any[] = [];
+  service: string = '';
   salons: any[] = [];
+  salon: string = "";
   cities: any[] = [];
-  private searchTermsCategory = new Subject<string>();
-  private searchTermsServiceOrSalon = new Subject<string>();
+  private searchTermsService = new Subject<string>();
+  private searchTermsSalon = new Subject<string>();
   private searchTermsCity = new Subject<string>();
+  private searchTermsCityModal = new Subject<string>();
   isAuthenticated: boolean = false;
-
+  modalCategory: any;
   category: string = '';
   serviceOrSalon: string = '';
   zone: string = '';
+  zoneModal: string = ""
   id_city: string = '';
-  salonName:string = '';
+  id_salon: string = '';
+  salonName: string = "";
+  private modalInstance!: Modal;
+  selectedCategory: string = '';
+  citiesModal: any[] = [];
+  isDropdownOpen: boolean = false;
 
-  constructor(  private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
+  constructor(
+    private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
     private searchBarService: SearchBarService,
     private router: Router,
     private toastr: ToastrService,
     private authService: AuthService,
     private modalService: NgbModal,
-    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService
-  ){}
+    private homeService: HomeService,
+  ) { }
+
+  ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.logout();
+    this.searchTermsCity
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.searchBarService.searchCity(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (cities) => {
+          this.cities = cities;
+        },
+        error: (error) => {
+          console.error('Error al buscar ciudades:', error);
+        },
+      });
+
+    this.homeService.getSalonValidated().subscribe({
+      next: (salons) => {
+        this.slides = salons.map(salon => ({
+          img: salon.image,  // Asegúrate de que esta propiedad coincida con tu estructura de datos
+          title: salon.name,    // Cambia 'name' por la propiedad correcta en tus datos
+          desc: salon.address  // Cambia 'description' por la propiedad correcta en tus datos
+        }));
+      },
+      error: (error) => {
+        console.error('Error al obtener salones validados:', error);
+      }
+    });
+
+    this.searchTermsCityModal
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.searchBarService.searchCity(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (citiesModal) => {
+          this.citiesModal = citiesModal;
+        },
+        error: (error) => {
+          console.error('Error al buscar ciudades:', error);
+        },
+      });
+
+    this.searchTermsService
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.searchBarService.searchService(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (services) => {
+          this.services = services;
+        },
+        error: (error) => {
+          console.error('Error al buscar servicios:', error);
+        },
+      });
+
+    this.searchTermsSalon
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.searchBarService.searchSalon(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (salons) => {
+          this.salons = salons;
+        },
+        error: (error) => {
+          console.error('Error al buscar salones:', error);
+        },
+      });
+  }
+
+  ngAfterViewInit() {
+    this.modalInstance = new Modal(this.searchCategoriesModal.nativeElement);
+  }
+
+  openModal(category: string) {
+    this.selectedCategory = category;
+    this.modalInstance.show();
+  }
+
+  openLoginModalToReclamation(): void {
+    const modalRef = this.modalService.open(LoginComponent);
+    modalRef.componentInstance.redirectUrl = '/reclamation';
+  }
+
+  openLoginModalToBusiness(): void {
+    const modalRef = this.modalService.open(LoginComponent);
+    modalRef.componentInstance.redirectUrl = '/centros';
+  }
+
+  closeModal() {
+    this.modalInstance.hide();
+  }
 
   searchByCityName(cityName: string): void {
-
-
     this.unRegisteredSearchBusinessService.searchByCityName(cityName).subscribe(
-      (response) => {
-        console.log('Resultados de la búsqueda:', response);
-        this.router.navigate(['/unregistered-search'], { queryParams: { name: cityName } });
+      (response: any) => {
+        if (response && Array.isArray(response.salons) && response.salons.length > 0) {
+          this.router.navigate(['/buscador'], { queryParams: { name: cityName } });
+        } else {
+          this.toastr.info('No se encontraron salones en esta ciudad.');
+        }
       },
       (error) => {
         this.toastr.error('<i class="las la-info-circle"></i> Actualmente, no tenemos salones en esta provincia, estamos trabajando en ello.');
         console.error('Error al buscar por nombre de ciudad:', error);
       }
     );
+  }
+
+  onInputCity(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value.trim();
+
+    if (value === '') {
+      this.id_city = '';
+    }
+
+    this.searchCity(value);
+  }
+
+  onInputCityModal(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value.trim();
+
+    if (value === '') {
+      this.id_city = '';
+    }
+
+    this.searchCityModal(value);
+  }
+
+  searchCity(term: string): void {
+    this.searchTermsCity.next(term);
+  }
+
+  searchCityModal(term: string): void {
+    this.searchTermsCityModal.next(term);
+  }
+
+  onSelectCity(city: any): void {
+    this.zone = `${city.name} - ${city.zip_code}`;
+    this.id_city = city.id_city;
+    this.cities = [];
+  }
+
+  onSelectCityModal(city: any): void {
+    this.zoneModal = `${city.name} - ${city.zip_code}`;
+    this.id_city = city.id_city;
+    this.citiesModal = [];
+  }
+
+  onSearchModal() {
+    if (this.id_city !== "") {
+      const searchParams = {
+        id_city: this.id_city,
+        categoria: this.selectedCategory
+      };
+
+      this.unRegisteredSearchBusinessService.searchByCityAndCategory(searchParams.id_city, searchParams.categoria).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para la ciudad y categoría seleccionadas.');
+          } else {
+            this.closeModal();
+            this.router.navigate(['/buscador'], {
+              queryParams: searchParams,
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por ciudad y categoría:', error);
+          this.toastr.error('Ocurrió un error al realizar la búsqueda. Por favor, intente nuevamente.');
+        },
+      });
+    } else {
+      this.toastr.error('Seleccione una localidad para realizar la búsqueda.');
+    }
+  }
+
+  onSearch() {
+    if (this.id_salon && String(this.id_salon).trim() !== '') {
+      if (this.id_city || this.service) {
+        this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
+        return;
+      }
+
+      const salonSlug = this.salonName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+
+      this.unRegisteredSearchBusinessService.viewDetailsBusiness(this.id_salon).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el salón especificado.');
+          } else {
+            this.router.navigate([`/centro/${salonSlug}/${this.id_salon}`]);  // Cambiar a usar '/' en lugar de '-'
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por nombre:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return;
+    }
+
+    if (this.service && (!this.id_city || String(this.id_city).trim() === '')) {
+      this.toastr.error('Por favor seleccione una ciudad para buscar un servicio.');
+      return;
+    }
+
+    if (this.id_city && this.service) {
+      this.unRegisteredSearchBusinessService.searchByService(this.id_city, this.service).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el servicio en la ciudad seleccionada.');
+          } else {
+            this.router.navigate(['/buscador'], {
+              queryParams: { id_city: this.id_city, service: this.service },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por servicio y ciudad:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return;
+    }
+
+    if (this.id_city && !this.service) {
+      this.unRegisteredSearchBusinessService.searchByCity(this.id_city).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para la ciudad seleccionada.');
+          } else {
+            this.router.navigate(['/buscador'], {
+              queryParams: { id_city: this.id_city },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por ciudad:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return;
+    }
+
+    if (this.id_salon && String(this.id_salon).trim() !== '') {
+      if (this.id_city || this.service) {
+        this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
+        return;
+      }
+
+      this.unRegisteredSearchBusinessService.searchByName(this.id_salon).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el salón especificado.');
+          } else {
+            this.router.navigate(['/buscador'], {
+              queryParams: { salonName: this.id_salon },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por nombre:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return;
+    }
+
+    this.toastr.error('Por favor complete al menos un campo para realizar la búsqueda.');
   }
 
   slides = [
@@ -104,190 +401,52 @@ export class HomeComponent {
     }
   ];
 
-  ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated();
-    this.searchTermsCategory
-      .pipe(
-        debounceTime(300), // Espera 300 ms después de cada pulsación de tecla
-        distinctUntilChanged(), // Ignora si la siguiente búsqueda es igual a la anterior
-        switchMap((term) => {
-          if (term.length >= 2) {
-            return this.searchBarService.searchCategoryInLive(term);
-          } else {
-            return of([]);
-          }
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.categories = response;
-        },
-        error: (error) => {
-          console.error('Error al buscar categorías:', error);
-        },
-      });
-
-    this.searchTermsServiceOrSalon
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((term) => {
-          if (term.length >= 2) {
-            return forkJoin([
-              this.searchBarService.searchService(term),
-              this.searchBarService.searchSalon(term),
-            ]);
-          } else {
-            return of([[], []]);
-          }
-        })
-      )
-      .subscribe({
-        next: ([services, salons]) => {
-          this.services = services;
-          this.salons = salons;
-        },
-        error: (error) => {
-          console.error('Error al buscar servicios o salones:', error);
-        },
-      });
-
-    this.searchTermsCity
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((term) => {
-          if (term.length >= 2) {
-            return this.searchBarService.searchCity(term);
-          } else {
-            return of([]);
-          }
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.cities = response;
-        },
-        error: (error) => {
-          console.error('Error al buscar ciudades:', error);
-        },
-      });
-  }
-
-  searchCategory(term: string): void {
-    this.searchTermsCategory.next(term);
-  }
-
-  searchServiceOrSalon(term: string): void {
-    this.searchTermsServiceOrSalon.next(term);
-  }
-
-  searchCity(term: string): void {
-    this.searchTermsCity.next(term);
-  }
-
-  onInputCategory(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchCategory(inputElement.value.trim());
-  }
-
-  onInputServiceOrSalon(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchServiceOrSalon(inputElement.value.trim());
-  }
-
-  onSelectCategory(category: string): void {
-    const inputElement = document.getElementById(
-      'category'
-    ) as HTMLInputElement;
-    inputElement.value = category;
-    this.categories = [];
-  }
-
-  onInputCity(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchCity(inputElement.value.trim());
-  }
-
-  onSelectService(service: string): void {
-    const inputElement = document.getElementById(
-      'serviceOrSalon'
-    ) as HTMLInputElement;
-    inputElement.value = service;
-    this.services = [];
-    this.salons = [];
-  }
-
-  onSelectCity(city: any): void {
-    const inputElement = document.getElementById('zone') as HTMLInputElement;
-    inputElement.value = `${city.name} - ${city.zip_code}`;
-    this.id_city = city.id_city; // Captura el ID de la ciudad
-    this.cities = [];
-  }
-
-
-  onSelectIdCity(id_city: any): void {
-    const inputElement = document.getElementById('id_city') as HTMLInputElement;
-    inputElement.value = `${id_city.id_city}`;
-    this.zone = id_city;
-  }
-
-  onSelectSalon(salon: string): void {
-    const inputElement = document.getElementById(
-      'serviceOrSalon'
-    ) as HTMLInputElement;
-    inputElement.value = salon;
-    this.services = [];
-    this.salons = [];
-    this.salonName = salon;
-  }
-
   handleAuthAction(): void {
     if (this.isAuthenticated) {
       this.authService.logout();
       this.isAuthenticated = false;
       this.router.navigate(['/home']);
     } else {
-      this.openLoginModal();
+      this.openLoginModalToBusiness();
     }
   }
 
-  openLoginModal() {
-    this.modalService.open(LoginComponent);
+  onSelectService(service: string): void {
+    this.service = service;
+    this.services = [];
   }
 
-  onSearch() {
-    // Validar que id_city no esté vacío y convertir a cadena de forma segura
-    if (this.id_city && String(this.id_city).trim() !== '') {
-      this.unRegisteredSearchBusiness.searchByCity(this.id_city).subscribe({
-        next: (response) => {
-          this.router.navigate(['/unregistered-search'], { queryParams: { id_city: this.id_city } });
-          console.log('Resultados de la búsqueda por ciudad:', response);
-        },
-        error: (error) => {
-          console.error('Error al realizar la búsqueda por ciudad:', error);
-        },
-      });
-    } else {
-      console.warn('id_city está vacío, no se ejecuta la búsqueda por ciudad.');
-    }
-
-    // Validar que salonName no esté vacío y convertir a cadena de forma segura
-    if (this.salonName && String(this.salonName).trim() !== '') {
-      this.unRegisteredSearchBusiness.searchByName(this.salonName).subscribe({
-        next: (response) => {
-          this.router.navigate(['/unregistered-search'], { queryParams: { name: this.salonName } });
-          console.log('Resultados de la búsqueda por nombre:', response);
-        },
-        error: (error) => {
-          console.error('Error al realizar la búsqueda por nombre:', error);
-        },
-      });
-    } else {
-      console.warn('salonName está vacío, no se ejecuta la búsqueda por nombre.');
-    }
+  onInputService(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchService(inputElement.value.trim());
   }
 
+  searchService(term: string): void {
+    this.searchTermsService.next(term);
+  }
 
+  searchSalon(term: string): void {
+    this.searchTermsSalon.next(term);
+  }
+
+  onInputSalon(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchSalon(inputElement.value.trim());
+  }
+
+  onSelectSalon(salon: any): void {
+    this.salon = salon.id_salon;
+    this.id_salon = this.salon;
+    this.salonName = salon.name;
+    this.salons = [];
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
 
 }

@@ -29,7 +29,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnRegisteredSearchBusinessComponent } from './components/unregistered-search-map-business copy/unregistered-search-map-business.component';
 import { DetailsBusinessComponent } from './components/details-business/details-business.component';
-
+import { NgxGoogleAnalyticsModule } from 'ngx-google-analytics';
+import { ProfileComponent } from './components/profile/profile.component';
+import { FavoriteSalonComponent } from './components/favorite-salon/favorite-salon.component';
 
 
 
@@ -54,10 +56,13 @@ import { DetailsBusinessComponent } from './components/details-business/details-
     RegisteredSearchBusinessComponent,
     UnRegisteredSearchBusinessComponent,
     DetailsBusinessComponent,
+    ProfileComponent,
+    FavoriteSalonComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxGoogleAnalyticsModule.forRoot('G-P1X7XKQGLW'),
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,

@@ -1,159 +1,297 @@
 <app-navbar-fixed></app-navbar-fixed>
-<div class="container-fluid" style="background: rgba(0, 0, 0, .1) url(/assets/img/web/bg-salons/01.jpeg) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%;">
+<div
+  class="container-fluid"
+  style="
+    background: rgba(0, 0, 0, 0.1) url(/assets/img/web/bg-salons/01.jpeg)
+      no-repeat center center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+  "
+>
   <div class="row">
     <div class="col-md-6 bg-white bg-opacity-75 py-5 px-4">
       <h1 class="fw-light text-danger">Reclama Tu Salón</h1>
-      <p class="fw-light text-secondary">¿Tienes un salón de peluquería? Completa este formulario correctamente con tus datos y podrás disfrutar de las ventajas de MisPeluquerias.com</p>
+      <p class="fw-light text-secondary">
+        ¿Tienes un salón de peluquería? Completa este formulario correctamente
+        con tus datos y podrás disfrutar de las ventajas de MisPeluquerias.com
+      </p>
 
-      <form [formGroup]="reclamationForm" (ngSubmit)="onSubmit()">
+      <form (ngSubmit)="addReclamation()" #reclamationForm="ngForm">
         <h4 class="fs-4 fw-light mt-5">Datos del Negocio</h4>
 
         <div class="row">
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="businessName" class="label small fw-light text-danger">Nombre del Negocio</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessName" id="businessName"  required>
-              <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('businessName').invalid && reclamationForm.get('businessName').touched">Campo obligatorio</p>
-              -->
+              <label for="salon_name" class="label small fw-light text-danger"
+                >Nombre del Negocio</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg rounded-0"
+                id="salon_name"
+                name="salon_name"
+                [(ngModel)]="salon_name"
+                required
+              />
+              <div
+                *ngIf="reclamationForm.submitted && !salon_name"
+                class="text-danger"
+              >
+                El nombre del negocio es obligatorio.
+              </div>
             </div>
           </div>
 
           <div class="row">
-            <div class="form-group py-3">
-              <label for="id_provincia" class="label small fw-light text-danger">Provincia</label>
-              <select formControlName="id_province" id="id_provincia" class="form-select form-select-lg rounded-0"  required>
-                <option value="">Seleccione una provincia</option>
-                <!--
-                <option *ngFor="let province of provinces" [value]="province.id_province">{{ province.name }}</option>
-             --> </select> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('id_province').invalid && reclamationForm.get('id_province').touched">Campo obligatorio</p>
-              -->
+            <!-- Select de Provincia -->
+            <div class="col-md-12 form-group py-3">
+              <label for="id_province" class="form-label">Provincia</label>
+              <select
+                class="form-select"
+                id="id_province"
+                name="id_province"
+                [(ngModel)]="id_province"
+                (change)="onProvinceChange($any($event.target).value)"
+                required
+              >
+                <option value="">Seleccione una provincia...</option>
+                <option
+                  *ngFor="let province of provinces"
+                  [value]="province.id_province"
+                >
+                  {{ province.name }}
+                </option>
+              </select>
+              <div
+                *ngIf="reclamationForm.submitted && !id_province"
+                class="text-danger"
+              >
+                La provincia es obligatoria.
+              </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="form-group py-3">
-              <label for="id_city" class="label small fw-light text-danger">Localidad</label>
-              <select formControlName="id_city" id="id_city" class="form-select form-select-lg rounded-0"  required>
-                <option value="">Seleccione una localidad</option>
-                <!--
-                <option *ngFor="let city of cities" [value]="city.id_city">{{ city.name }}</option>
-              --></select><!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('id_city').invalid && reclamationForm.get('id_city').touched">Campo obligatorio</p>
-              -->
+            <!-- Select de Ciudad -->
+            <div class="col-md-12 form-group py-3">
+              <label for="id_city" class="form-label">Ciudad-CP</label>
+              <select
+                class="form-select"
+                id="id_city"
+                name="id_city"
+                [(ngModel)]="id_city"
+                required
+              >
+                <option value="">Seleccione una ciudad...</option>
+                <option *ngFor="let city of cities" [value]="city.id_city">
+                  {{ city.city_name }} - {{ city.zip_code }}
+                </option>
+              </select>
+              <div
+                *ngIf="reclamationForm.submitted && !id_city"
+                class="text-danger"
+              >
+                La ciudad es obligatoria.
+              </div>
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="businessAddress" class="label small fw-light text-danger">Dirección Completa</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="businessAddress" id="businessAddress"  required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('businessAddress').invalid && reclamationForm.get('businessAddress').touched">Campo obligatorio</p>
-              -->
+              <label for="address" class="label small fw-light text-danger">Dirección Completa</label>
+              <input
+                type="text"
+                class="form-control form-control-lg rounded-0"
+                id="address"
+                name="address"
+                [(ngModel)]="userData.address"
+                readonly
+              />
             </div>
           </div>
-
+          
           <div class="col-md-12">
-            <small>* Podrá modificar los datos de su salón una vez que esté verificado</small>
+            <small
+              >* Podrá modificar los datos de su salón una vez que esté
+              verificado</small
+            >
           </div>
 
           <h4 class="fs-4 fw-light mt-5 text-muted">Datos de contacto</h4>
 
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="contactName" class="label small fw-light text-danger">Nombre</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="contactName" id="contactName" required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactName').invalid && reclamationForm.get('contactName').touched">Campo obligatorio</p>
-              -->
+              <label for="name" class="label small fw-light text-danger"
+                >Nombre</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg rounded-0"
+                id="name"
+                name="name"
+                [(ngModel)]="userData.name"
+                readonly
+              />
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="contactLastname" class="label small fw-light text-danger">Apellidos</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="contactLastname" id="contactLastname" required>
-              <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactLastname').invalid && reclamationForm.get('contactLastname').touched">Campo obligatorio</p>
-              -->
+              <label
+                for="lastname"
+                class="label small fw-light text-danger"
+                >Apellidos</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg rounded-0"
+                id="lastname"
+                name="lastname"
+                [(ngModel)]="userData.lastname"
+                readonly
+              />
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group py-3">
-              <label for="contactPhone" class="label small fw-light text-danger">Teléfono</label>
-              <input type="text" maxlength="9" pattern="[0-9]{9}" class="form-control form-control-lg rounded-0" formControlName="contactPhone" id="contactPhone" required><!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactPhone').invalid && reclamationForm.get('contactPhone').touched">Campo obligatorio</p>
-              -->
+              <label for="phone" class="label small fw-light text-danger"
+                >Teléfono</label
+              >
+              <input
+                type="text"
+                maxlength="9"
+                pattern="[0-9]{9}"
+                class="form-control form-control-lg rounded-0"
+                id="phone"
+                name="phone"
+                [(ngModel)]="userData.phone"
+                readonly
+              />
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group py-3">
-              <label for="contactMail" class="label small fw-light text-danger">Correo Electrónico</label>
-              <input type="email" class="form-control form-control-lg rounded-0" formControlName="contactMail" id="contactMail" required>
+              <label for="contactMail" class="label small fw-light text-danger"
+                >Correo Electrónico</label
+              >
+              <input
+                type="email"
+                class="form-control form-control-lg rounded-0"
+                id="contactMail"
+                name="email"
+                [(ngModel)]="userData.email"
+                readonly
+              />
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group py-3">
-              <label for="dni" class="label small fw-light text-danger">DNI</label>
-              <input type="text" class="form-control form-control-lg rounded-0" formControlName="dni" id="dni" required> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('dni').invalid && reclamationForm.get('dni').touched">Campo obligatorio</p>
-              -->
+              <label for="dni" class="label small fw-light text-danger"
+                >DNI</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg rounded-0"
+                id="dni"
+                name="dni"
+                [(ngModel)]="userData.dni"
+                readonly
+              />
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="contactMessagge" class="label small fw-light text-danger">Mensaje</label>
-              <textarea class="form-control form-control-lg rounded-0" formControlName="contactMessagge" id="contactMessagge" rows="5" required style="resize: none;"></textarea> <!--
-              <p class="text-danger fw-bold" *ngIf="reclamationForm.get('contactMessagge').invalid && reclamationForm.get('contactMessagge').touched">Campo obligatorio</p>
-              -->
+              <label for="observation" class="label small fw-light text-danger"
+                >Mensaje</label
+              >
+              <textarea
+                class="form-control form-control-lg rounded-0"
+                id="observation"
+                name="observation"
+                [(ngModel)]="observation"
+                rows="5"
+                required
+                style="resize: none"
+              ></textarea>
             </div>
           </div>
 
           <div class="col-md-12" id="files">
             <div class="form-group py-3">
-              <label for="dni_delante">DNI por delante</label>
-              <input type="file" class="form-control file" formControlName="dni_delante" id="dni_delante" (change)="checkFiles()" required />
+              <label for="dnifront_path">DNI por delante</label>
+              <input type="file" class="form-control file" id="dnifront_path" name="dnifront_path" (change)="onFileSelected($event, 'dniFrontFile')" required>
+              <div *ngIf="reclamationForm.submitted && !dniFrontFile" class="text-danger">
+                El archivo del DNI por delante es obligatorio.
+              </div>
             </div>
 
             <div class="form-group py-3 mb-2">
-              <label for="dni_detras">DNI por detrás</label>
-              <input type="file" class="form-control file" formControlName="dni_detras" id="dni_detras" (change)="checkFiles()" required />
+              <label for="dniback_path">DNI por detrás</label>
+              <input type="file" class="form-control file" id="dniback_path" name="dniback_path" (change)="onFileSelected($event, 'dniBackFile')" required>
+              <div *ngIf="reclamationForm.submitted && !dniBackFile" class="text-danger">
+                El archivo del DNI por detrás es obligatorio.
+              </div>
             </div>
 
             <div class="form-group py-3">
-              <input type="file" class="form-control file" formControlName="files" id="files" multiple (change)="checkFiles()" required />
+              <input type="file" class="form-control file" id="file_path" name="file_path" (change)="onFileSelected($event, 'otherFile')" required>
+              <div *ngIf="reclamationForm.submitted && !otherFile" class="text-danger">
+                El archivo adicional es obligatorio.
+              </div>
+              <div *ngIf="reclamationForm.submitted && fileError" class="text-danger">
+                {{ fileError }}
+              </div>
             </div>
 
             <div class="col-md-12">
-              <p class="mt-1 small">Adjúntanos algún documento que demuestre que eres el propietario (copia del recibo de autónomos, datos de la empresa si es una sociedad, etc.)</p>
-              <p class="mt-1 small text-danger"><strong>Archivos Permitidos: png | jpg | jpeg | pdf</strong></p>
+              <p class="mt-1 small">
+                Adjúntanos algún documento que demuestre que eres el propietario
+                (copia del recibo de autónomos, datos de la empresa si es una
+                sociedad, etc.)
+              </p>
+              <p class="mt-1 small text-danger">
+                <strong>Archivos Permitidos: png | jpg | jpeg | pdf</strong>
+              </p>
             </div>
           </div>
 
           <div class="col-md-12 my-5 d-flex justify-content-between">
             <div class="col-md-6">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" formControlName="terms" id="invalidCheck" required>
-                <label class="form-check-label" for="invalidCheck">
-                  Aceptar <a class="text-danger" href="/terminos-y-condiciones" target="_blank"> Términos y Condiciones</a>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="terms"
+                  name="terms"
+                  [(ngModel)]="terms"
+                  required
+                />
+                <label class="form-check-label" for="terms">
+                  Aceptar
+                  <a
+                    class="text-danger"
+                    href="/terminos-y-condiciones"
+                    target="_blank"
+                  >
+                    Términos y Condiciones</a
+                  >
                 </label>
-                <div class="invalid-feedback">
-                  Debes Aceptar nuestros Términos y Condiciones.
-                </div>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-5">Enviar</button>
+            <button
+              type="submit"
+              class="btn btn-sm btn-danger rounded-pill px-5"
+              [disabled]="!terms || !dniFrontFile || !dniBackFile|| !otherFile"
+            >
+              Enviar
+            </button>
           </div>
         </div>
       </form>
-
-      <div *ngIf="successMessage" class="col-12 alert alert-success text-center mx-auto">{{ successMessage }}</div>
-      <div *ngIf="errorMessage" class="col-12 alert alert-danger text-center mx-auto">{{ errorMessage }}</div>
     </div>
   </div>
 </div>

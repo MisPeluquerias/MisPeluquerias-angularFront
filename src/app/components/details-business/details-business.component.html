@@ -6,7 +6,7 @@
         <!-- Título y dirección -->
         <div class="col-12 mb-3">
           <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mt-3">
-            <h1 class="h3 mb-2">{{ business.name }}</h1>
+            <h1 class=" mb-2"> <b>{{ business.name }}</b></h1>
             <p class="mb-3">{{ business.address }}</p>
           </div>
         </div>
@@ -17,11 +17,24 @@
             <!-- Carrusel con imágenes -->
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-indicators">
-                <button *ngFor="let img of images; let i = index" type="button" [attr.data-bs-target]="'#carouselExampleIndicators'" [attr.data-bs-slide-to]="i" [ngClass]="{'active': i === 0}" aria-current="true" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+                <button
+                  *ngFor="let img of images; let i = index"
+                  type="button"
+                  [attr.data-bs-target]="'#carouselExampleIndicators'"
+                  [attr.data-bs-slide-to]="i"
+                  [ngClass]="{ active: i === 0 }"
+                  aria-current="true"
+                  [attr.aria-label]="'Slide ' + (i + 1)"
+                  class="custom-indicator"
+                ></button>
               </div>
               <div class="carousel-inner">
-                <div *ngFor="let img of images; let i = index" [ngClass]="{'carousel-item': true, 'active': i === 0}">
-                  <img [src]="img.file_url" class="d-block w-100 fixed-image-size" [alt]="img.file_description || 'Imagen del salón'" >
+                <div *ngFor="let img of images; let i = index" [ngClass]="{ 'carousel-item': true, active: i === 0 }">
+                  <img
+                    [src]="img.file_url || '../../../assets/img/web/sello.jpg'"
+                    class="d-block w-100 fixed-image-size img-fluid"
+                    [alt]="img.file_description || 'Imagen del salón'"
+                  />
                 </div>
               </div>
               <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -37,22 +50,35 @@
           <ng-template #noImagesTemplate>
             <!-- Imagen principal del negocio si no hay imágenes cargadas -->
             <div class="no-images">
-              <img [src]="business.image" class="d-block w-100" alt="Imagen principal del salón">
+              <img
+                [src]="business.image"
+                class="d-block w-100 fixed-image-size img-fluid"
+                alt="Imagen principal del salón"
+              />
             </div>
           </ng-template>
 
           <!-- Descripción del negocio -->
-          <h4 class="mt-5">Sobre el salón</h4>
-          <p class="mt-4">
-            {{ business.name }} es un salón ubicado en {{ business.address }}.
-            Consulta su horario y pide tu cita hoy mismo en
-            {{ business.address }}.
-          </p>
+          <h2 class="mt-5">Sobre el salón</h2>
+          <div class="mt-4">
+            <div *ngFor="let description of descriptionSalon">
+              <p *ngIf="description.about_us; else defaultMessage">
+                {{ description.about_us }}
+              </p>
+            </div>
+          </div>
+          <ng-template #defaultMessage>
+            <p class="mt-4">
+              {{ business.name }} es un salón ubicado en {{ business.address }}.
+              Consulta su horario y pide tu cita hoy mismo en
+              {{ business.address }}.
+            </p>
+          </ng-template>
 
           <!-- Servicios -->
           <div class="row d-flex mt-5">
             <div class="col">
-              <h4 class="mb-3">Servicios</h4>
+              <h3 class="mb-3">Servicios</h3>
               <div *ngIf="services.length > 0">
                 <ul class="list-group">
                   <li *ngFor="let service of services" class="list-group-item">
@@ -68,14 +94,21 @@
           </div>
 
           <!-- Opiniones -->
-          <div class="row d-flex mt-5">
-            <div class="col">
-              <h4 class="mb-0">Opiniones</h4>
-            </div>
+          <div class="row d-flex justify-content-end mt-5">
             <div class="col-auto">
-              <button *ngIf="authService.isAuthenticated(); else loginButton" class="btn bg-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#reviewModal" style="color: white">Escribir reseña</button>
+              <button
+                *ngIf="authService.isAuthenticated(); else loginButton"
+                class="btn bg-danger rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#reviewModal"
+                style="color: white"
+              >
+                Escribir reseña
+              </button>
               <ng-template #loginButton>
-                <button class="btn bg-danger rounded-pill" style="color: white" (click)="openLoginModal()">Escribir reseña</button>
+                <button class="btn bg-danger rounded-pill mb-4" style="color: white" (click)="openLoginModal()">
+                  Escribir reseña
+                </button>
               </ng-template>
             </div>
           </div>
@@ -87,14 +120,32 @@
                   <div class="d-flex align-items-center mb-2">
                     <div class="star-rating">
                       <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-                        <i class="star" [class.filled]="star <= review.qualification">&#9733;</i>
+                        <i
+                          class="star"
+                          [class.filled]="star <= review.qualification"
+                          >&#9733;</i
+                        >
                       </ng-container>
                     </div>
                   </div>
                   <p class="mb-0">{{ review.observacion }}</p>
                   <div class="d-flex justify-content-end mt-2">
-                    <button *ngIf="userType !== 'client' && userType !== 'salon'" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editReviewModal" (click)="editReview(review)">Modificar</button>
-                    <button *ngIf="userType !== 'client' && userType !== 'salon'" class="btn btn-danger btn-sm" (click)="deleteReview(review.id_review)">Eliminar</button>
+                    <button
+                      *ngIf="userType !== 'client' && userType !== 'salon'"
+                      class="btn btn-primary btn-sm me-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editReviewModal"
+                      (click)="editReview(review)"
+                    >
+                      Modificar
+                    </button>
+                    <button
+                      *ngIf="userType !== 'client' && userType !== 'salon'"
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteReview(review.id_review)"
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 </div>
               </li>
@@ -105,14 +156,21 @@
           </div>
 
           <!-- Preguntas Frecuentes -->
-          <div class="row d-flex align-items-center mt-5">
-            <div class="col">
-              <h4 class="mb-3">Preguntas Frecuentes</h4>
-            </div>
+          <div class="row d-flex justify-content-end align-items-center mt-5">
             <div class="col-auto">
-              <button *ngIf="authService.isAuthenticated(); else loginButtonFaq" class="btn bg-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#questionModal" style="color: white">Formular pregunta</button>
+              <button
+                *ngIf="authService.isAuthenticated(); else loginButtonFaq"
+                class="btn bg-danger rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#questionModal"
+                style="color: white"
+              >
+                Formular pregunta
+              </button>
               <ng-template #loginButtonFaq>
-                <button class="btn bg-danger rounded-pill" style="color: white" (click)="openLoginModal()">Formular pregunta</button>
+                <button class="btn bg-danger rounded-pill mb-4" style="color: white" (click)="openLoginModal()">
+                  Formular pregunta
+                </button>
               </ng-template>
             </div>
           </div>
@@ -131,8 +189,22 @@
                       <span> {{ faq.answer }}</span>
                     </div>
                     <div class="d-flex justify-content-end mt-2">
-                      <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editQuestionModal" (click)="editQuestion(faq)" *ngIf="userType !== 'client' && userType !== 'salon'">Responder</button>
-                      <button class="btn btn-danger btn-sm" *ngIf="userType !== 'client' && userType !== 'salon'" (click)="deleteQuestion(faq.id_faq)">Eliminar</button>
+                      <button
+                        class="btn btn-primary btn-sm me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editQuestionModal"
+                        (click)="editQuestion(faq)"
+                        *ngIf="userType !== 'client' && userType !== 'salon'"
+                      >
+                        Responder
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        *ngIf="userType !== 'client' && userType !== 'salon'"
+                        (click)="deleteQuestion(faq.id_faq)"
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </li>
                 </ul>
@@ -146,23 +218,35 @@
 
         <!-- Columna de información secundaria -->
         <div class="col-lg-4 col-md-5 border p-3 rounded">
-          <a class="btn btn-lg btn-danger rounded-pill btn-custom me-5 w-100 mb-3" href="/reclamation">
-            <i class="las la-hand-paper"></i> Reclamalo ahora
-          </a>
+          <div class="d-flex justify-content-end">
+            <ng-container *ngIf="authService.isAuthenticated(); else loginToClaim">
+              <a class="btn btn-lg btn-danger rounded-pill btn-custom mb-3" routerLink="/reclamation">
+                <i class="las la-hand-paper"></i> Reclamalo ahora
+              </a>
+            </ng-container>
+            <ng-template #loginToClaim>
+              <button class="btn btn-danger rounded-pill btn-custom mb-3" (click)="openLoginModal()">
+                <i class="las la-hand-paper"></i> Reclamalo ahora
+              </button>
+            </ng-template>
+          </div>
+
           <div class="d-flex align-items-center mb-3">
             <span><i class="las la-phone"></i> {{ business.phone }}</span>
             <a href="tel:{{ business.phone }}" class="btn btn-outline-secondary ms-auto">Llamar</a>
           </div>
+
           <div class="mb-3">
             <div id="map" class="w-100" style="height: 335px; border: 0.1px solid #000; border-radius: 12px;"></div>
           </div>
+
           <div class="horarios mb-5">
             <div *ngFor="let hour of business.hours_old.split('; ')" class="horario-item">
-              <div [ngClass]="{'current-day': hour.split(', ')[0] === currentDay}" class="dia">
+              <div [ngClass]="{ 'current-day': hour.split(', ')[0] === currentDay }" class="dia text-responsive">
                 {{ hour.split(", ")[0] }}
               </div>
               <div class="horas">
-                <p *ngFor="let time of hour.split(', ').slice(1)">{{ time }}</p>
+                <p class="text-responsive" *ngFor="let time of hour.split(', ').slice(1)">{{ time }}</p>
               </div>
             </div>
           </div>

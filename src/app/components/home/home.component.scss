@@ -1,10 +1,10 @@
-*{
+* {
   box-sizing: border-box;
-
 }
-.search-bar{
+
+.search-bar {
   position: sticky;
-  top:-78px;
+  top: -78px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -15,27 +15,30 @@
 
 .custom-card-height {
   height: 250px;
+
 }
 
 .custom-img-height {
-  height: 150px;
+  height: 250px;
   object-fit: cover;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-li,a
-{
+
+.custom-img-height:hover {
+  transform: scale(1.05);
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+li, a {
   text-decoration: none;
   text-align: left;
   cursor: pointer;
 }
+
 .card {
   margin: 10px;
-
-}
-
-
-.custom-img-height {
-  height: 150px;
-  object-fit: cover;
 }
 
 .carousel-inner {
@@ -56,6 +59,7 @@ li,a
 .carousel-control-prev, .carousel-control-next {
   width: 5%;
 }
+
 .separator-line {
   margin: 0 auto;
   width: 55%;
@@ -63,13 +67,16 @@ li,a
   background-color: #ccc; /* Color de la línea */
   margin: 20px 0; /* Margen superior e inferior de la línea */
 }
+
 .card-img-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
 }
+
 .rating {
   font-size: 1.5rem;
 }
+
 .border-bottom-only {
   border: none;
   border-bottom: 2px solid #000;
@@ -79,33 +86,186 @@ li,a
 
 app-search-bar {
   position: absolute;
-  top: 0; /* Posiciona el elemento en la parte superior del contenedor */
-  left: 0; /* Posiciona el elemento a la izquierda */
-  right: 0; /* Extiende el elemento hasta el borde derecho del contenedor */
+  top: 0;
+  left: 0;
+  right: 0;
 }
+
+
+
+.results-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 300px; /* Ajusta según sea necesario */
+  overflow-y: auto;
+  z-index: 1100; /* Asegúrate de que esté encima de otros elementos */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+}
+
+.results-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.results-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.results-list li:hover {
+  background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
+}
+
+.results-list li svg {
+  margin-right: 8px; /* Espacio entre el icono y el texto */
+}
+.sticky{
+  position: sticky;
+  top:-200px;
+  z-index: 10;
+  margin-top: 0px;
+}
+
 .container {
-  position: relative; /* Asegúrate de que el contenedor se ajuste */
- margin-top: 27rem;
+  position: relative;
+  margin-top: -1rem;
+}
+
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+responsive-text{
+  font-size: 0.5rem;
 }
 
 @media (max-width: 576px) {
+  .d-flex {
+    flex-direction: row !important;
+  }
+.video-background{
+  height: 370px !important;
+}
+
+  .btnLogin{
+    margin-top: -30px;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  .d-flex img {
+    width: auto ;
+    max-width: 200px; /* Ajustar el tamaño del logo */
+  }
+  h4{
+    font-size: 1rem;
+  }
+  p{
+    font-size: 1rem;
+  }
+
+li,a{
+  font-size: 1rem;
+}
+.btn-small {
+  font-size: 0.75rem !important; /* Tamaño de fuente más pequeño */
+  padding: 0.25rem 0.5rem !important; /* Reducir el padding */
+  line-height: 1.2 !important; /* Ajustar la altura de línea */
+}
+
+  .btnLogin i {
+    font-size: 0.75rem;
+  }
+
   .container {
-    margin-top: 21rem; /* Ajusta este valor según tus necesidades */
+    margin-top: -4rem;
+  }
+
+  .sticky {
+    margin: 0;
+    padding: 0;
+    top: -150px; /* Ajuste para que el elemento sticky funcione correctamente */
+    margin-top: 0px;
+
+  }
+
+  nav,section,h1{
+    font-size: 1.4rem;
+  }
+
+
+
+  p{
+    font-size: 0.5rem;
+  }
+
+
+  .h1{
+    margin-top: -20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .card-search {
+    width: 100%; /* Aumenta el ancho a todo el disponible */
+    max-width: 100%; /* Asegura que ocupe todo el ancho en pantallas pequeñas */
+    margin: 0 auto; /* Centra el buscador horizontalmente */
+    margin-top: -21px;
+  }
+
+  /* Reducir el alto del contenedor del buscador */
+  .card-search .card-body {
+    padding: 0.5rem 1rem; /* Reduce el padding interno para hacer el contenedor más pequeño */
+  }
+
+  /* Ajustar inputs del buscador */
+  .card-search .form-control-lg {
+    height: 2rem; /* Reduce la altura de los inputs */
+    font-size: 0.875rem; /* Ajusta el tamaño de la fuente */
+    padding: 0.25rem 0.5rem; /* Reduce el padding interno */
+  }
+
+  /* Ajustar el botón de búsqueda */
+  .card-search .btn {
+    height: 2.5rem; /* Reduce la altura del botón */
+    font-size: 0.875rem; /* Ajusta el tamaño de la fuente */
+    padding: 0.25rem 1rem; /* Ajusta el padding interno */
+  }
+
+  .tResponsive{
+    visibility: hidden;
+  }
+
+  .custom-card-height {
+    height: 150px; /* Reduce la altura de las tarjetas en pantallas pequeñas */
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-img-height {
+    height: 150px; /* Reduce la altura de las imágenes en pantallas pequeñas */
+    object-fit: cover; /* Asegura que la imagen se ajuste al contenedor */
+  }
+
+  h2{
+    font-size: 1rem;
   }
 }
+
+
+
 
 /* Margen superior para pantallas entre 576px y 1400px */
-@media (min-width: 577px) and (max-width: 1400px) {
+@media (min-width: 576px) and (max-width: 1400px) {
   .container {
-    margin-top: 30rem; /* Ajusta este valor según tus necesidades */
+    margin-top: 21rem;
   }
+
+
 }
-
-
-
-
-
-
-
-
-

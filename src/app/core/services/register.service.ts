@@ -33,8 +33,17 @@ export class RegisterService {
     });
   }
 
-
   registerUser(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/register`, data);
+  }
+
+  getProvinces(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/register/getProvinces`);
+  }
+
+  getCitiesByProvince(id_province: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/register/getCitiesByProvince`, {
+      params: { id_province: id_province.toString() }
+    });
   }
 }

@@ -12,7 +12,7 @@ export class ContactService {  // Asegúrate de que el nombre de la clase esté 
 
   constructor(private http: HttpClient) {}
 
-  sendContact(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/contact`, data);
+  addContact(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/contact/newContact`, data);
   }
 }

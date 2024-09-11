@@ -41,6 +41,9 @@
                     id="nameMessageUser"
                     required
                   />
+                  <div *ngIf="contactForm.get('name')?.invalid && (contactForm.get('name')?.dirty || contactForm.get('name')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('name')?.errors?.['required']">El nombre es obligatorio.</small>
+                  </div>
                 </div>
               </div>
 
@@ -59,6 +62,10 @@
                     maxlength="9"
                     required
                   />
+                  <div *ngIf="contactForm.get('phone')?.invalid && (contactForm.get('phone')?.dirty || contactForm.get('phone')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('phone')?.errors?.['pattern']">Debe ser un número de teléfono válido (9 dígitos).</small>
+                    <small *ngIf="contactForm.get('phone')?.errors?.['required']">El teléfono es obligatorio.</small>
+                  </div>
                 </div>
               </div>
 
@@ -75,6 +82,10 @@
                     id="mailMessageUser"
                     required
                   />
+                  <div *ngIf="contactForm.get('email')?.invalid && (contactForm.get('email')?.dirty || contactForm.get('email')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</small>
+                    <small *ngIf="contactForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</small>
+                  </div>
                 </div>
               </div>
 
@@ -93,6 +104,10 @@
                     required
                     style="resize: none"
                   ></textarea>
+                  <div *ngIf="contactForm.get('msg')?.invalid && (contactForm.get('msg')?.dirty || contactForm.get('msg')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('msg')?.errors?.['required']">El mensaje es obligatorio.</small>
+                    <small *ngIf="contactForm.get('msg')?.errors?.['maxlength']">El mensaje no puede exceder los 1000 caracteres.</small>
+                  </div>
                 </div>
               </div>
 
@@ -116,8 +131,8 @@
                       Términos y Condiciones</a
                     >
                   </label>
-                  <div class="invalid-feedback">
-                    Debes Aceptar nuestros Términos y Condiciones.
+                  <div *ngIf="contactForm.get('term_cond')?.invalid && contactForm.get('term_cond')?.touched" class="text-danger">
+                    <small>Debes aceptar nuestros Términos y Condiciones.</small>
                   </div>
                 </div>
                 <button

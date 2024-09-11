@@ -36,53 +36,22 @@ export class RegisterComponent implements OnInit {
       birth_date: [''],
       phone: ['', Validators.pattern(/^\d{9}$/)],
       email: ['', [Validators.required, Validators.email]],
-      dni: [''],
-      id_province: [53], // Valor predeterminado
-      id_city: [65549],  // Valor predeterminado
-      address: [''],
+      dni: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{8}[A-Za-z]$/), // Expresión regular para un DNI español
+        ],
+      ],
+      id_province: ['', Validators.required],
+      id_city: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
 
   ngOnInit(): void {
-    this.searchTermsCity.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(term => {
-        if (term.length >= 3) {
-          return this.registerService.chargeCity(term);
-        } else {
-          return of([]);
-        }
-      })
-    ).subscribe({
-      next: (response) => {
-        this.cities = response;
-      },
-      error: (error) => {
-        console.error('Error al buscar ciudades:', error);
-      }
-    });
-
-    this.searchTermsProvince.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(term => {
-        if (term.length >= 3) {
-          return this.registerService.chargeProvince(term);
-        } else {
-          return of([]);
-        }
-      })
-    ).subscribe({
-      next: (response) => {
-        this.provinces = response;
-      },
-      error: (error) => {
-        console.error('Error al buscar provincias:', error);
-      }
-    });
+    this.loadProvinces();
   }
 
   passwordMatchValidator(formGroup: FormGroup) {
@@ -115,7 +84,6 @@ export class RegisterComponent implements OnInit {
           // mostrar un mensaje de éxito, redirigir al usuario, etc.
         },
         error => {
-          console.error('Error al registrar usuario:', error);
           console.error('Error al registrar usuario:', error);
           this.errorMessage = error.error.message || 'Error al registrar usuario';
           // Manejar el error, por ejemplo:
@@ -159,4 +127,30 @@ export class RegisterComponent implements OnInit {
     this.registerForm.patchValue({ id_province: province.id_province });
     this.provinces = [];
   }
+
+  loadProvinces(): void {
+    this.registerService.getProvinces().subscribe(
+      (response: any) => {
+        this.provinces = response.data;
+      },
+      (error) => {
+        console.error('Error fetching provinces:', error);
+      }
+    );
+  }
+
+
+  onProvinceChange(provinceId: number): void {
+    ;  // Resetea el valor de la ciudad cuando cambia la provincia
+    this.registerService.getCitiesByProvince(provinceId).subscribe(
+      (response: any) => {
+        this.cities = response.data;
+      },
+      (error) => {
+        console.error('Error fetching cities:', error);
+      }
+    );
+  }
+
+
 }

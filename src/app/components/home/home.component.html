@@ -1,63 +1,171 @@
-<app-search-bar></app-search-bar>
-<div class="container text-center">
-  <div class="row bg-light">
-    <div class="col-12">
+<nav class="sticky">
+  <div class="container text-center position-relative z-1 text-white mt-2">
+    <div class="mt-n5">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <img
+          src="../../../../assets/img/web/logo-mis-peluquerias.svg"
+          width="450"
+          class="img-fluid mb-4 mb-md-0"
+          alt="Log mis Peluquerias"
+        />
+        <a
+          class=" btn bg-danger text-white rounded-pill btnLogin responsive-text"
+          type="button"
+          (click)="handleAuthAction()"
+        >
+          <i class="las la-user fs-6"></i> <span>{{ isAuthenticated ? 'Salir' : 'Login' }}</span>
+        </a>
+      </div>
 
-      <h1 class="h1 text-center text-dark mt-5 mb-5 custom-padding-top">Categorías de Salones de Belleza</h1>
+      <section class="mb-4">
+        <h1 class="fw-bold display-6">
+          Busca y encuentra el mejor salón de tu ciudad
+        </h1>
+        <p class="lead fw-bold tResponsive">
+          Somos el mayor directorio de salones de peluquería y belleza en español
+        </p>
+      </section>
+
+      <section id="card-search-section" class="d-flex justify-content-center">
+        <div class="card card-search shadow mb-4 w-100 w-md-75 w-lg-50">
+          <div class="card-body">
+            <div class="row g-2">
+              <!-- Campo Servicio -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
+                  <input
+                    type="text"
+                    id="serviceInput"
+                    class="form-control form-control-lg border-bottom-only"
+                    placeholder="Buscar servicios"
+                    (input)="onInputService($event)"
+                    [(ngModel)]="service"
+                  />
+                  <div *ngIf="services.length > 0" class="results-list">
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
+                        <i class="la la-scissors"></i> {{ service.name }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campo Salón -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
+                  <input
+                    type="text"
+                    id="salonInput"
+                    class="form-control form-control-lg border-bottom-only"
+                    placeholder="Buscar salones"
+                    (input)="onInputSalon($event)"
+                    [(ngModel)]="salonName"
+                  />
+                  <div *ngIf="salons.length > 0" class="results-list">
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon)">
+                        <i class="la la-home"></i> {{ salon.name }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campo Ciudad o C.P. -->
+              <div class="col-md-3">
+                <div class="input-container" style="position: relative;">
+                  <input
+                    type="text"
+                    id="zoneInput"
+                    class="form-control form-control-lg border-bottom-only"
+                    placeholder="¿Dónde? Ciudad o C.P."
+                    (input)="onInputCity($event)"
+                    [(ngModel)]="zone"
+                  />
+                  <div *ngIf="cities.length > 0" class="results-list">
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
+                        <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- Botón Buscar -->
+              <div class="col-md-3 d-flex align-items-center justify-content-center">
+                <button
+                  class="btn btn-lg btn-danger rounded-pill"
+                  type="submit"
+                  (click)="onSearch()"
+                >
+                  <i class="las la-search"></i> Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <p class="tResponsive">
+      ¿Eres una peluquería y te gustaría aparecer aquí?
+      <a routerLink="/contacto" class="text-white">Contacta con nosotros</a> y daremos de alta tu salón gratis
+    </p>
+  </div>
+  </nav>
+  <body>
+      <div class="video-background position-absolute top-0 start-0 w-100" style="height: 335px;">
+        <video [autoplay]="true" [muted]="true" [loop]="true" playsinline class="w-100 h-100" style="object-fit: cover;">
+          <source src="../../../../assets/video/nav_video.webm" type="video/webm">
+        </video>
+      </div>
+    <div class="container text-center">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="h1 text-center text-dark mt-5 mb-4 custom-padding-top">Categorías de Salones de Belleza</h2>
     </div>
     <!-- Fila para las dos primeras imágenes -->
     <div class="row justify-content-center">
-      <div class="col-12 col-md-6 mb-4">
-        <div class="card custom-card-height">
-          <img src="./assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias" />
-          <div class="card-body">
-            <h2 class="h3 card-title">Peluquerias</h2>
-          </div>
+      <div class="col-6 col-md-6 mb-4">
+        <div class="card custom-card-height"  stt (click)="openModal('Peluquería')">
+          <img src="../../../assets/img/web/Peluquerías.webp" class="card-img-top img-fluid custom-img-height" alt="Peluquerias"  />
         </div>
+        <h2 class="h3 card-title">Peluquerías</h2>
       </div>
-      <div class="col-12 col-md-6 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias" />
-          <div class="card-body">
-            <h2 class="h3 card-title">Barberias</h2>
-          </div>
+      <div class="col-6 col-md-6 mb-4">
+        <div class="card custom-card-height" (click)="openModal('Barbería')">
+          <img src="../../../assets/img/web/Barberías.webp" class="card-img-top img-fluid custom-img-height" alt="Barberias"  />
         </div>
+        <h2 class="h3 card-title">Barberías</h2>
       </div>
     </div>
 
     <!-- Fila para las cuatro imágenes siguientes -->
     <div class="row justify-content-center">
-      <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Academias</h2>
-          </div>
+      <div class="col-6 col-sm-6 col-md-3 mb-4">
+        <div class="card custom-card-height2" (click)="openModal('Academia')">
+          <img src="../../../assets/img/web/Academias_de_Peluquería.webp" class="card-img-top img-fluid custom-img-height" alt="Academias" />
         </div>
+        <h2 class="h4 card-title text-center mt-2">Academias</h2>
       </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Depilación láser</h2>
-          </div>
+      <div class="col-6 col-sm-6 col-md-3 mb-4">
+        <div class="card custom-card-height2" (click)="openModal('Depilación láser')">
+          <img src="../../../assets/img/web/Depilación_Láser.webp" class="card-img-top img-fluid custom-img-height" alt="Depilación láser" />
         </div>
+        <h2 class="h4 card-title">Depilación láser</h2>
       </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Estética</h2>
-          </div>
+      <div class="col-6 col-sm-6 col-md-3 mb-4">
+        <div class="card custom-card-height2" (click)="openModal('Estética')">
+          <img src="../../../assets/img/web/Estéticas.webp" class="card-img-top img-fluid custom-img-height" alt="Estética" />
         </div>
+        <h2 class="h4 card-title">Estética</h2>
       </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card custom-card-height">
-          <img src="../../../assets/img/web/categoria-corte-cabello.webp" class="card-img-top img-fluid custom-img-height" alt="Salón de manicura y pedicura" />
-          <div class="card-body">
-            <h2 class="h4 card-title">Salón de manicura y pedicura</h2>
-          </div>
+      <div class="col-6 col-sm-6 col-md-3 mb-4">
+        <div class="card custom-card-height2" (click)="openModal('Manicura y pedicura')">
+          <img src="../../../assets/img/web/Manicura_y_Pedicura.webp" class="card-img-top img-fluid custom-img-height" alt="Manicura y pedicura" />
         </div>
+        <h2 class="h4 card-title">Manicura y pedicura</h2>
       </div>
     </div>
     <div class="d-flex justify-content-center mt-3">
@@ -70,16 +178,30 @@
         <small>Descubre nuestra selección de salones de peluquería y belleza.</small>
       </div>
       <div class="container mt-5">
-        <p-carousel [value]="slides" [numVisible]="4" [numScroll]="1" [circular]="true" [autoplayInterval]="0">
+        <p-carousel [value]="slides" [numVisible]="4" [numScroll]="1" [circular]="true" [autoplayInterval]="0" [responsiveOptions]="[
+    {
+      breakpoint: '1024px',
+      numVisible: 3,
+      numScroll: 1
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 2,
+      numScroll: 1
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+      numScroll: 1
+    }
+  ]">
           <ng-template pTemplate="item" let-slide>
             <div class="slide">
-              <div class="card">
+              <div class="card ustom-card-height">
                 <img [src]="slide.img" class="card-img-top custom-img-height" [alt]="slide.title">
-                <div class="card-body">
-                  <h2 class="card-title">{{slide.title}}</h2>
-                  <p class="card-text">{{slide.desc}}</p>
-                </div>
               </div>
+              <h5 class="card-title" style="font-size: 1.2rem;">{{slide.title}}</h5>
+                <p class="card-text" style="font-size: 1rem;">{{slide.desc}}</p>
             </div>
           </ng-template>
         </p-carousel>
@@ -95,9 +217,16 @@
                 <div class="row g-0">
                   <div class="col-xxl-8 col-xl-8 col-lg-6 col-md-12 d-flex align-items-center bg-grey-light">
                     <div class="card-body p-4">
-                      <h4 class="card-title fw-bold">¿Tienes un negocio de peluquería y belleza?</h4>
-                      <p class="card-text small">AHORA PUEDES DARLE VISIBILIDAD ONLINE</p>
-                      <a href="/reclamation" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">SUBE TU SALON, ES GRATIS</a>
+                      <h4 class="card-title fw-bold" style="font-size: 1.2rem;">¿Tienes un negocio de peluquería y belleza?</h4>
+                      <p class="card-text small" style="font-size: 1rem;">Ahora puedes darle visibilidad online</p>
+                      <a *ngIf="isAuthenticated; else loginLink" routerLink="/reclamation" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">
+                        Sube tu salón, es gratis
+                      </a>
+                      <ng-template #loginLink>
+                        <a (click)="openLoginModalToReclamation()" class="btn btn-sm btn-danger btn-text-small rounded-pill hvr-grow">
+                          Sube tu salón, es gratis
+                        </a>
+                      </ng-template>
                     </div>
                   </div>
                   <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 position-relative">
@@ -115,64 +244,75 @@
       <div class="d-flex justify-content-center">
         <div class="separator-line mt-3"></div>
       </div>
-      <h2 class="fw-bold text-center mt-5">Búsqueda por Provincias</h2>
+      <h3 class="fw-bold text-center mt-5 h1">Búsqueda por Provincias</h3>
       <div class="container my-1 align-items-center mb-5">
         <div class="row mt-4 justify-content-center text-center">
-          <div class="col-12 col-md-6 col-lg-3 mb-2">
+          <div class="col-6 col-lg-3 mb-2 d-flex justify-content-center">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('alava')">Álava</a></li>
+              <li><a class="text-black" (click)="searchByCityName('A Coruña')">A Coruña</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Alicante')">Alicante</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Albacete')">Abacete</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Almeria')">Almería</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Alava')">Alava</a></li>
               <li><a class="text-black" (click)="searchByCityName('Asturias')">Asturias</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Avila')">Ávila</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Badajoz')">Badajoz</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Islas Baleares')">Islas Baleares</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Barcelona')">Barcelona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Bizkaia')">Bizkaia</a></li>
               <li><a class="text-black" (click)="searchByCityName('Burgos')">Burgos</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Castellon')">Castellón</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Ceuta')">Ceuta</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Cuenca')">Cuenca</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Guipuzcoa')">Guipúzcoa</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Jaen')">Jaén</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Las Palmas')">Las Palmas</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Leon')">León</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Malaga')">Málaga</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Ourense')">Ourense</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Santa Cruz de Tenerife</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Tarragona')">Tarragona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Valladolid')">Valladolid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Caceres')">Cáceres</a></li>
             </ul>
           </div>
-          <div class="col-12 col-md-6 col-lg-3 mb-2">
+          <div class="col-6 col-lg-3 mb-2 d-flex justify-content-center">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('Albacete')">Albacete</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Avila')">Ávila</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Caceres')">Cáceres</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Cadiz')">Cádiz</a></li>
               <li><a class="text-black" (click)="searchByCityName('Cantabria')">Cantabria</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Castellon')">Castellon</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Ceuta')">Ceuta</a></li>
               <li><a class="text-black" (click)="searchByCityName('Ciudad Real')">Ciudad Real</a></li>
               <li><a class="text-black" (click)="searchByCityName('Cordoba')">Córdoba</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Cuenca')">Cuenca</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Girona')">Girona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Granada')">Granada</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Guadalajara')">Guadalajara</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Gipuzkua')">Guipúzcoa</a></li>
               <li><a class="text-black" (click)="searchByCityName('Huelva')">Huelva</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Lugo')">Lugo</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Melilla')">Melilla</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Salamanca')">Salamanca</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Segovia')">Segovia</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Soria')">Soria</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Teruel')">Teruel</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Toledo')">Toledo</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Zamora')">Zamora</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Huesca')">Huesca</a></li>
             </ul>
           </div>
-          <div class="col-12 col-md-6 col-lg-3 mb-2">
+          <div class="col-6 col-lg-3 mb-2 d-flex justify-content-center">
             <ul class="list-unstyled">
-              <li><a class="text-black" (click)="searchByCityName('Alicante')">Alicante</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Almería')">Almería</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Barcelona')">Barcelona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Badajoz')">Badajoz</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Huesca')">Huesca</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Jaen')">Jaén</a></li>
               <li><a class="text-black" (click)="searchByCityName('La Rioja')">La Rioja</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Las Palmas')">Las Palmas</a></li>
+              <li><a class="text-black" (click)="searchByCityName('León')">León</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Lleida')">Lleida</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Lugo')">Lugo</a></li>
               <li><a class="text-black" (click)="searchByCityName('Madrid')">Madrid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Malaga')">Málaga</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Melilla')">Melilla</a></li>
               <li><a class="text-black" (click)="searchByCityName('Murcia')">Murcia</a></li>
               <li><a class="text-black" (click)="searchByCityName('Navarra')">Navarra</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Pontevedra')">Pontevedra</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Ourense')">Ourense</a></li>
               <li><a class="text-black" (click)="searchByCityName('Palencia')">Palencia</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Girona')">Girona</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Lleida')">Lleida</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Santa Cruz de Tenerife</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-3 mb-2 d-flex justify-content-center">
+            <ul class="list-unstyled">
+              <li><a class="text-black" (click)="searchByCityName('Pontevedra')">Pontevedra</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Salamanca')">Salamanca</a></li>
               <li><a class="text-black" (click)="searchByCityName('Segovia')">Segovia</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Sevilla')">Sevilla</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Soria')">Soria</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Santa Cruz de Tenerife')">Tenerife</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Tarragona')">Tarragona</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Teruel')">Teruel</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Toledo')">Toledo</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Valencia')">Valencia</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Valladolid')">Valladolid</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Zamora')">Zamora</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Zaragoza')">Zaragoza</a></li>
             </ul>
           </div>
         </div>
@@ -180,5 +320,54 @@
     </div>
   </div>
 </div>
+</body>
 <app-footer></app-footer>
+
+<!--Modal para buscar por categorias-->
+<div id="searchCategoriesModal" #searchCategoriesModal class="modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Búsqueda por categoría: {{ selectedCategory }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        <div class="col-12 mt-5">
+          <div class="input-container" style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <input
+              type="text"
+              id="zoneInput"
+              style="outline: none; box-shadow: none;"
+              class="form-control form-control-lg w-100 border-bottom-only text-center"
+              placeholder="¿Dónde? Ciudad o C.P."
+              (input)="onInputCityModal($event)"
+              [(ngModel)]="zoneModal"
+            />
+            <div *ngIf="citiesModal.length > 0" class="results-list " style="display: flex; justify-content: center;">
+              <ul class="list-group" style="width: auto; min-width: 200px; text-align: center;">
+                <li
+                  class="list-group-item"
+                  *ngFor="let city of citiesModal"
+                  (click)="onSelectCityModal(city)"
+                  style="cursor: pointer;"
+                >
+                  <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="onSearchModal()">Buscar</button>
+      </div>
+    </div>
+  </div>
+</div>
 

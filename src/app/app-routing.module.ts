@@ -14,7 +14,8 @@ import { RegisteredSearchBusinessComponent } from './components/registered-searc
 import { AuthGuard } from './core/guards/auth.guard';
 import { UnRegisteredSearchBusinessComponent } from './components/unregistered-search-map-business copy/unregistered-search-map-business.component';
 import { DetailsBusinessComponent } from './components/details-business/details-business.component';
-
+import { ProfileComponent } from './components/profile/profile.component';
+import { FavoriteSalonComponent } from './components/favorite-salon/favorite-salon.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -72,19 +73,29 @@ const routes: Routes = [
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
   {
-    path: 'business',
+    path: 'centros',
     component: RegisteredSearchBusinessComponent, canActivate: [AuthGuard],
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
 
   {
-    path: 'unregistered-search',
+    path: 'buscador',
     component: UnRegisteredSearchBusinessComponent,
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
   {
-    path: 'details-business/:id',
+    path: 'centro/:salonSlug/:id',
     component: DetailsBusinessComponent,
+    title: 'Mis Peluquerias | Encuentra tu salón perfecto',
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    title: 'Mis Peluquerias | Encuentra tu salón perfecto',
+  },
+  {
+    path: 'favorite',
+    component: FavoriteSalonComponent,
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
 
@@ -94,7 +105,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' })
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

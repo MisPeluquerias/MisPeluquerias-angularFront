@@ -7,10 +7,10 @@
             <a routerLink="/"><img src="assets/img/web/logo-mis-peluquerias.svg" class="img-fluid w-75"/></a>
             <ul class="d-flex justify-content-center rrss mt-3 list-unstyled">
               <li class="mx-2">
-                <a class="colorRed" href="https://facebook.com/mispeluquerias/"><i class="lab la-facebook-f" style="font-size: 2.0rem; margin-top: 8px;"></i></a>
+              <a class="colorRed" href="https://facebook.com/mispeluquerias/"><img src="../../../../assets/img/web/icons8-facebook-48.png"></a>
               </li>
               <li class="mx-2">
-                <a class="colorRed" href="https://www.instagram.com/mis_peluquerias"><i class="lab la-instagram" style="font-size: 2.7rem;"></i></a>
+                <a class="colorRed" href="https://www.instagram.com/mis_peluquerias"><img src="../../../../assets/img/web/icons8-instagram-48.png"></a>
               </li>
             </ul>
           </div>
@@ -19,10 +19,10 @@
             <h6 class="c-red fw-bold w-100">Contacto</h6>
             <ul class="list-group list-group-flush">
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/contacto" class="text-decoration-none text-secondary">Contacto</a>
+                <a routerLink="/contacto" class="text-decoration-none text-white">Contacto</a>
               </li>
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/preguntas-frecuentes" class="text-decoration-none text-secondary">Preguntas Frecuentes</a>
+                <a routerLink="/preguntas-frecuentes" class="text-decoration-none text-white">Preguntas Frecuentes</a>
               </li>
             </ul>
           </div>
@@ -31,16 +31,16 @@
             <h6 class="c-red fw-bold w-100">Notas Legales</h6>
             <ul class="list-group list-group-flush">
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/terminos-y-condiciones" class="text-decoration-none text-secondary">Términos y Condiciones</a>
+                <a routerLink="/terminos-y-condiciones" class="text-decoration-none text-white">Términos y Condiciones</a>
               </li>
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/politica-de-privacidad" class="text-decoration-none text-secondary">Política de Privacidad</a>
+                <a routerLink="/politica-de-privacidad" class="text-decoration-none text-white">Política de Privacidad</a>
               </li>
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/aviso-legal" class="text-decoration-none text-secondary">Aviso Legal</a>
+                <a routerLink="/aviso-legal" class="text-decoration-none text-white">Aviso Legal</a>
               </li>
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/cookies" class="text-decoration-none text-secondary">Política de Cookies</a>
+                <a routerLink="/cookies" class="text-decoration-none text-white">Política de Cookies</a>
               </li>
             </ul>
           </div>
@@ -49,16 +49,20 @@
             <h6 class="c-red fw-bold w-100">Profesionales</h6>
             <ul class="list-group list-group-flush">
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/reclamation" class="text-decoration-none text-secondary">Registra o verifica tu negocio</a>
+                <a  *ngIf="isAuthenticated; else loginLink" routerLink="/reclamation"  class="text-decoration-none text-white">Registra o verifica tu negocio</a>
+                <ng-template #loginLink>
+                  <a (click)="openLoginModal()" class="text-decoration-none text-white" style="cursor: pointer;">Registra o verifica tu negocio
+                  </a>
+                </ng-template>
               </li>
               <li class="list-group-item bg-transparent border-0">
-                <a routerLink="/profesionales" class="text-decoration-none text-secondary">Contacto profesionales</a>
+                <a routerLink="/profesionales" class="text-decoration-none text-white">Contacto profesionales</a>
               </li>
             </ul>
           </div>
 
           <div class="col-12 text-center my-3">
-            <span class="small text-secondary">
+            <span class="small text-white">
               © {{ currentYear }} Mis Peluquerías ·
               <a class="fw-bold colorRed text-decoration-underline" routerLink="/politica-de-privacidad">Privacidad</a>
               ·

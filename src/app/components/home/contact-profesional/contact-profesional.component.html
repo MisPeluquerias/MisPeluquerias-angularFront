@@ -31,9 +31,7 @@
               <!--NAME AND SURNAME-->
               <div class="col-md-12">
                 <div class="form-group py-3">
-                  <label for="nameProfessional" class="label small text-danger"
-                    >Nombres y Apellidos</label
-                  >
+                  <label for="nameProfessional" class="label small text-danger">Nombres y Apellidos</label>
                   <input
                     type="text"
                     class="form-control form-control-lg rounded-0"
@@ -41,15 +39,16 @@
                     id="nameProfessional"
                     required
                   />
+                  <div *ngIf="contactForm.get('name')?.invalid && (contactForm.get('name')?.dirty || contactForm.get('name')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('name')?.errors?.['required']">El nombre es obligatorio.</small>
+                  </div>
                 </div>
               </div>
 
               <!--PHONE-->
               <div class="col-md-6">
                 <div class="form-group py-3">
-                  <label for="phoneProfessional" class="label small text-danger"
-                    >Teléfono</label
-                  >
+                  <label for="phoneProfessional" class="label small text-danger">Teléfono</label>
                   <input
                     type="text"
                     class="form-control form-control-lg rounded-0"
@@ -59,15 +58,17 @@
                     pattern="[0-9]{9}"
                     required
                   />
+                  <div *ngIf="contactForm.get('phone')?.invalid && (contactForm.get('phone')?.dirty || contactForm.get('phone')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('phone')?.errors?.['pattern']">Debe ser un número de teléfono válido (9 dígitos).</small>
+                    <small *ngIf="contactForm.get('phone')?.errors?.['required']">El teléfono es obligatorio.</small>
+                  </div>
                 </div>
               </div>
 
               <!--EMAIL-->
               <div class="col-md-6">
                 <div class="form-group py-3">
-                  <label for="mailProfessional" class="label small text-danger"
-                    >Correo Electrónico</label
-                  >
+                  <label for="mailProfessional" class="label small text-danger">Correo Electrónico</label>
                   <input
                     type="email"
                     class="form-control form-control-lg rounded-0"
@@ -75,17 +76,17 @@
                     id="mailProfessional"
                     required
                   />
+                  <div *ngIf="contactForm.get('email')?.invalid && (contactForm.get('email')?.dirty || contactForm.get('email')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</small>
+                    <small *ngIf="contactForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</small>
+                  </div>
                 </div>
               </div>
 
               <!--MESSAGE-->
               <div class="col-md-12">
                 <div class="form-group py-3">
-                  <label
-                    for="messageProfessional"
-                    class="label small text-danger"
-                    >Mensaje</label
-                  >
+                  <label for="messageProfessional" class="label small text-danger">Mensaje</label>
                   <textarea
                     class="form-control form-control-lg rounded-0"
                     formControlName="msg"
@@ -95,6 +96,10 @@
                     required
                     style="resize: none"
                   ></textarea>
+                  <div *ngIf="contactForm.get('msg')?.invalid && (contactForm.get('msg')?.dirty || contactForm.get('msg')?.touched)" class="text-danger">
+                    <small *ngIf="contactForm.get('msg')?.errors?.['required']">El mensaje es obligatorio.</small>
+                    <small *ngIf="contactForm.get('msg')?.errors?.['maxlength']">El mensaje no puede exceder los 1000 caracteres.</small>
+                  </div>
                 </div>
               </div>
 
@@ -118,8 +123,8 @@
                       Términos y Condiciones</a
                     >
                   </label>
-                  <div class="invalid-feedback">
-                    Debes Aceptar nuestros Términos y Condiciones.
+                  <div *ngIf="contactForm.get('term_cond')?.invalid && contactForm.get('term_cond')?.touched" class="text-danger">
+                    <small>Debes aceptar nuestros Términos y Condiciones.</small>
                   </div>
                 </div>
                 <button

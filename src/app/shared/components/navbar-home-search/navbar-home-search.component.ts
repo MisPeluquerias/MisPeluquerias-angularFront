@@ -1,18 +1,14 @@
-import { UnRegisteredSearchBusinessComponent } from './../../../components/unregistered-search-map-business copy/unregistered-search-map-business.component';
+import { Console } from 'node:console';
 import { Component, OnInit } from '@angular/core';
 import { SearchBarService } from '../../../core/services/navbar-home.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  map,
-} from 'rxjs/operators';
-import { Subject, of, forkJoin, zip } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from '../../../auth/login/login.component';
 import { AuthService } from '../../../core/services/AuthService.service';
 import { UnRegisteredSearchBuusinessService } from '../../../core/services/unregistered-search-business.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-search-bar',
@@ -24,70 +20,72 @@ export class NavbarHomeSearchComponent implements OnInit {
   services: any[] = [];
   salons: any[] = [];
   cities: any[] = [];
-  private searchTermsCategory = new Subject<string>();
-  private searchTermsServiceOrSalon = new Subject<string>();
-  private searchTermsCity = new Subject<string>();
-  isAuthenticated: boolean = false;
 
+
+  private searchTermsService = new Subject<string>();
+  private searchTermsSalon = new Subject<string>();
+  private searchTermsCity = new Subject<string>();
+
+  isAuthenticated: boolean = false;
   category: string = '';
-  serviceOrSalon: string = '';
+  service: string = '';
+  salon: string = '';
   zone: string = '';
   id_city: string = '';
-  salonName:string = '';
+  salonName: string = '';
 
   constructor(
     private searchBarService: SearchBarService,
     private router: Router,
     private modalService: NgbModal,
     private authService: AuthService,
-    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService // Inyecta el servicio de autenticación
+    private unRegisteredSearchBusiness: UnRegisteredSearchBuusinessService,
+    private toastr:ToastrService
   ) {}
+
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
-    this.searchTermsCategory
+
+    this.searchTermsService
       .pipe(
-        debounceTime(300), // Espera 300 ms después de cada pulsación de tecla
-        distinctUntilChanged(), // Ignora si la siguiente búsqueda es igual a la anterior
+        debounceTime(300),
+        distinctUntilChanged(),
         switchMap((term) => {
           if (term.length >= 2) {
-            return this.searchBarService.searchCategoryInLive(term);
+            return this.searchBarService.searchService(term);
           } else {
             return of([]);
           }
         })
       )
       .subscribe({
-        next: (response) => {
-          this.categories = response;
+        next: (services) => {
+          this.services = services;
         },
         error: (error) => {
-          console.error('Error al buscar categorías:', error);
+          console.error('Error al buscar servicios:', error);
         },
       });
 
-    this.searchTermsServiceOrSalon
+    this.searchTermsSalon
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
           if (term.length >= 2) {
-            return forkJoin([
-              this.searchBarService.searchService(term),
-              this.searchBarService.searchSalon(term),
-            ]);
+            return this.searchBarService.searchSalon(term);
           } else {
-            return of([[], []]);
+            return of([]);
           }
         })
       )
       .subscribe({
-        next: ([services, salons]) => {
-          this.services = services;
+        next: (salons) => {
           this.salons = salons;
         },
         error: (error) => {
-          console.error('Error al buscar servicios o salones:', error);
+          console.error('Error al buscar salones:', error);
         },
       });
 
@@ -104,81 +102,66 @@ export class NavbarHomeSearchComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (response) => {
-          this.cities = response;
+        next: (cities) => {
+          this.cities = cities;
         },
         error: (error) => {
           console.error('Error al buscar ciudades:', error);
         },
       });
+
   }
 
-  searchCategory(term: string): void {
-    this.searchTermsCategory.next(term);
+
+  searchService(term: string): void {
+    this.searchTermsService.next(term);
   }
 
-  searchServiceOrSalon(term: string): void {
-    this.searchTermsServiceOrSalon.next(term);
+  searchSalon(term: string): void {
+    this.searchTermsSalon.next(term);
   }
 
   searchCity(term: string): void {
     this.searchTermsCity.next(term);
   }
 
-  onInputCategory(event: Event): void {
+  onInputService(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    this.searchCategory(inputElement.value.trim());
+    this.searchService(inputElement.value.trim());
   }
 
-  onInputServiceOrSalon(event: Event): void {
+  onInputSalon(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    this.searchServiceOrSalon(inputElement.value.trim());
-  }
-
-  onSelectCategory(category: string): void {
-    const inputElement = document.getElementById(
-      'category'
-    ) as HTMLInputElement;
-    inputElement.value = category;
-    this.categories = [];
+    this.searchSalon(inputElement.value.trim());
   }
 
   onInputCity(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    this.searchCity(inputElement.value.trim());
+    const value = inputElement.value.trim();
+
+    // Si el campo de ciudad se limpia, también limpiar el id_city
+    if (value === '') {
+      this.id_city = '';  // Limpiar id_city si se borra el campo
+    }
+
+    this.searchCity(value);
   }
 
   onSelectService(service: string): void {
-    const inputElement = document.getElementById(
-      'serviceOrSalon'
-    ) as HTMLInputElement;
-    inputElement.value = service;
+    this.service = service;
     this.services = [];
-    this.salons = [];
+  }
+
+  onSelectSalon(salon: any): void {
+    this.salon = salon.name; // Asigna el nombre del salón al input enlazado con ngModel
+    this.salonName = this.salon;
+    this.salons = []; // Limpia la lista de resultados
   }
 
   onSelectCity(city: any): void {
-    const inputElement = document.getElementById('zone') as HTMLInputElement;
-    inputElement.value = `${city.name} - ${city.zip_code}`;
-    this.id_city = city.id_city; // Captura el ID de la ciudad
+    this.zone = `${city.name} - ${city.zip_code}`;
+    this.id_city = city.id_city;
     this.cities = [];
-  }
-
-
-  onSelectIdCity(id_city: any): void {
-    const inputElement = document.getElementById('id_city') as HTMLInputElement;
-    inputElement.value = `${id_city.id_city}`;
-    this.zone = id_city;
-  }
-
-  onSelectSalon(salon: string): void {
-    const inputElement = document.getElementById(
-      'serviceOrSalon'
-    ) as HTMLInputElement;
-    inputElement.value = salon;
-    this.services = [];
-    this.salons = [];
-    this.salonName = salon;
   }
 
   handleAuthAction(): void {
@@ -196,34 +179,108 @@ export class NavbarHomeSearchComponent implements OnInit {
   }
 
   onSearch() {
-    // Validar que id_city no esté vacío y convertir a cadena de forma segura
-    if (this.id_city && String(this.id_city).trim() !== '') {
-      this.unRegisteredSearchBusiness.searchByCity(this.id_city).subscribe({
-        next: (response) => {
-          this.router.navigate(['/unregistered-search'], { queryParams: { id_city: this.id_city } });
-          console.log('Resultados de la búsqueda por ciudad:', response);
-        },
-        error: (error) => {
-          console.error('Error al realizar la búsqueda por ciudad:', error);
-        },
-      });
-    } else {
-      console.warn('id_city está vacío, no se ejecuta la búsqueda por ciudad.');
-    }
 
-    // Validar que salonName no esté vacío y convertir a cadena de forma segura
+
     if (this.salonName && String(this.salonName).trim() !== '') {
+      // Verificar que no haya otros campos seleccionados
+      if (this.id_city || this.service) {
+        this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
+        return;
+      }
+
+      // Realizar la búsqueda por nombre si es el único campo seleccionado
       this.unRegisteredSearchBusiness.searchByName(this.salonName).subscribe({
         next: (response) => {
-          this.router.navigate(['/unregistered-search'], { queryParams: { name: this.salonName } });
-          console.log('Resultados de la búsqueda por nombre:', response);
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el salón especificado.');
+          } else {
+            this.router.navigate(['/unregistered-search'], {
+              queryParams: { salonName: this.salonName },
+            });
+          }
         },
         error: (error) => {
           console.error('Error al realizar la búsqueda por nombre:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
         },
       });
-    } else {
-      console.warn('salonName está vacío, no se ejecuta la búsqueda por nombre.');
+      return; // Salir después de realizar la búsqueda por nombre
     }
+
+    // Verificar si se seleccionó un servicio sin una ciudad
+    if (this.service && (!this.id_city || String(this.id_city).trim() === '')) {
+      this.toastr.error('Por favor seleccione una ciudad para buscar un servicio.');
+      return;
+    }
+
+    // Si hay una ciudad y un servicio, realizar la búsqueda combinada
+    if (this.id_city && this.service) {
+      this.unRegisteredSearchBusiness.searchByService(this.id_city, this.service).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el servicio en la ciudad seleccionada.');
+          } else {
+            this.router.navigate(['/unregistered-search'], {
+              queryParams: { id_city: this.id_city, service: this.service },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por servicio y ciudad:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return; // Salir después de realizar la búsqueda combinada
+    }
+
+    // Si hay una ciudad pero no un servicio, buscar por ciudad
+    if (this.id_city && !this.service) {
+      this.unRegisteredSearchBusiness.searchByCity(this.id_city).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para la ciudad seleccionada.');
+          } else {
+            this.router.navigate(['/unregistered-search'], {
+              queryParams: { id_city: this.id_city },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por ciudad:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return; // Salir después de realizar la búsqueda por ciudad
+    }
+
+    // Si hay un nombre, buscar por nombre
+    if (this.salonName && String(this.salonName).trim() !== '') {
+      // Verificar que no haya otros campos seleccionados
+      if (this.id_city || this.service) {
+        this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
+        return;
+      }
+
+      // Realizar la búsqueda por nombre si es el único campo seleccionado
+      this.unRegisteredSearchBusiness.searchByName(this.salonName).subscribe({
+        next: (response) => {
+          if (response.length === 0) {
+            this.toastr.warning('No se encontraron resultados para el salón especificado.');
+          } else {
+            this.router.navigate(['/unregistered-search'], {
+              queryParams: { salonName: this.salonName },
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al realizar la búsqueda por nombre:', error);
+          this.toastr.error('Hubo un error al realizar la búsqueda.');
+        },
+      });
+      return; // Salir después de realizar la búsqueda por nombre
+    }
+
+    // Si ningún criterio es válido, mostrar un mensaje de error
+    this.toastr.error('Por favor complete al menos un campo para realizar la búsqueda.');
   }
 }

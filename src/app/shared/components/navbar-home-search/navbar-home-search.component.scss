@@ -22,16 +22,16 @@
 
 .results-list {
   position: absolute;
-  top: 100%; /* Ajusta según sea necesario */
+  top: 100%;
   left: 0;
   width: 100%;
   background-color: white;
   border: 1px solid #ccc;
-  max-height: 500px; /* Ajusta según sea necesario */
+  max-height: 300px; /* Ajusta según sea necesario */
   overflow-y: auto;
   z-index: 1100; /* Asegúrate de que esté encima de otros elementos */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #f0f0f0; /* Color de fondo adicional */
+  width: fit-content;
 }
 
 .results-list ul {
@@ -49,18 +49,9 @@
   background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
 }
 
-.results-list-double {
-  position: absolute;
-  top: 100%; /* Justo debajo del input */
-  left: -50%;
-  width: 250%;
-  background-color: white;
-  border-bottom: 1px solid #ccc;
-  max-height: 300px; /* Ajusta según sea necesario */
-  overflow-y: auto;
-  z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
+
+
+
 
 .form-control:focus {
   border-color: inherit;
@@ -71,16 +62,20 @@
 /* Ajustes generales para todos los tamaños de pantalla */
 nav {
   z-index: 1;
+  height: 21rem;
 }
 
 /* Ajustes específicos para pantallas móviles */
 @media (max-width: 576px) {
+
+
+
   nav {
     height: 40vh; /* Mantén la altura al 40% del viewport */
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Alinea el contenido en la parte superior */
-    padding-top: 1rem; /* Añadir un pequeño padding en la parte superior */
+    padding-top: 3.5rem; /* Añadir un pequeño padding en la parte superior */
   }
 
   .container {
@@ -111,7 +106,7 @@ nav {
   }
 
   .btnLogin {
-    font-size: 0.7rem; /* Tamaño del botón en móviles */
+    font-size: 0.7rem !important; /* Tamaño del botón en móviles */
     padding: 0.25rem 0.5rem;
     margin-top: -0.7rem !important;
     margin-bottom: 0.1rem; /* Reducir margen inferior */

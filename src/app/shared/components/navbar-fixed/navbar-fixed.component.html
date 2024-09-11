@@ -1,87 +1,85 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary ">
   <div class="container-fluid">
     <!-- Logo -->
     <a class="navbar-brand" href="/">
-      <img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3">
+      <img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3 img-fluid" (click)="logout();">
     </a>
 
     <!-- Botón de menú hamburguesa -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Contenido de la barra de navegación -->
-    <div class="collapse navbar-collapse" id="navbarContent">
+    <div [ngClass]="{'collapse': !navbarOpen, 'navbar-collapse': true}" id="navbarContent">
       <!-- Formulario de búsqueda -->
       <form class="d-flex mx-auto me-5" role="search" style="flex: 1; justify-content: center; max-width: 1400px;">
         <div class="row g-2 w-100">
-          <div class="col-md-3 position-relative">
-            <input
-              type="text"
-              id="category"
-              class="form-control form-control-lg border-bottom-only"
-              name="category"
-              placeholder="Categoría"
-              (input)="onInputCategory($event)"
-            />
-            <div *ngIf="categories.length > 0" class="results-list">
-              <ul class="list-group">
-                <li class="list-group-item" *ngFor="let category of categories" (click)="onSelectCategory(category.name)">
-                  <i class="las la-tags"></i> {{ category.name }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-3 position-relative">
-            <input
-              type="text"
-              name="serviceOrSalon"
-              id="serviceOrSalon"
-              class="form-control form-control-lg border-bottom-only"
-              placeholder="¿Qué estas buscando? Salón o Servicio"
-              (input)="onInputServiceOrSalon($event)"
-            />
-            <div *ngIf="services.length > 0 || salons.length > 0" class="results-list-double row">
-              <div class="col-6">
+          <div class="col-md-3">
+            <div class="input-container" style="position: relative;">
+              <input
+                type="text"
+                id="serviceInput"
+                name="service"
+                class="form-control  border-bottom-only mt-4"
+                placeholder="Buscar servicios"
+                (input)="onInputService($event)"
+                [(ngModel)]="service"
+              />
+              <div *ngIf="services.length > 0" class="results-list">
                 <ul class="list-group">
-                  <h3>Servicios</h3>
                   <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
                     <i class="la la-scissors"></i> {{ service.name }}
                   </li>
                 </ul>
               </div>
-              <div class="col-6">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-container" style="position: relative;">
+              <input
+                type="text"
+                id="salonInput"
+                class="form-control  border-bottom-only mt-4"
+                placeholder="Buscar salones"
+                (input)="onInputSalon($event)"
+                name="salonName"
+                [(ngModel)]="salonName"
+              />
+              <div *ngIf="salons.length > 0" class="results-list">
                 <ul class="list-group">
-                  <h3>Salones</h3>
-                  <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon.name)">
+                  <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon)">
                     <i class="la la-home"></i> {{ salon.name }}
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="col-md-3 position-relative">
-            <input
-              type="text"
-              id="zone"
-              class="form-control form-control-lg border-bottom-only"
-              name="zone"
-              placeholder="¿Dónde? Ciudad o C.P."
-              (input)="onInputCity($event)"
-            />
-            <div *ngIf="cities.length > 0" class="results-list">
-              <ul class="list-group">
-                <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
-                  <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
-                </li>
-              </ul>
+          <div class="col-md-3">
+            <div class="input-container" style="position: relative;">
+              <input
+                type="text"
+                id="zoneInput"
+                class="form-control border-bottom-only mt-4"
+                placeholder="¿Dónde? Ciudad o C.P."
+                (input)="onInputCity($event)"
+                name="zone"
+                [(ngModel)]="zone"
+              />
+              <div *ngIf="cities.length > 0" class="results-list">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
+                    <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div class="col-md-3 ms-auto">
+          <div class="col-md-3 ms-auto mt-4">
             <button
-              class="btn btn-lg btn-danger rounded-pill btn-custom"
+              class="btn btn-danger rounded-pill btn-custom mb-3 ms-3"
               type="submit"
-              style="font-size: 1rem"
+              style="font-size: 1rem btnSearch"
               (click)="onSearch()"
             >
               <i class="las la-search"></i> Buscar
@@ -89,14 +87,30 @@
           </div>
         </div>
       </form>
-      <button
-        class="btn btn-lg btn-danger rounded-pill btn-custom ms-auto me-5"
-        style="font-size: 1rem"
-        type="button"
-        (click)="handleAuthAction()"
-      >
-        <i class="las la-user"></i> {{ isAuthenticated ? 'Salir' : 'Iniciar Sesión' }}
-      </button>
+      <div class="btn-group ms-auto me-5">
+        <button
+            class="btn btn-danger rounded-pill dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            aria-expanded="false"
+            (click)="isAuthenticated ? toggleDropdown() : openLoginModal()"
+        >
+            <i [class]="isAuthenticated ? 'las la-grip-lines' : 'las la-sign-in-alt'"></i>
+            {{ isAuthenticated ? 'Menú' : 'Login' }}
+        </button>
+        <ul 
+            *ngIf="isAuthenticated && isDropdownOpen" 
+            class="dropdown-menu dropdown-menu-center show bg-danger mt-5 "
+            aria-labelledby="dropdownMenuButton"
+            style="left: 50%; transform: translateX(-50%);"
+        >
+            <li><a class="dropdown-item hover-list-red" routerLink="/profile" style="color: #FFFFFF;"> <i class="las la-user"></i> Mi Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item hover-list-red" routerLink="/favorite" style="color: #FFFFFF;"><i class="las la-heart"></i> Mis Favoritos</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item hover-list-red" (click)="logout()" style="color: #FFFFFF;"><i class="las la-door-closed"></i> Salir</a></li>
+        </ul>
+    </div>
     </div>
   </div>
 </nav>

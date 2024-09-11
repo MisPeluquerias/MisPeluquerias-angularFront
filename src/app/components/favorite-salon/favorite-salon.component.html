@@ -1,0 +1,67 @@
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        ¿Estás seguro de que deseas eliminar este favorito?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmRemove()" data-bs-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="wrapper">
+<app-navbar-fixed></app-navbar-fixed>
+<main>
+  <div class="container" style="margin-top: 11vh;">
+    <h1 class="mb-3">Mis salones favoritos</h1>
+    <div class="card-container" *ngIf="paginatedFavorites.length > 0; else noFavorites">
+      <div class="card" *ngFor="let marker of paginatedFavorites; let i = index">
+        <div class="card-image position-relative">
+          <img *ngIf="marker.images && marker.images.length > 0; else defaultImage" [src]="marker.images[0].file_url" [alt]="marker.name">
+          <ng-template #defaultImage>
+            <img [src]="marker.image || '../../../assets/img/web/sello.jpg'" [alt]="marker.name" />
+          </ng-template>
+          <!-- Botón de eliminación dentro de la imagen -->
+          <button class="delete-btn" (click)="removeFavorite(marker); $event.stopPropagation()">
+            <i class="las la-trash"></i>
+          </button>
+          <a class="info-link" (click)="viewDetails(marker.id_salon); $event.stopPropagation()">+info</a>
+        </div>
+
+        <div class="card-body">
+          <h5 class="text-center">{{ marker.name }}</h5>
+          <p class="card-text text-center">{{ marker.address }}</p>
+          <p class="card-status text-center" [class.closed]="marker.status === 'Cerrado'">{{ marker.status }}</p>
+        </div>
+      </div>
+    </div>
+    <ng-template #noFavorites>
+      <p class="text-center">No tienes favoritos aún.</p>
+    </ng-template>
+
+    <div class="pagination-wrapper mb-5">
+      <div class="pagination" *ngIf="totalPages.length > 1">
+        <button (click)="goToPreviousPage()" [disabled]="currentPage === 1"><</button>
+        <div class="pagination-info mt-2">
+          Página {{ currentPage }} de {{ totalPages.length }}
+        </div>
+        <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">></button>
+      </div>
+    </div>
+  </div>
+</main>
+<app-footer></app-footer>
+</div>

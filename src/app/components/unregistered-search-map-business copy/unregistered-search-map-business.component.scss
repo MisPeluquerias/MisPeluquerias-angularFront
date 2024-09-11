@@ -40,7 +40,7 @@ html {
   box-shadow: 0 0 0.625rem rgba(0, 123, 255, 0.5); /* 10px en rem */
 }
 
-#map {
+#unregistered-map {
   width: 100%;
   height: 100%;
   border-radius: 0.75rem; /* 12px en rem */
@@ -89,6 +89,8 @@ html {
   transition: opacity 0.5s ease-in-out;
 }
 
+
+
 .map-cover.fade-out {
   opacity: 0;
 }
@@ -105,17 +107,19 @@ html {
 }
 
 .card {
-  flex: 1 1 calc(33.333% - 1.25rem); /* Ajusta para tener tres tarjetas por fila */
+  flex: 1 1 calc(33.333% - 1.25rem); /* Tres tarjetas por fila en pantallas grandes */
   display: flex;
   flex-direction: column;
-  border: 0.0625rem solid #ddd; /* 1px en rem */
-  border-radius: 0.3125rem; /* 5px en rem */
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2px 5px en rem */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: relative;
   cursor: pointer;
-  max-width: calc(33.333% - 1.25rem); /* Asegura que la tarjeta tenga un ancho máximo */
+  max-width: calc(33.333% - 1.25rem);
 }
+
 
 .card:nth-last-child(1):nth-child(3n + 1) {
   flex: 1 1 calc(33.333% - 1.25rem); /* Si hay una tarjeta en una fila, ocupa el mismo ancho máximo */
@@ -123,7 +127,7 @@ html {
 
 .card-image {
   width: 100%;
-  height: 8vw; /* Altura relativa al ancho de la ventana */
+  height: 8vw;
   overflow: hidden;
 }
 
@@ -134,7 +138,8 @@ html {
 }
 
 .card-body {
-  padding: 0.125rem; /* 2px en rem */
+  padding: 0.1rem !important; /* 2px en rem */
+
 }
 
 .card-title {
@@ -157,20 +162,7 @@ html {
   color: red;
 }
 
-.card-favorite {
-  position: absolute;
-  top: 0.625rem; /* 10px en rem */
-  right: 0.625rem; /* 10px en rem */
-  background: white;
-  padding: 0.3125rem; /* 5px en rem */
-  border-radius: 50%;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2px 5px en rem */
-  cursor: pointer;
-}
 
-.card-favorite .fa-heart {
-  color: red;
-}
 
 .pagination {
   display: flex;
@@ -215,4 +207,71 @@ app-footer {
 
 .star-rating .star.filled {
   color: #FFD700; /* Color de estrellas seleccionadas */
+}
+
+.info-link {
+  position: absolute;
+  bottom: 10px; /* Posiciona el enlace en la parte inferior de la imagen */
+  right: 10px; /* Separación del borde derecho */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para mejor legibilidad */
+  color: white; /* Color del texto */
+  padding: 5px 10px; /* Padding alrededor del texto */
+  border-radius: 5px; /* Bordes redondeados */
+  text-decoration: none; /* Elimina el subrayado del enlace */
+  font-size: 14px; /* Tamaño de fuente */
+  z-index: 10; /* Asegura que el enlace esté sobre la imagen */
+  display: block; /* Asegura que se muestre como un bloque */
+}
+
+.info-link:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo más oscuro en hover */
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 10px; /* Ajusta según lo necesario */
+  right: 10px; /* Ajusta según lo necesario */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+  border: none;
+  width: 40px; /* Asegúrate de que el ancho y alto sean iguales */
+  height: 40px; /* Asegúrate de que el ancho y alto sean iguales */
+  padding: 0;
+  border-radius: 50%; /* Esto hace que sea un círculo perfecto */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.favorite-btn i {
+  color: red;
+  font-size: 1.5rem;
+}
+
+.favorite-btn:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.favorite-btn:focus {
+  outline: none; /* Elimina el contorno al hacer clic */
+}
+
+@media (max-width: 576px) {
+  .card {
+    flex: 1 1 100%; /* Una tarjeta por fila en pantallas pequeñas */
+    max-width: 100%;
+  }
+
+  .card-image {
+    height: 25vh;
+  }
+
+  h5 {
+    font-size: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
 }
