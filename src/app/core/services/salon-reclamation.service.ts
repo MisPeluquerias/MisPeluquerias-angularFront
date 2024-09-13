@@ -32,4 +32,11 @@ export class SalonReclamationService {
     return this.http.post(`${this.baseUrl}/salon-reclamation/newReclamation`, data);
   }
 
+  searchSalon(name: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salon-reclamation/searchSalon`, {
+      params: {
+        name
+      },
+    });
+  }
 }

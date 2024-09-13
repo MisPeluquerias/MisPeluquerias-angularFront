@@ -22,18 +22,24 @@
 
         <div class="row">
           <div class="col-md-12">
-            <div class="form-group py-3">
-              <label for="salon_name" class="label small fw-light text-danger"
-                >Nombre del Negocio</label
-              >
+            <div class="input-container" style="position: relative;">
               <input
                 type="text"
-                class="form-control form-control-lg rounded-0"
-                id="salon_name"
+                id="salonInput"
+                class="form-control form-control-lg border-bottom-only"
+                placeholder="Buscar salones"
+                (input)="onInputSalon($event)"
                 name="salon_name"
                 [(ngModel)]="salon_name"
-                required
+                autocomplete="off"
               />
+              <div *ngIf="salons.length > 0" class="results-list">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon)">
+                    <i class="la la-home"></i> {{ salon.name }}
+                  </li>
+                </ul>
+              </div>
               <div
                 *ngIf="reclamationForm.submitted && !salon_name"
                 class="text-danger"
@@ -108,7 +114,7 @@
               />
             </div>
           </div>
-          
+
           <div class="col-md-12">
             <small
               >* Podrá modificar los datos de su salón una vez que esté

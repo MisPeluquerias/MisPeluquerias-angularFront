@@ -15,4 +15,5 @@ import { provideClientHydration } from '@angular/platform-browser';
     provideClientHydration()
   ],
 })
+
 export class AppServerModule {}

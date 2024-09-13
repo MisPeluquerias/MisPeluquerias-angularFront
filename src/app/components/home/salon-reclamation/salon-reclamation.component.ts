@@ -3,18 +3,22 @@ import { SalonReclamationService } from './../../../core/services/salon-reclamat
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
   selector: 'app-salon-reclamation',
   templateUrl: './salon-reclamation.component.html',
-  styleUrls: ['./salon-reclamation.component.scss']
+  styleUrls: ['./salon-reclamation.component.scss'],
 })
 export class SalonReclamationComponent implements OnInit {
   @ViewChild('reclamationForm') reclamationForm!: NgForm;
-  provinces: any[] = []; 
-  cities: any[] = []; 
-  isDisabled = false;  // Logic to determine if form fields should be disabled
+  provinces: any[] = [];
+  cities: any[] = [];
+  isDisabled = false; // Logic to determine if form fields should be disabled
   successMessage: string = '';
   errorMessage: string = '';
   province: any = {};
@@ -33,11 +37,19 @@ export class SalonReclamationComponent implements OnInit {
   dniBackFile: File | null = null;
   otherFile: File | null = null;
   fileError: string = '';
-
+  salons: any[] = [];
+  salon: string = '';
+  id_salon: string = '';
+  salonName: string = '';
+  private searchTermsSalon = new Subject<string>();
 
   constructor(
-    private salonReclamationService: SalonReclamationService,private toastr : ToastrService, private router:Router) {
-  }
+    private salonReclamationService: SalonReclamationService,
+    private toastr: ToastrService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
+
 
 
   ngOnInit(): void {
@@ -53,9 +65,29 @@ export class SalonReclamationComponent implements OnInit {
         }
       );
     }
+    this.searchTermsSalon
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (term.length >= 2) {
+            return this.salonReclamationService.searchSalon(term);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (salons) => {
+          this.salons = salons;
+        },
+        error: (error) => {
+          console.error('Error al buscar salones:', error);
+        },
+      });
   }
 
-   loadProvinces(): void {
+  loadProvinces(): void {
     this.salonReclamationService.getProvinces().subscribe(
       (response: any) => {
         this.provinces = response.data;
@@ -66,11 +98,23 @@ export class SalonReclamationComponent implements OnInit {
     );
   }
 
+  onInputSalon(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchSalon(inputElement.value.trim());
+  }
 
+  searchSalon(term: string): void {
+    this.searchTermsSalon.next(term);
+  }
 
+  onSelectSalon(salon: any): void {
+    this.salon_name = salon.name;
+    this.salons = [];
+    this.cdr.detectChanges(); // Forzar la actualización de la vista
+  }
 
   onProvinceChange(provinceId: number): void {
-    this.salonData.id_city = '';  // Resetea el valor de la ciudad cuando cambia la provincia
+    this.salonData.id_city = ''; // Resetea el valor de la ciudad cuando cambia la provincia
     this.salonReclamationService.getCitiesByProvince(provinceId).subscribe(
       (response: any) => {
         this.cities = response.data;
@@ -81,10 +125,14 @@ export class SalonReclamationComponent implements OnInit {
     );
   }
 
-
   onFileSelected(event: any, fileType: string): void {
     const file: File = event.target.files[0];
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'application/pdf',
+    ];
 
     if (file && allowedTypes.includes(file.type)) {
       if (fileType === 'dniFrontFile') {
@@ -109,51 +157,53 @@ export class SalonReclamationComponent implements OnInit {
     }
   }
 
-
   addReclamation(): void {
     const termsValue = this.terms ? 1 : 0;
 
-const formData = new FormData();
-formData.append('id_user', this.id_user);
-formData.append('salon_name', this.salon_name);
-formData.append('id_province', this.id_province);
-formData.append('id_city', this.id_city);
-formData.append('observation', this.observation);
-formData.append('terms', termsValue.toString());  // Convertimos el entero a string para agregarlo al FormData
+    const formData = new FormData();
+    formData.append('id_user', this.id_user);
+    formData.append('salon_name', this.salon_name);
+    formData.append('id_province', this.id_province);
+    formData.append('id_city', this.id_city);
+    formData.append('observation', this.observation);
+    formData.append('terms', termsValue.toString()); // Convertimos el entero a string para agregarlo al FormData
 
-if (this.dniFrontFile) {
-  formData.append('dni_front', this.dniFrontFile);
-}
-if (this.dniBackFile) {
-  formData.append('dni_back', this.dniBackFile);
-}
-if (this.otherFile) {
-  formData.append('file_path', this.otherFile);
-}
-
-this.salonReclamationService.addReclamation(formData).subscribe(
-  (response: any) => {
-    console.log('Reclamación enviada con éxito', response);
-    this.successMessage = 'Reclamación enviada con éxito';
-
-  },
-  (error) => {
-    console.error('Error enviando la reclamación', error);
-
-    // Verifica si el error es del tipo que quieres tratar como éxito
-    if (error.status === 200 || error.statusText === 'OK') {
-      // Si el servidor devolvió 200 OK pero hubo un problema con el parsing del JSON,
-      // aún se puede considerar exitoso si esta es la lógica deseada.
-      this.successMessage = 'Reclamación enviada con éxito (con advertencia)';
-      this.toastr.success('Reclamación enviada con éxito, nos pondremos en contacto con usted lo antes posible');
-      this.reclamationForm.reset();
-      this.router.navigate(['/home']);
-
-    } else {
-      this.toastr.error('Error, revise el formulario de envio');
-      this.errorMessage = 'Hubo un error al enviar la reclamación';
+    if (this.dniFrontFile) {
+      formData.append('dni_front', this.dniFrontFile);
     }
+    if (this.dniBackFile) {
+      formData.append('dni_back', this.dniBackFile);
+    }
+    if (this.otherFile) {
+      formData.append('file_path', this.otherFile);
+    }
+
+    console.log('Datos enviados:', formData);
+
+    this.salonReclamationService.addReclamation(formData).subscribe(
+      (response: any) => {
+        console.log('Reclamación enviada con éxito', response);
+        this.successMessage = 'Reclamación enviada con éxito';
+      },
+      (error) => {
+        console.error('Error enviando la reclamación', error);
+
+        // Verifica si el error es del tipo que quieres tratar como éxito
+        if (error.status === 200 || error.statusText === 'OK') {
+          // Si el servidor devolvió 200 OK pero hubo un problema con el parsing del JSON,
+          // aún se puede considerar exitoso si esta es la lógica deseada.
+          this.successMessage =
+            'Reclamación enviada con éxito (con advertencia)';
+          this.toastr.success(
+            'Reclamación enviada con éxito, nos pondremos en contacto con usted lo antes posible'
+          );
+          this.reclamationForm.reset();
+          this.router.navigate(['/home']);
+        } else {
+          this.toastr.error('Error, revise el formulario de envio');
+          this.errorMessage = 'Hubo un error al enviar la reclamación';
+        }
+      }
+    );
   }
-);
-}
 }
