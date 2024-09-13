@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <!-- Logo -->
     <a class="navbar-brand" href="/">
-      <img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3 img-fluid" (click)="logout();">
+      <img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3 img-fluid">
     </a>
 
     <!-- Botón de menú hamburguesa -->
@@ -98,8 +98,8 @@
             <i [class]="isAuthenticated ? 'las la-grip-lines' : 'las la-sign-in-alt'"></i>
             {{ isAuthenticated ? 'Menú' : 'Login' }}
         </button>
-        <ul 
-            *ngIf="isAuthenticated && isDropdownOpen" 
+        <ul
+            *ngIf="isAuthenticated && isDropdownOpen"
             class="dropdown-menu dropdown-menu-center show bg-danger mt-5 "
             aria-labelledby="dropdownMenuButton"
             style="left: 50%; transform: translateX(-50%);"
