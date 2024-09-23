@@ -70,7 +70,7 @@ export class SalonReclamationComponent implements OnInit {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (term.length >= 2) {
+          if (term.length >= 3) {
             return this.salonReclamationService.searchSalon(term);
           } else {
             return of([]);

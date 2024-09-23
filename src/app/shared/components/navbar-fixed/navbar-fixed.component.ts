@@ -44,7 +44,7 @@ export class NavbarFixedComponent implements OnInit {
     private elementRef: ElementRef
   ) {}
 
-  
+
   ngOnInit(): void {
 
     this.isAuthenticated = this.authService.isAuthenticated();
@@ -199,7 +199,7 @@ export class NavbarFixedComponent implements OnInit {
 
 
   onSearch() {
-    
+
     if (this.id_salon && String(this.id_salon).trim() !== '') {
       // Verificar que no haya otros campos seleccionados
       if (this.id_city || this.service) {

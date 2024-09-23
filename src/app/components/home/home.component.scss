@@ -31,6 +31,8 @@
   box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+
+
 li, a {
   text-decoration: none;
   text-align: left;
@@ -118,6 +120,8 @@ app-search-bar {
   cursor: pointer;
 }
 
+
+
 .results-list li:hover {
   background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
 }
@@ -146,17 +150,44 @@ app-search-bar {
 responsive-text{
   font-size: 0.5rem;
 }
+.info-link {
+  position: absolute;
+  bottom: 10px; /* Posiciona el enlace en la parte inferior de la imagen */
+  right: 10px; /* Separación del borde derecho */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para mejor legibilidad */
+  color: white; /* Color del texto */
+  padding: 5px 10px; /* Padding alrededor del texto */
+  border-radius: 5px; /* Bordes redondeados */
+  text-decoration: none; /* Elimina el subrayado del enlace */
+  font-size: 14px; /* Tamaño de fuente */
+  z-index: 10; /* Asegura que el enlace esté sobre la imagen */
+  display: block; /* Asegura que se muestre como un bloque */
+}
+
+.info-link:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo más oscuro en hover */
+}
+
+.hover-list-red:hover{
+  background-color: red !important;
+}
 
 @media (max-width: 576px) {
   .d-flex {
     flex-direction: row !important;
   }
+
+
+
+  .loginMT{
+    margin-top: 1.5rem !important;
+  }
+
 .video-background{
   height: 370px !important;
 }
 
   .btnLogin{
-    margin-top: -30px;
     padding: 0.25rem 0.5rem !important;
     font-size: 0.75rem !important;
   }
@@ -191,7 +222,7 @@ li,a{
   .sticky {
     margin: 0;
     padding: 0;
-    top: -150px; /* Ajuste para que el elemento sticky funcione correctamente */
+    top: -125px; /* Ajuste para que el elemento sticky funcione correctamente */
     margin-top: 0px;
 
   }
@@ -200,11 +231,10 @@ li,a{
     font-size: 1.4rem;
   }
 
-
-
   p{
     font-size: 0.5rem;
   }
+
 
 
   .h1{
@@ -256,16 +286,18 @@ li,a{
   h2{
     font-size: 1rem;
   }
-}
 
+}
 
 
 
 /* Margen superior para pantallas entre 576px y 1400px */
 @media (min-width: 576px) and (max-width: 1400px) {
   .container {
-    margin-top: 21rem;
+    margin-top: 0rem;
   }
+
+
 
 
 }

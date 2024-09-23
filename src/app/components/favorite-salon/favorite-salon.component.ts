@@ -29,11 +29,12 @@ export class FavoriteSalonComponent implements OnInit {
       console.error('User ID not found.');
     }
   }
-  
+
 
   loadFavorites(userId: string): void {
     this.favoriteSalonService.getFavorites(userId).subscribe(
       (favorites: any[]) => {
+
         this.favorites = favorites;
         this.paginateFavorites();
         //console.log('Loaded favorites:', this.favorites);
@@ -42,6 +43,7 @@ export class FavoriteSalonComponent implements OnInit {
         console.error('Error loading favorites:', error);
       }
     );
+    console.log(this.favorites);
   }
 
   paginateFavorites(): void {
@@ -65,14 +67,20 @@ export class FavoriteSalonComponent implements OnInit {
     }
   }
 
-  public viewDetails(id: any): void {
-    if (id) {
-      this.router.navigate(['/details-business', id]);
+  public viewDetails(id: any, salonName: string): void {
+    if (id && salonName) {
+        // Generar el slug del salón a partir del nombre
+        const salonSlug = salonName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+
+        console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
+
+        // Navegar a la URL con el slug y el ID
+        this.router.navigate([`/centro/${salonSlug}/${id}`]);
     } else {
-      console.error('Marker ID is undefined');
+        console.error('Marker ID or salon name is undefined');
     }
-  }
-  
+}
+
 
   removeFavorite(marker: any): void {
     this.markerToDelete = marker;
@@ -87,7 +95,7 @@ export class FavoriteSalonComponent implements OnInit {
   confirmRemove(): void {
     if (this.markerToDelete) {
       const id_user_favorite = this.markerToDelete.id_user_favourite;
-      
+
       if (!id_user_favorite) {
           console.error('Cannot remove favorite: id_user_favorite is not defined');
           return;

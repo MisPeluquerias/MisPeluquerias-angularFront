@@ -12,7 +12,6 @@ import { environment } from '../../../environments/environment.development';
 export class AuthService {
   constructor(private router: Router, private http: HttpClient) { }
 
-
   baseUrl: string = environment.baseUrl;
 
 
@@ -55,5 +54,6 @@ export class AuthService {
     localStorage.removeItem('usuarioId');
     localStorage.removeItem('permiso');
     this.router.navigate(['/home']);
+    window.location.reload();
   }
 }

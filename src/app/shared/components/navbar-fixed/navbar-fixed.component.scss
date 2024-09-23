@@ -110,8 +110,49 @@ nav{
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+
 @media (max-width: 576px) {
 img{
   width: 170px;
+}
+
+.loginMTR{
+  top: -4.3rem !important;
+  right: 1.8rem;
+}
+
+.ulMTR{
+  margin-top: -12px !important;
+}
+
+.navbar-brand img {
+  width: 150px; /* Reduce el tamaño del logo */
+  margin: 0 auto; /* Centra el logo */
+  display: block;
+}
+
+/* El formulario de búsqueda debe ocupar todo el ancho disponible */
+form.d-flex {
+  flex: 1 1 100%;
+  justify-content: space-between;
+  max-width: 100%;
+  padding: 0 15px;
+}
+
+/* Asegura que el botón de búsqueda esté alineado correctamente */
+.btn-group {
+  margin-top: 10px; /* Agrega espacio entre el formulario de búsqueda y los botones */
+  margin-left: 0;
+}
+
+/* Asegura que los inputs se alineen verticalmente */
+.row.g-2 {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Reduce el margen superior de los elementos de entrada en móviles */
+.form-control.mt-4 {
+  margin-top: 10px;
 }
 }

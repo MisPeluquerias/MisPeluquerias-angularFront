@@ -1,8 +1,13 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary ">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <!-- Logo -->
     <a class="navbar-brand" href="/">
-      <img src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg" width="300" alt="" class="ms-5 mt-3 img-fluid">
+      <img
+        src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg"
+        width="300"
+        alt=""
+        class="ms-5 mt-3 img-fluid"
+      />
     </a>
 
     <!-- Botón de menú hamburguesa -->
@@ -11,24 +16,36 @@
     </button>
 
     <!-- Contenido de la barra de navegación -->
-    <div [ngClass]="{'collapse': !navbarOpen, 'navbar-collapse': true}" id="navbarContent">
+    <div
+      [ngClass]="{ collapse: !navbarOpen, 'navbar-collapse': true }"
+      id="navbarContent"
+    >
       <!-- Formulario de búsqueda -->
-      <form class="d-flex mx-auto me-5" role="search" style="flex: 1; justify-content: center; max-width: 1400px;">
-        <div class="row g-2 w-100">
+      <form
+        class="d-flex mx-auto me-5 w-100"
+        role="search"
+        style="max-width: 1400px"
+      >
+        <div class="row g-2 w-100 align-items-center">
           <div class="col-md-3">
-            <div class="input-container" style="position: relative;">
+            <div class="input-container" style="position: relative">
               <input
                 type="text"
                 id="serviceInput"
                 name="service"
-                class="form-control  border-bottom-only mt-4"
+                class="form-control border-bottom-only mt-4"
                 placeholder="Buscar servicios"
                 (input)="onInputService($event)"
                 [(ngModel)]="service"
+                autocomplete="off"
               />
               <div *ngIf="services.length > 0" class="results-list">
                 <ul class="list-group">
-                  <li class="list-group-item" *ngFor="let service of services" (click)="onSelectService(service.name)">
+                  <li
+                    class="list-group-item"
+                    *ngFor="let service of services"
+                    (click)="onSelectService(service.name)"
+                  >
                     <i class="la la-scissors"></i> {{ service.name }}
                   </li>
                 </ul>
@@ -36,19 +53,24 @@
             </div>
           </div>
           <div class="col-md-3">
-            <div class="input-container" style="position: relative;">
+            <div class="input-container" style="position: relative">
               <input
                 type="text"
                 id="salonInput"
-                class="form-control  border-bottom-only mt-4"
+                class="form-control border-bottom-only mt-4"
                 placeholder="Buscar salones"
                 (input)="onInputSalon($event)"
                 name="salonName"
                 [(ngModel)]="salonName"
+                autocomplete="off"
               />
               <div *ngIf="salons.length > 0" class="results-list">
                 <ul class="list-group">
-                  <li class="list-group-item" *ngFor="let salon of salons" (click)="onSelectSalon(salon)">
+                  <li
+                    class="list-group-item"
+                    *ngFor="let salon of salons"
+                    (click)="onSelectSalon(salon)"
+                  >
                     <i class="la la-home"></i> {{ salon.name }}
                   </li>
                 </ul>
@@ -56,7 +78,7 @@
             </div>
           </div>
           <div class="col-md-3">
-            <div class="input-container" style="position: relative;">
+            <div class="input-container" style="position: relative">
               <input
                 type="text"
                 id="zoneInput"
@@ -65,21 +87,27 @@
                 (input)="onInputCity($event)"
                 name="zone"
                 [(ngModel)]="zone"
+                autocomplete="off"
               />
               <div *ngIf="cities.length > 0" class="results-list">
                 <ul class="list-group">
-                  <li class="list-group-item" *ngFor="let city of cities" (click)="onSelectCity(city)">
-                    <i class="las la-map-marker"></i> {{ city.name }} - <span>C.P </span>{{ city.zip_code }}
+                  <li
+                    class="list-group-item"
+                    *ngFor="let city of cities"
+                    (click)="onSelectCity(city)"
+                  >
+                    <i class="las la-map-marker"></i> {{ city.name }} -
+                    <span>C.P </span>{{ city.zip_code }}
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="col-md-3 ms-auto mt-4">
+          <div class="col-md-2 d-flex align-items-center">
             <button
-              class="btn btn-danger rounded-pill btn-custom mb-3 ms-3"
+              class="btn btn-danger rounded-pill btn-custom mt-4"
               type="submit"
-              style="font-size: 1rem btnSearch"
+              style="font-size: 1rem"
               (click)="onSearch()"
             >
               <i class="las la-search"></i> Buscar
@@ -87,30 +115,60 @@
           </div>
         </div>
       </form>
-      <div class="btn-group ms-auto me-5">
-        <button
-            class="btn btn-danger rounded-pill dropdown-toggle"
+      <!-- Opciones de usuario -->
+      <div class="d-flex align-items-center ms-auto">
+        <div class="btn-group ms-auto">
+          <button
+            class="btn btn-danger rounded-pill btn-custom loginMTR"
             type="button"
+            style="margin-top: 22px;"
             id="dropdownMenuButton"
             aria-expanded="false"
             (click)="isAuthenticated ? toggleDropdown() : openLoginModal()"
-        >
-            <i [class]="isAuthenticated ? 'las la-grip-lines' : 'las la-sign-in-alt'"></i>
-            {{ isAuthenticated ? 'Menú' : 'Login' }}
-        </button>
-        <ul
+          >
+            <i
+              [class]="isAuthenticated ? 'las la-grip-lines' : 'las la-sign-in-alt'"
+            ></i>
+            {{ isAuthenticated ? "Menú" : "Login" }}
+          </button>
+          <ul
             *ngIf="isAuthenticated && isDropdownOpen"
-            class="dropdown-menu dropdown-menu-center show bg-danger mt-5 "
+            class="dropdown-menu dropdown-menu-center show bg-danger ulMTR"
             aria-labelledby="dropdownMenuButton"
-            style="left: 50%; transform: translateX(-50%);"
-        >
-            <li><a class="dropdown-item hover-list-red" routerLink="/profile" style="color: #FFFFFF;"> <i class="las la-user"></i> Mi Perfil</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item hover-list-red" routerLink="/favorite" style="color: #FFFFFF;"><i class="las la-heart"></i> Mis Favoritos</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item hover-list-red" (click)="logout()" style="color: #FFFFFF;"><i class="las la-door-closed"></i> Salir</a></li>
-        </ul>
-    </div>
+            style="left: 50%; transform: translateX(-50%); margin-top: 57.5px"
+          >
+            <li>
+              <a
+                class="dropdown-item hover-list-red"
+                routerLink="/profile"
+                style="color: #ffffff; font-size: 0.8rem"
+              >
+                <i class="las la-user" style="font-size: 0.8rem"></i> Mi Perfil</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item hover-list-red"
+                routerLink="/favorite"
+                style="color: #ffffff; font-size: 0.8rem"
+                ><i class="las la-heart" style="font-size: 0.8rem"></i> Mis
+                Favoritos</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item hover-list-red"
+                (click)="logout()"
+                style="color: #ffffff; font-size: 0.8rem"
+                ><i class="las la-door-closed" style="font-size: 0.8rem"></i>
+                Salir</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </nav>

@@ -142,14 +142,40 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       this.visibleMarkers = [];
       this.markersMap.clear();
 
-      markers.forEach((marker) => {
-        if (this.customIcon) {
-          const markerInstance = L.marker([marker.latitud, marker.longitud], { icon: this.customIcon }).addTo(this.markerLayer!)
-            .bindPopup(`<div style="text-align: center; padding: 10px; font-family: Arial, sans-serif;">
-              <img src="${marker.image}" alt="${marker.name}" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #555; margin-bottom: 5px;" />
-              <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
-              <div style="font-size: 12px; color: #777;">${marker.address}</div>
-            </div>`);
+      markers.forEach((marker, index) => {
+        if (this.customIcon && marker.latitud && marker.longitud) {
+          const markerInstance = L.marker([marker.latitud, marker.longitud], {
+            icon: this.customIcon,
+          })
+            .addTo(this.markerLayer!)
+            .bindPopup(() => {
+              const imageUrl =
+                marker.images && marker.images.length > 0
+                  ? marker.images[0].file_url
+                  : marker.image;
+
+              return `<div style="display: flex; align-items: center; padding: 0; font-family: Arial, sans-serif;">
+                        <img src="${imageUrl || '../../../assets/img/web/sello.jpg'}" alt="${marker.name}" style="width: 90px; height: 90px; object-fit: cover; display: block; margin: 0; border: 2px solid #555; margin-right: 10px;" />
+                        <div style="flex-grow: 1; min-width: 0;">
+                          <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
+                          <div style="font-size: 12px; color: #777;">${marker.address}</div>
+                          <button class="info-link" id="info-link-${index}" data-id="${marker.id_salon}" data-name="${marker.name}" style="background: gray; border: none; color:white; font-size:14px; border-radius:3px; cursor: pointer;">+info</button>
+                        </div>
+                      </div>`;
+            });
+
+          markerInstance.on('popupopen', () => {
+            const infoLink = document.getElementById(`info-link-${index}`);
+            if (infoLink) {
+              infoLink.addEventListener('click', (event) => {
+                event.preventDefault(); // Evita la recarga de la página al hacer clic en el enlace
+                const salonId = infoLink.getAttribute('data-id') ?? '';
+                const salonName = infoLink.getAttribute('data-name') ?? '';
+                this.viewDetails(salonId, salonName);
+              });
+            }
+          });
+
           markerInstance.on('click', () => this.onMarkerClick(marker));
           this.visibleMarkers.push(marker);
           this.markersMap.set(marker, markerInstance);
@@ -309,7 +335,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
 
    addFavorite(marker: any): void {
     const userId = localStorage.getItem('usuarioId');
-    
+
     if (!userId) {
         console.error('User ID is not available.');
         return; // Termina la ejecución si no hay un ID de usuario disponible
@@ -331,7 +357,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
             } else {
                 console.error('Unexpected response format:', response);
                 this.toasrt.success('Error,intentelo de nuevo mas tarde');
-                
+
             }
         },
         error => {

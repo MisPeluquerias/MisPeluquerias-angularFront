@@ -1,11 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute} from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet';
 import { DetailsBusinesstService } from '../../core/services/details-business.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../core/services/AuthService.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 
 @Component({
@@ -35,6 +35,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   faqToEdit: any;
   userType: string = 'client';
 
+
   loginForm: FormGroup;
   errorMessage: string = '';
 
@@ -55,34 +56,31 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
-  
+
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
     });
-  
+
     this.route.params.subscribe(params => {
-      const slug = params['salonSlug'];  // Extrae el slug
-      const id = params['id'];  // Extrae el ID numérico
-      //console.log('Slug extraído de la URL:', slug); // Depuración
-      //console.log('ID extraído de la URL:', id);  // Depuración
-  
+      const slug = params['salonSlug'];
+      const id = params['id'];
       this.idSalon = id;
-  
+
       if (id) {
-        //console.log('Solicitando datos para el ID:', id); // Depuración
         this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id).subscribe(
           data => {
-            //console.log('Datos recibidos del negocio:', data); // Depuración
             if (data.length > 0) {
               this.business = data[0];
-              this.business.hours_old = this.sortHours(this.business.hours_old);
-  
+
+              // Formatear los horarios para mostrarlos como en Google
+              this.business.formattedHours = this.formatHours(this.business.hours_old);
+              console.log(this.business.formattedHours);
               this.loadReviews(id);
               this.loadFaq(id);
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
-  
+
               setTimeout(() => {
                 this.initMap();
               }, 0);
@@ -100,8 +98,51 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Función para formatear los horarios al estilo Google
+  private formatHours(hoursOld: string): string[] {
+    const parsedHours = JSON.parse(hoursOld);
+
+    // Obtener el día actual en formato de texto (Lunes, Martes, etc.)
+    const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const today = new Date().getDay(); // Devuelve el índice del día actual (0 para Domingo, 1 para Lunes, etc.)
+    const currentDay = daysOfWeek[today]; // Día actual en formato de texto
+
+    return parsedHours.map((day: any) => {
+      let formattedDay = '';
+
+      // Formatear las horas
+      if (day.hours.length === 0) {
+        formattedDay = `${day.day}: Cerrado`;
+      } else {
+        const formattedHours = day.hours.map((hour: any) => `${hour.open}-${hour.close}`).join(', ');
+        formattedDay = `${day.day}: ${formattedHours}`;
+      }
+
+      // Aplicar negrita al día actual
+      if (day.day === currentDay) {
+        formattedDay = `<b>${formattedDay}</b>`;
+      }
+      return formattedDay;
+    });
+  }
 
 
+  // Función para abrir la página de Google Maps con las coordenadas del salón
+  openDirections(): void {
+    if (this.business) {
+      const lat = this.business.latitud;
+      const lng = this.business.longitud;
+      const name = encodeURIComponent(this.business.name);
+
+      // URL para Google Maps con las coordenadas
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${name}`;
+
+      // Abre la URL en una nueva pestaña o ventana
+      window.open(url, '_blank');
+    } else {
+      console.error('Información del negocio no disponible para obtener direcciones.');
+    }
+  }
   private getImagesAdmin(id: string): void {
     //console.log('Cargando imágenes para el ID:', id); // Depuración: Verifica cuando se cargan las imágenes
     this.detailsBusinessService.getImagesAdmin(id).subscribe(
@@ -190,20 +231,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
     L.marker([this.business.latitud, this.business.longitud], { icon: customIcon }).addTo(this.map)
       .bindPopup(`<b>${this.business.name}</b><br>${this.business.address}`).openPopup();
-  }
-
-  private sortHours(hours: string | null): string {
-    if (!hours) return '';
-
-    const daysOrder = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
-    const hoursArray = hours.split("; ").map(hour => {
-      const [day, ...times] = hour.split(", ");
-      return { day, times: times.join(", ") };
-    });
-
-    hoursArray.sort((a, b) => daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day));
-
-    return hoursArray.map(({ day, times }) => `${day}, ${times}`).join("; ");
   }
 
   private getCurrentDay(): string {

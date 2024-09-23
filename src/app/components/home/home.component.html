@@ -5,16 +5,36 @@
         <img
           src="../../../../assets/img/web/logo-mis-peluquerias.svg"
           width="450"
-          class="img-fluid mb-4 mb-md-0"
+          class="img-fluid mb-1 mb-md-0"
           alt="Log mis Peluquerias"
         />
-        <a
-          class=" btn bg-danger text-white rounded-pill btnLogin responsive-text"
-          type="button"
-          (click)="handleAuthAction()"
-        >
-          <i class="las la-user fs-6"></i> <span>{{ isAuthenticated ? 'Salir' : 'Login' }}</span>
-        </a>
+        <div class="btn-group ms-auto">
+          <button
+            #dropdownMenuButton
+            class="btn btn-danger rounded-pill btnLogin"
+            type="button"
+            id="dropdownMenuButton"
+            aria-expanded="false"
+            (click)="handleAuthAction()"
+          >
+            <i [class]="isAuthenticated ? 'las la-grip-lines' : 'las la-user fs-6'"></i>
+            {{ isAuthenticated ? ' Menú' : ' Login' }}
+          </button>
+          <ul
+            *ngIf="isAuthenticated && isDropdownOpen"
+            class="dropdown-menu dropdown-menu-center show bg-danger loginMT"
+            aria-labelledby="dropdownMenuButton"
+            style="left: 50%; transform: translateX(-50%); margin-top: 37px;"
+          >
+            <li><a class="dropdown-item hover-list-red" routerLink="/profile" style="color: #FFFFFF; font-size:0.8rem !important;"><i style="font-size: 0.8rem !important;" class="las la-user"></i> Mi Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item hover-list-red" routerLink="/centros" style="color: #FFFFFF; font-size:0.8rem !important;"><i style="font-size: 0.8rem !important;" class="las la-map"></i> Cerca de Mí</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item hover-list-red" routerLink="/favorite" style="color: #FFFFFF; font-size:0.8rem !important;"><i style="font-size: 0.8rem !important;" class="las la-heart"></i> Mis Favoritos</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item hover-list-red" (click)="logout()" style="color: #FFFFFF; font-size:0.8rem !important;"><i style="font-size: 0.8rem !important;" class="las la-door-closed"></i> Salir</a></li>
+          </ul>
+        </div>
       </div>
 
       <section class="mb-4">
@@ -202,9 +222,11 @@
             <div class="slide">
               <div class="card ustom-card-height">
                 <img [src]="slide.img" class="card-img-top custom-img-height" [alt]="slide.title">
+                <a class="info-link" (click)="viewDetails(slide.id,slide.title); $event.stopPropagation()">+info</a>
               </div>
               <h5 class="card-title" style="font-size: 1.2rem;">{{slide.title}}</h5>
                 <p class="card-text" style="font-size: 1rem;">{{slide.desc}}</p>
+                <a class="" (click)="viewDetails(slide.id,slide.title); $event.stopPropagation()">+info</a>
             </div>
           </ng-template>
         </p-carousel>
@@ -254,7 +276,7 @@
             <ul class="list-unstyled">
               <li><a class="text-black" (click)="searchByCityName('A Coruña')">A Coruña</a></li>
               <li><a class="text-black" (click)="searchByCityName('Alicante')">Alicante</a></li>
-              <li><a class="text-black" (click)="searchByCityName('Albacete')">Abacete</a></li>
+              <li><a class="text-black" (click)="searchByCityName('Albacete')">Albacete</a></li>
               <li><a class="text-black" (click)="searchByCityName('Almeria')">Almería</a></li>
               <li><a class="text-black" (click)="searchByCityName('Alava')">Alava</a></li>
               <li><a class="text-black" (click)="searchByCityName('Asturias')">Asturias</a></li>

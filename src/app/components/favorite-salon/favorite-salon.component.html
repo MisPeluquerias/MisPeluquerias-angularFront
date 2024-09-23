@@ -38,7 +38,7 @@
           <button class="delete-btn" (click)="removeFavorite(marker); $event.stopPropagation()">
             <i class="las la-trash"></i>
           </button>
-          <a class="info-link" (click)="viewDetails(marker.id_salon); $event.stopPropagation()">+info</a>
+          <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
         </div>
 
         <div class="card-body">

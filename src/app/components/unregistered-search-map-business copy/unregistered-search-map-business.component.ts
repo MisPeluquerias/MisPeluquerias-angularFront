@@ -1,7 +1,12 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
-import * as L from 'leaflet';  // Importa Leaflet directamente
+import * as L from 'leaflet'; // Importa Leaflet directamente
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
@@ -13,10 +18,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-unregistered-search-business',
   templateUrl: './unregistered-search-map-business.component.html',
-  styleUrls: ['./unregistered-search-map-business.component.scss']
+  styleUrls: ['./unregistered-search-map-business.component.scss'],
 })
-export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewInit {
-
+export class UnRegisteredSearchBusinessComponent
+  implements OnInit, AfterViewInit
+{
   private map: L.Map | undefined;
   private customIcon: L.Icon | undefined;
   public isLoading: boolean = false;
@@ -30,37 +36,32 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   private markersMap: Map<any, L.Marker> = new Map();
   private readonly minZoomToLoadMarkers: number = 14;
   private currentIdCity: string | null = null;
-   isAuthenticated: boolean = false;
-  
+  isAuthenticated: boolean = false;
 
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private favoriteSalonService:FavoriteSalonService,
-    private toasrt : ToastrService,
-    private authService:AuthService,
-    private modalService: NgbModal,
-    
-  ) { }
+    private favoriteSalonService: FavoriteSalonService,
+    private toasrt: ToastrService,
+    private authService: AuthService,
+    private modalService: NgbModal
+  ) {}
 
-  ngOnInit(
-   
-  ): void {
+  ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
-   }
-
+  }
 
   ngAfterViewInit(): void {
     this.customIcon = L.icon({
       iconUrl: '../../../assets/img/web/icon-map-finder.png',
       iconSize: [38, 38],
       iconAnchor: [19, 30],
-      popupAnchor: [0, -45]
+      popupAnchor: [0, -45],
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const id_city = params['id_city'];
       const name = params['name'];
       const salonName = params['salonName'];
@@ -84,12 +85,12 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     this.cdr.detectChanges();
   }
 
-  private initMap(params: { id_city?: string; name?: string; salonName?: string; categoria?: string }): void {
-
-
-
-
-
+  private initMap(params: {
+    id_city?: string;
+    name?: string;
+    salonName?: string;
+    categoria?: string;
+  }): void {
     this.map = L.map('unregistered-map', {
       center: [0, 0],
       zoom: 19,
@@ -97,7 +98,7 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '© OpenStreetMap'
+      attribution: '© OpenStreetMap',
     }).addTo(this.map);
 
     this.markerLayer = L.layerGroup().addTo(this.map);
@@ -106,7 +107,12 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     this.enableMapEvents();
   }
 
-  private loadMarkers(params: { id_city?: string; name?: string; salonName?: string; categoria?: string }): void {
+  private loadMarkers(params: {
+    id_city?: string;
+    name?: string;
+    salonName?: string;
+    categoria?: string;
+  }): void {
     //console.log('loadMarkers fue llamado con parámetros:', params);
     if (!this.map || !this.markerLayer) return;
 
@@ -115,23 +121,25 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     let markerObservable: Observable<{ salons: any[] }>;
 
     if (params.id_city && params.categoria) {
-      markerObservable = this.unRegisteredSearchBusinessService.searchByCityAndCategory(params.id_city, params.categoria).pipe(
-        map((salons: any[]) => ({ salons }))
-      );
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCityAndCategory(params.id_city, params.categoria)
+        .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city) {
-      markerObservable = this.unRegisteredSearchBusinessService.searchByCity(params.id_city).pipe(
-        map((salons: any[]) => ({ salons }))
-      );
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCity(params.id_city)
+        .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.name) {
-      markerObservable = this.unRegisteredSearchBusinessService.searchByCityName(params.name).pipe(
-        map(response => ({ salons: response.salons }))
-      );
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCityName(params.name)
+        .pipe(map((response) => ({ salons: response.salons })));
     } else if (params.salonName) {
-      markerObservable = this.unRegisteredSearchBusinessService.searchByName(params.salonName).pipe(
-        map((salons: any[]) => ({ salons }))
-      );
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByName(params.salonName)
+        .pipe(map((salons: any[]) => ({ salons })));
     } else {
-      console.error('Neither id_city, name, nor salonName provided for marker loading.');
+      console.error(
+        'Neither id_city, name, nor salonName provided for marker loading.'
+      );
       this.fadeOutLoadingSpinner();
       return;
     }
@@ -146,29 +154,48 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
         if (markers.length > 0) {
           const bounds = L.latLngBounds(
-            markers.map(marker => [marker.latitud, marker.longitud])
+            markers.map((marker) => [marker.latitud, marker.longitud])
           );
           this.map?.fitBounds(bounds);
         }
 
-        markers.forEach((marker) => {
+        markers.forEach((marker, index) => {
           if (this.customIcon && marker.latitud && marker.longitud) {
-            const markerInstance = L.marker([marker.latitud, marker.longitud], { icon: this.customIcon }).addTo(this.markerLayer!)
+            const markerInstance = L.marker([marker.latitud, marker.longitud], {
+              icon: this.customIcon,
+            })
+              .addTo(this.markerLayer!)
               .bindPopup(() => {
-                const imageUrl = marker.images && marker.images.length > 0
-                  ? marker.images[0].file_url
-                  : marker.image;
+                const imageUrl =
+                  marker.images && marker.images.length > 0
+                    ? marker.images[0].file_url
+                    : marker.image;
 
-                return `<div style="text-align: center; padding: 10px; font-family: Arial, sans-serif;">
-                          <img src="${imageUrl}" alt="${marker.name}" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #555; margin-bottom: 5px;" />
-                          <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
-                          <div style="font-size: 12px; color: #777;">${marker.address}</div>
+                return `<div style="display: flex; align-items: center; padding: 0; font-family: Arial, sans-serif;">
+                          <img src="${imageUrl || '../../../assets/img/web/sello.jpg'}" alt="${marker.name}" style="width: 90px; height: 90px; object-fit: cover; display: block; margin: 0; border: 2px solid #555; margin-right: 10px;" />
+                          <div style="flex-grow: 1; min-width: 0;">
+                            <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
+                            <div style="font-size: 12px; color: #777;">${marker.address}</div>
+                             <button class="info-link" id="info-link-${index}" data-id="${marker.id_salon}" data-name="${marker.name}" style="background: gray; border: none; color:white; font-size:14px; border-radius:3px; cursor: pointer;">+info</button>
+                          </div>
                         </div>`;
               });
+
+            markerInstance.on('popupopen', () => {
+              const infoLink = document.getElementById(`info-link-${index}`);
+              if (infoLink) {
+                infoLink.addEventListener('click', (event) => {
+                  event.preventDefault(); // Evita la recarga de la página al hacer clic en el enlace
+                  const salonId = infoLink.getAttribute('data-id') ?? '';
+                  const salonName = infoLink.getAttribute('data-name') ?? '';
+                  this.viewDetails(salonId, salonName);
+                });
+              }
+            });
+
             markerInstance.on('click', () => this.onMarkerClick(marker));
             this.visibleMarkers.push(marker);
             this.markersMap.set(marker, markerInstance);
-
             this.getImagesAdmin(marker.id_salon);
           }
         });
@@ -189,19 +216,19 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     modalRef.componentInstance.redirectUrl = '/business';
   }
 
-
-  
   private getImagesAdmin(id: string): void {
     this.unRegisteredSearchBusinessService.getImagesAdmin(id).subscribe(
-      images => {
+      (images) => {
         if (images.length > 0) {
-          const marker = this.visibleMarkers.find(m => m.id_salon === id);
+          const marker = this.visibleMarkers.find((m) => m.id_salon === id);
           if (marker) {
-            marker.images = images.sort((a, b) => b.file_principal - a.file_principal);
+            marker.images = images.sort(
+              (a, b) => b.file_principal - a.file_principal
+            );
           }
         }
       },
-      error => console.error('Error loading images', error)
+      (error) => console.error('Error loading images', error)
     );
   }
 
@@ -317,7 +344,9 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
   }
 
   public get totalPages(): number[] {
-    return Array(Math.ceil(this.visibleMarkers.length / this.itemsPerPage)).fill(0).map((_, i) => i + 1);
+    return Array(Math.ceil(this.visibleMarkers.length / this.itemsPerPage))
+      .fill(0)
+      .map((_, i) => i + 1);
   }
 
   public onCardClick(marker: any): void {
@@ -341,26 +370,27 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
 
   public viewDetails(id: any, salonName: string): void {
     if (id && salonName) {
-        // Generar el slug del salón a partir del nombre
-        const salonSlug = salonName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+      // Generar el slug del salón a partir del nombre
+      const salonSlug = salonName
+        .toLowerCase()
+        .replace(/ /g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
-        console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
+      console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
 
-        // Navegar a la URL con el slug y el ID
-        this.router.navigate([`/centro/${salonSlug}/${id}`]);
+      // Navegar a la URL con el slug y el ID
+      this.router.navigate([`/centro/${salonSlug}/${id}`]);
     } else {
-        console.error('Marker ID or salon name is undefined');
+      console.error('Marker ID or salon name is undefined');
     }
-}
-
-
+  }
 
   addFavorite(marker: any): void {
     const userId = localStorage.getItem('usuarioId');
-    
+
     if (!userId) {
-        console.error('User ID is not available.');
-        return; // Termina la ejecución si no hay un ID de usuario disponible
+      console.error('User ID is not available.');
+      return; // Termina la ejecución si no hay un ID de usuario disponible
     }
 
     const favorite = { id_user: userId, id_salon: marker.id_salon };
@@ -368,24 +398,23 @@ export class UnRegisteredSearchBusinessComponent implements OnInit, AfterViewIni
     console.log('Attempting to add favorite:', favorite); // Depuración
 
     this.favoriteSalonService.addFavorite(favorite).subscribe(
-        (response: any) => {
-            console.log('Add favorite response:', response); // Depuración
+      (response: any) => {
+        console.log('Add favorite response:', response); // Depuración
 
-            if (response && response.id_user_favorite) {
-                marker.isFavorite = true;
-                marker.id_user_favorite = response.id_user_favorite;
-                //console.log('Favorite added successfully');
-                this.toasrt.success('El salón se añadio a su lista de favoritos');
-            } else {
-                console.error('Unexpected response format:', response);
-                this.toasrt.success('Error,intentelo de nuevo mas tarde');
-                
-            }
-        },
-        error => {
-          this.toasrt.success('El salón ya esta en su lista de favoritos');
-            console.error('Error adding favorite', error);
+        if (response && response.id_user_favorite) {
+          marker.isFavorite = true;
+          marker.id_user_favorite = response.id_user_favorite;
+          //console.log('Favorite added successfully');
+          this.toasrt.success('El salón se añadio a su lista de favoritos');
+        } else {
+          console.error('Unexpected response format:', response);
+          this.toasrt.success('Error,intentelo de nuevo mas tarde');
         }
+      },
+      (error) => {
+        this.toasrt.success('El salón ya esta en su lista de favoritos');
+        console.error('Error adding favorite', error);
+      }
     );
-}
+  }
 }

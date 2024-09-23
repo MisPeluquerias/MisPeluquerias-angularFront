@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild,HostListener } from '@angular/core';
 import { SearchBarService } from '../../core/services/navbar-home.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
@@ -42,6 +42,8 @@ export class HomeComponent {
   selectedCategory: string = '';
   citiesModal: any[] = [];
   isDropdownOpen: boolean = false;
+  @ViewChild('dropdownMenuButton') dropdownMenuButton!: ElementRef;
+
 
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
@@ -53,15 +55,15 @@ export class HomeComponent {
     private homeService: HomeService,
   ) { }
 
+
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
-    this.authService.logout();
     this.searchTermsCity
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (term.length >= 2) {
+          if (term.length >= 3) {
             return this.searchBarService.searchCity(term);
           } else {
             return of([]);
@@ -79,11 +81,15 @@ export class HomeComponent {
 
     this.homeService.getSalonValidated().subscribe({
       next: (salons) => {
+
         this.slides = salons.map(salon => ({
           img: salon.image,  // Asegúrate de que esta propiedad coincida con tu estructura de datos
           title: salon.name,    // Cambia 'name' por la propiedad correcta en tus datos
-          desc: salon.address  // Cambia 'description' por la propiedad correcta en tus datos
+          desc: salon.address,
+          id:salon.id_salon
+
         }));
+        console.log(this.slides)
       },
       error: (error) => {
         console.error('Error al obtener salones validados:', error);
@@ -95,7 +101,7 @@ export class HomeComponent {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (term.length >= 2) {
+          if (term.length >= 3) {
             return this.searchBarService.searchCity(term);
           } else {
             return of([]);
@@ -116,7 +122,7 @@ export class HomeComponent {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (term.length >= 2) {
+          if (term.length >= 3) {
             return this.searchBarService.searchService(term);
           } else {
             return of([]);
@@ -137,7 +143,7 @@ export class HomeComponent {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (term.length >= 2) {
+          if (term.length >= 3) {
             return this.searchBarService.searchSalon(term);
           } else {
             return of([]);
@@ -157,6 +163,39 @@ export class HomeComponent {
   ngAfterViewInit() {
     this.modalInstance = new Modal(this.searchCategoriesModal.nativeElement);
   }
+  public viewDetails(id: any, salonName: string): void {
+    console.log('id recibido',id,'salon recibido',salonName);
+    if (id && salonName) {
+      // Generar el slug del salón a partir del nombre
+      const salonSlug = salonName
+        .toLowerCase()
+        .replace(/ /g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+
+      console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
+
+      // Navegar a la URL con el slug y el ID
+      this.router.navigate([`/centro/${salonSlug}/${id}`]);
+    } else {
+      console.error('Marker ID or salon name is undefined');
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const targetElement = event.target as HTMLElement;
+
+    // Verifica si el clic fue fuera del botón o del menú
+    if (this.isDropdownOpen && !this.dropdownMenuButton.nativeElement.contains(targetElement)) {
+      this.isDropdownOpen = false;
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+
 
   openModal(category: string) {
     this.selectedCategory = category;
@@ -166,6 +205,10 @@ export class HomeComponent {
   openLoginModalToReclamation(): void {
     const modalRef = this.modalService.open(LoginComponent);
     modalRef.componentInstance.redirectUrl = '/reclamation';
+  }
+
+  openLoginModal() {
+    this.modalService.open(LoginComponent);
   }
 
   openLoginModalToBusiness(): void {
@@ -403,11 +446,9 @@ export class HomeComponent {
 
   handleAuthAction(): void {
     if (this.isAuthenticated) {
-      this.authService.logout();
-      this.isAuthenticated = false;
-      this.router.navigate(['/home']);
+      this.toggleDropdown(); // Abre o cierra el dropdown si el usuario está autenticado
     } else {
-      this.openLoginModalToBusiness();
+      this.openLoginModalToBusiness(); // Abre el modal de login si no está autenticado
     }
   }
 
@@ -443,10 +484,6 @@ export class HomeComponent {
 
   logout() {
     this.authService.logout();
-  }
-
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
   }
 
 }

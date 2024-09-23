@@ -1,7 +1,7 @@
 <div class="wrapper">
   <app-navbar-fixed></app-navbar-fixed>
   <div class="content">
-    <div class="container-fluid py-5 position-relative bg-light">
+    <div class="container-fluid py-5 position-relative">
       <div *ngIf="business" class="row">
         <!-- Título y dirección -->
         <div class="col-12 mb-3">
@@ -238,17 +238,18 @@
 
           <div class="mb-3">
             <div id="map" class="w-100" style="height: 335px; border: 0.1px solid #000; border-radius: 12px;"></div>
+            <button class="btn btn-danger w-100 mt-3" (click)="openDirections()">Cómo llegar</button>
           </div>
 
           <div class="horarios mb-5">
-            <div *ngFor="let hour of business.hours_old.split('; ')" class="horario-item">
-              <div [ngClass]="{ 'current-day': hour.split(', ')[0] === currentDay }" class="dia text-responsive">
-                {{ hour.split(", ")[0] }}
-              </div>
-              <div class="horas">
-                <p class="text-responsive" *ngFor="let time of hour.split(', ').slice(1)">{{ time }}</p>
-              </div>
-            </div>
+            <h4 class="h3">Horarios</h4>
+            <ul class="list-unstyled">
+              <li>
+                <div *ngFor="let formattedHour of business.formattedHours">
+                  <p [innerHTML]="formattedHour"></p>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
