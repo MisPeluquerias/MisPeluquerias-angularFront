@@ -245,9 +245,8 @@
             <h4 class="h3">Horarios</h4>
             <ul class="list-unstyled">
               <li>
-                <div *ngFor="let formattedHour of business.formattedHours">
-                  <p [innerHTML]="formattedHour"></p>
-                </div>
+                <!-- Muestra los horarios formateados directamente -->
+                <p [innerHTML]="business?.formattedHours"></p>
               </li>
             </ul>
           </div>

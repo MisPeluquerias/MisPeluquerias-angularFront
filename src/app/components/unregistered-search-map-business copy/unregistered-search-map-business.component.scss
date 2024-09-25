@@ -274,4 +274,17 @@ app-footer {
   p {
     font-size: 1rem;
   }
+  .row {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas más pequeñas */
+  }
+
+  /* Ajusta el orden de los elementos para pantallas pequeñas */
+  #results {
+    order: 2; /* Los resultados irán después del mapa */
+  }
+
+  .map-frame {
+    order: 1; /* El mapa irá antes de los resultados */
+  }
 }

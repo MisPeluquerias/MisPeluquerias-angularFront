@@ -1,0 +1,65 @@
+# Redirige a HTTPS
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Redirección a index.html para el enrutamiento de Angular (Single Page Application)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Si el archivo o directorio existe, sirve directamente
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # Redirige todas las demás solicitudes a index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Habilita la compresión de archivos
+<IfModule mod_deflate.c>
+  # Forza la compresión en varios tipos de archivos
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml application/xhtml+xml application/rss+xml application/atom_xml image/svg+xml
+
+  # Excluir ciertos navegadores
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+
+  # Añadir cabeceras de compresión para proxy cache
+  Header append Vary User-Agent env=!dont-vary
+</IfModule>
+
+# Habilita el almacenamiento en caché de recursos estáticos
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Configura la expiración de diferentes tipos de archivos
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/html "access plus 1 hour"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/x-javascript "access plus 1 month"
+  ExpiresByType application/x-shockwave-flash "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresDefault "access plus 1 month"
+</IfModule>
+
+# Habilita el almacenamiento en caché del navegador
+<IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|gif|swf|js|css|ico|woff|woff2|ttf|svg)$">
+    Header set Cache-Control "max-age=31536000, public"
+  </FilesMatch>
+</IfModule>
+
+# Habilita Gzip para comprimir archivos
+<IfModule mod_mime.c>
+  AddEncoding gzip .gz
+  AddEncoding gzip .svgz
+</IfModule>
+
+
+# Configura el MIME type para archivos JSON y Web Manifest
+AddType application/json .json
+AddType application/manifest+json .webmanifest

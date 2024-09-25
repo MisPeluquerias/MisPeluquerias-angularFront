@@ -43,6 +43,7 @@ export class RegisterComponent implements OnInit {
           Validators.pattern(/^[0-9]{8}[A-Za-z]$/), // Expresión regular para un DNI español
         ],
       ],
+      address: ['', Validators.required],
       id_province: ['', Validators.required],
       id_city: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -151,6 +152,4 @@ export class RegisterComponent implements OnInit {
       }
     );
   }
-
-
 }

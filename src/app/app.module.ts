@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NavbarHomeSearchComponent } from './shared/components/navbar-home-search/navbar-home-search.component';
+
 import { TermsComponent } from './components/home/terms/terms.component';
 import { PrivacyComponent } from './components/home/privacy/privacy.component';
 import { WarningComponent } from './components/home/warning/warning.component';
@@ -41,7 +41,6 @@ import { FavoriteSalonComponent } from './components/favorite-salon/favorite-sal
     AppComponent,
     HomeComponent,
     FooterComponent,
-    NavbarHomeSearchComponent,
     TermsComponent,
     PrivacyComponent,
     WarningComponent,

@@ -98,32 +98,33 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Función para formatear los horarios al estilo Google
-  private formatHours(hoursOld: string): string[] {
-    const parsedHours = JSON.parse(hoursOld);
 
-    // Obtener el día actual en formato de texto (Lunes, Martes, etc.)
-    const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const today = new Date().getDay(); // Devuelve el índice del día actual (0 para Domingo, 1 para Lunes, etc.)
-    const currentDay = daysOfWeek[today]; // Día actual en formato de texto
+  private formatHours(hoursOld: string): string {
+    const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    const todayIndex = new Date().getDay();
+    const currentDay = daysOfWeek[(todayIndex + 6) % 7];
+    const days = hoursOld.split(';').map(day => day.trim()).filter(day => day.length > 0);
+    const dayMap = new Map<string, string>();
 
-    return parsedHours.map((day: any) => {
-      let formattedDay = '';
-
-      // Formatear las horas
-      if (day.hours.length === 0) {
-        formattedDay = `${day.day}: Cerrado`;
-      } else {
-        const formattedHours = day.hours.map((hour: any) => `${hour.open}-${hour.close}`).join(', ');
-        formattedDay = `${day.day}: ${formattedHours}`;
+    days.forEach(day => {
+      const [dayName, ...hours] = day.split(':').map(part => part.trim());
+      if (dayName && hours.length > 0) {
+        dayMap.set(dayName, hours.join(':'));
       }
+    });
 
-      // Aplicar negrita al día actual
-      if (day.day === currentDay) {
-        formattedDay = `<b>${formattedDay}</b>`;
+
+    const formattedHours = daysOfWeek.map(dayName => {
+      const hours = dayMap.get(dayName) || 'Cerrado';
+      const formattedDay = `${dayName}: ${hours}`;
+
+      if (dayName === currentDay) {
+        return `<b>${formattedDay}</b>`;
       }
       return formattedDay;
-    });
+    }).join('<br>');
+
+    return formattedHours;
   }
 
 
