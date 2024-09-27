@@ -17,7 +17,8 @@ import { HomeService } from '../../core/services/home.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-
+  private lastScrollTop = 0;
+  @ViewChild('container', { static: false }) container!: ElementRef;
   @ViewChild('searchCategoriesModal') searchCategoriesModal!: ElementRef;
   categories: any[] = [];
   services: any[] = [];
@@ -162,7 +163,30 @@ export class HomeComponent {
 
   ngAfterViewInit() {
     this.modalInstance = new Modal(this.searchCategoriesModal.nativeElement);
+
+
+    const observerOptions = {
+      root: null, // Usa el viewport completo como referencia
+      rootMargin: '0px 0px -40% 0px', // Crea un "eje" virtual en el medio de la pantalla
+      threshold: 0.4, // Dispara cuando el 50% del elemento esté en vista
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view'); // Aplica zoom al entrar al eje
+        } else {
+          entry.target.classList.remove('in-view'); // Quita zoom al salir del eje
+        }
+      });
+    }, observerOptions);
+
+    // Selecciona todos los elementos con la clase 'zoom-element'
+    const items = this.container.nativeElement.querySelectorAll('.zoom-element');
+    items.forEach((item: Element) => observer.observe(item));
   }
+
+
   public viewDetails(id: any, salonName: string): void {
     console.log('id recibido',id,'salon recibido',salonName);
     if (id && salonName) {
@@ -225,6 +249,7 @@ export class HomeComponent {
       (response: any) => {
         if (response && Array.isArray(response.salons) && response.salons.length > 0) {
           this.router.navigate(['/buscador'], { queryParams: { name: cityName } });
+           window.scrollTo(0, 0);
         } else {
           this.toastr.info('No se encontraron salones en esta ciudad.');
         }

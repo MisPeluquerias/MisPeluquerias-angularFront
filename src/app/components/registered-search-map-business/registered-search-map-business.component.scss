@@ -1,6 +1,11 @@
-* {
+*:not(i) {
   box-sizing: border-box;
+
+  font-family: "Merriweather", system-ui;
+  font-weight: 400;
+  font-style: italic;
 }
+
 
 html {
   font-size: 16px; /* Tamaño de fuente base */
@@ -260,6 +265,10 @@ app-footer {
   .card {
     flex: 1 1 100%; /* Una tarjeta por fila en pantallas pequeñas */
     max-width: 100%;
+  }
+
+  .map-frame{
+    height: 40vh;
   }
 
   .card-image {

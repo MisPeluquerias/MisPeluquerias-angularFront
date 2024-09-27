@@ -5,17 +5,44 @@
       <div *ngIf="business" class="row">
         <!-- Título y dirección -->
         <div class="col-12 mb-3">
-          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mt-3">
-            <h1 class=" mb-2"> <b>{{ business.name }}</b></h1>
-            <p class="mb-3">{{ business.address }}</p>
+          <div
+            class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mt-3"
+          >
+            <h1 class="mb-2 h3">
+              <b>{{ business.name }}</b>
+            </h1>
+            <div class="d-flex justify-content-end">
+              <ng-container
+                *ngIf="authService.isAuthenticated(); else loginToClaim"
+              >
+                <a
+                  class="btn btn-lg btn-danger rounded-pill btn-custom mt-3"
+                  routerLink="/reclamation"
+                >
+                  <i class="las la-hand-paper"></i> Reclamalo ahora
+                </a>
+              </ng-container>
+              <ng-template #loginToClaim>
+                <button
+                  class="btn btn-danger rounded-pill btn-custom mt-3"
+                  (click)="openLoginModal()"
+                >
+                  <i class="las la-hand-paper"></i> Reclamalo ahora
+                </button>
+              </ng-template>
+            </div>
           </div>
         </div>
 
         <!-- Columna de imagen y detalles principales -->
-        <div class="col-lg-8 col-md-7 mb-4">
+        <div class="col-lg-8 col-md-7 mb-5">
           <div *ngIf="images.length > 0; else noImagesTemplate">
             <!-- Carrusel con imágenes -->
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div
+              id="carouselExampleIndicators"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
               <div class="carousel-indicators">
                 <button
                   *ngFor="let img of images; let i = index"
@@ -29,7 +56,10 @@
                 ></button>
               </div>
               <div class="carousel-inner">
-                <div *ngFor="let img of images; let i = index" [ngClass]="{ 'carousel-item': true, active: i === 0 }">
+                <div
+                  *ngFor="let img of images; let i = index"
+                  [ngClass]="{ 'carousel-item': true, active: i === 0 }"
+                >
                   <img
                     [src]="img.file_url || '../../../assets/img/web/sello.jpg'"
                     class="d-block w-100 fixed-image-size img-fluid"
@@ -37,12 +67,28 @@
                   />
                 </div>
               </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
                 <span class="visually-hidden">Anterior</span>
               </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
                 <span class="visually-hidden">Siguiente</span>
               </button>
             </div>
@@ -59,14 +105,16 @@
           </ng-template>
 
           <!-- Descripción del negocio -->
-          <h2 class="mt-5">Sobre el salón</h2>
+          <h2 class="mt-5 h4 text-center mb-2 fw-bold">Sobre el salón</h2>
           <div class="mt-4">
             <div *ngFor="let description of descriptionSalon">
               <p *ngIf="description.about_us; else defaultMessage">
                 {{ description.about_us }}
               </p>
+              <div class="separator-line mt-4 mb-3"></div>
             </div>
           </div>
+
           <ng-template #defaultMessage>
             <p class="mt-4">
               {{ business.name }} es un salón ubicado en {{ business.address }}.
@@ -76,102 +124,85 @@
           </ng-template>
 
           <!-- Servicios -->
-          <div class="row d-flex mt-5">
+          <div class="row d-flex mt-3">
             <div class="col">
-              <h3 class="mb-3">Servicios</h3>
-              <div *ngIf="services.length > 0">
-                <ul class="list-group">
-                  <li *ngFor="let service of services" class="list-group-item">
-                    <h6>{{ service.service_name }}</h6>
-                    <small class="text-muted">Tipos: {{ service.service_type_names }}</small>
-                  </li>
-                </ul>
+              <h3 class="mb-4 mt-2 h4 text-center fw-bold">Nuestros servicios</h3>
+              <div
+                *ngIf="services.length > 0"
+                class="row justify-content-center mt-2"
+              >
+                <div
+                  *ngFor="let service of services"
+                  class="col-6 col-md-4 mb-3 d-flex justify-content-center"
+                >
+                  <button
+                    class="btn btn-secondary btn-lgn w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#serviceModal"
+                    (click)="openServiceModal(service)"
+                  >
+                    {{ service.serviceName }}
+                  </button>
+                </div>
               </div>
-              <div *ngIf="services.length === 0">
-                <p>No hay servicios disponibles.</p>
-              </div>
+              <div class="separator-line mt-4 mb-3"></div>
+            </div>
+            <div *ngIf="services.length === 0">
+              <p>No hay servicios disponibles.</p>
+              <div class="separator-line mt-5"></div>
             </div>
           </div>
 
           <!-- Opiniones -->
-          <div class="row d-flex justify-content-end mt-5">
-            <div class="col-auto">
-              <button
-                *ngIf="authService.isAuthenticated(); else loginButton"
-                class="btn bg-danger rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#reviewModal"
-                style="color: white"
-              >
-                Escribir reseña
-              </button>
-              <ng-template #loginButton>
-                <button class="btn bg-danger rounded-pill mb-4" style="color: white" (click)="openLoginModal()">
-                  Escribir reseña
-                </button>
-              </ng-template>
+          <div class="row d-flex text-center">
+            <h2 class="h4 mb-5 mt-3 fw-bold">Valoraciones de clientes</h2>
+          </div>
+
+          <!-- Contenedor de dos columnas -->
+          <div class="row">
+            <!-- Primera columna -->
+            <div class="col-12 col-md-6 mb-4">
+              <h5 class="fw-bold">Column 1 Title</h5>
+              <p>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Libero
+                quas quasi in incidunt, sunt similique, id rerum cum, ut
+                nesciunt blanditiis. Est quo itaque ipsam consequuntur tempore
+                ratione sapiente maxime!
+              </p>
+            </div>
+            <!-- Segunda columna -->
+            <div class="col-12 col-md-6 mb-4">
+              <h5 class="fw-bold">Puntuaciones</h5>
+              <div class="rating-input d-flex align-items-center">
+                <label class="me-3">Servicio</label>
+              </div>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
+                explicabo adipisci omnis consequatur ex esse quae rerum ullam,
+                provident aliquid autem quisquam aspernatur unde aliquam
+                exercitationem temporibus eaque, sequi repellat.
+              </p>
             </div>
           </div>
 
-          <div *ngIf="reviews.length > 0">
-            <ul class="list-unstyled">
-              <li *ngFor="let review of reviews" class="card mb-3 mt-5">
-                <div class="card-body">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="star-rating">
-                      <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-                        <i
-                          class="star"
-                          [class.filled]="star <= review.qualification"
-                          >&#9733;</i
-                        >
-                      </ng-container>
-                    </div>
-                  </div>
-                  <p class="mb-0">{{ review.observacion }}</p>
-                  <div class="d-flex justify-content-end mt-2">
-                    <button
-                      *ngIf="userType !== 'client' && userType !== 'salon'"
-                      class="btn btn-primary btn-sm me-2"
-                      data-bs-toggle="modal"
-                      data-bs-target="#editReviewModal"
-                      (click)="editReview(review)"
-                    >
-                      Modificar
-                    </button>
-                    <button
-                      *ngIf="userType !== 'client' && userType !== 'salon'"
-                      class="btn btn-danger btn-sm"
-                      (click)="deleteReview(review.id_review)"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div *ngIf="reviews.length === 0">
-            <p>No hay reseñas disponibles.</p>
-          </div>
+
+
+          <h2
+            style="cursor: pointer"
+            class="mt-5 h5 text-center mb-5 fw-bold"
+            data-bs-toggle="modal"
+            data-bs-target="#valoracionesModal"
+          >
+            Para dejar valoración pulsa aquí
+          </h2>
+
+          <div class="separator-line mt-5 mb-5"></div>
+
 
           <!-- Preguntas Frecuentes -->
-          <div class="row d-flex justify-content-end align-items-center mt-5">
+          <div class="row d-flex align-items-center mt-5">
             <div class="col-auto">
-              <button
-                *ngIf="authService.isAuthenticated(); else loginButtonFaq"
-                class="btn bg-danger rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#questionModal"
-                style="color: white"
-              >
-                Formular pregunta
-              </button>
-              <ng-template #loginButtonFaq>
-                <button class="btn bg-danger rounded-pill mb-4" style="color: white" (click)="openLoginModal()">
-                  Formular pregunta
-                </button>
-              </ng-template>
+              <h2 class="mt-5 h4">Preguntas</h2>
             </div>
           </div>
 
@@ -217,36 +248,38 @@
         </div>
 
         <!-- Columna de información secundaria -->
-        <div class="col-lg-4 col-md-5 border p-3 rounded">
-          <div class="d-flex justify-content-end">
-            <ng-container *ngIf="authService.isAuthenticated(); else loginToClaim">
-              <a class="btn btn-lg btn-danger rounded-pill btn-custom mb-3" routerLink="/reclamation">
-                <i class="las la-hand-paper"></i> Reclamalo ahora
-              </a>
-            </ng-container>
-            <ng-template #loginToClaim>
-              <button class="btn btn-danger rounded-pill btn-custom mb-3" (click)="openLoginModal()">
-                <i class="las la-hand-paper"></i> Reclamalo ahora
-              </button>
-            </ng-template>
+        <div class="col-lg-4 col-md-5 p-3 rounded">
+          <div class="mb-3 position-relative map-container">
+            <div
+              id="map"
+              class="w-100"
+              style="
+                height: 402px;
+                border: 0.1px solid #000;
+                border-radius: 12px;
+                margin-top: -13px;
+              "
+            ></div>
+            <button class="btn-como-llegar" (click)="openDirections()">
+              Cómo llegar
+            </button>
           </div>
-
+          <p class="mb-3">{{ business.address }}</p>
           <div class="d-flex align-items-center mb-3">
             <span><i class="las la-phone"></i> {{ business.phone }}</span>
-            <a href="tel:{{ business.phone }}" class="btn btn-outline-secondary ms-auto">Llamar</a>
-          </div>
-
-          <div class="mb-3">
-            <div id="map" class="w-100" style="height: 335px; border: 0.1px solid #000; border-radius: 12px;"></div>
-            <button class="btn btn-danger w-100 mt-3" (click)="openDirections()">Cómo llegar</button>
+            <a
+              href="tel:{{ business.phone }}"
+              class="btn btn-outline-secondary ms-auto"
+              >Llamar</a
+            >
           </div>
 
           <div class="horarios mb-5">
-            <h4 class="h3">Horarios</h4>
+            <h4 class="h4">Horario</h4>
             <ul class="list-unstyled">
               <li>
                 <!-- Muestra los horarios formateados directamente -->
-                <p [innerHTML]="business?.formattedHours"></p>
+                <p class="h6" [innerHTML]="business?.formattedHours"></p>
               </li>
             </ul>
           </div>
@@ -255,4 +288,172 @@
     </div>
   </div>
   <app-footer></app-footer>
+</div>
+
+<!--Modal par mostrar subservicios-->
+<div
+  class="modal fade"
+  id="serviceModal"
+  tabindex="-1"
+  aria-labelledby="serviceModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceModalLabel">
+          {{ selectedService?.serviceName }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li
+            *ngFor="let subservice of selectedService?.subservices"
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >
+            <span>{{ subservice.subservice }}</span>
+            <span class="text-success">{{ subservice.time }} min.</span>
+            <!-- Puedes añadir el precio aquí -->
+          </li>
+        </ul>
+        <p
+          *ngIf="!selectedService?.subservices?.length"
+          class="text-muted mt-2"
+        >
+          No hay detalles
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal para valoraciones de clientes-->
+<div class="modal fade" id="valoracionesModal" tabindex="-1" aria-labelledby="valoracionesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="valoraciones">Tu valoración es importante para nosotros.</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4 mt-4">
+          <img src="../../../assets/img/web/sello.jpg" width="150" alt="logo-mis-peluquerias" />
+        </div>
+
+        <!-- Servicio -->
+        <div class="rating-input d-flex align-items-center mb-3 mt-3">
+          <label class="me-3">Servicio:</label>
+          <div class="circle-input-group">
+            <input type="checkbox" id="service1" [(ngModel)]="ratings.service[0]" (change)="updateRatings(ratings.service, 0)" />
+            <label for="service1" class="circle-label"></label>
+
+            <input type="checkbox" id="service2" [(ngModel)]="ratings.service[1]" (change)="updateRatings(ratings.service, 1)" />
+            <label for="service2" class="circle-label"></label>
+
+            <input type="checkbox" id="service3" [(ngModel)]="ratings.service[2]" (change)="updateRatings(ratings.service, 2)" />
+            <label for="service3" class="circle-label"></label>
+
+            <input type="checkbox" id="service4" [(ngModel)]="ratings.service[3]" (change)="updateRatings(ratings.service, 3)" />
+            <label for="service4" class="circle-label"></label>
+
+            <input type="checkbox" id="service5" [(ngModel)]="ratings.service[4]" (change)="updateRatings(ratings.service, 4)" />
+            <label for="service5" class="circle-label"></label>
+          </div>
+        </div>
+        <div class="separator-line mb-3 w-100"></div>
+
+        <!-- Calidad/Precio -->
+        <div class="rating-input d-flex align-items-center mb-3">
+          <label class="me-3">Calidad/Precio:</label>
+          <div class="circle-input-group">
+            <input type="checkbox" id="quality1" [(ngModel)]="ratings.quality[0]" (change)="updateRatings(ratings.quality, 0)" />
+            <label for="quality1" class="circle-label"></label>
+
+            <input type="checkbox" id="quality2" [(ngModel)]="ratings.quality[1]" (change)="updateRatings(ratings.quality, 1)" />
+            <label for="quality2" class="circle-label"></label>
+
+            <input type="checkbox" id="quality3" [(ngModel)]="ratings.quality[2]" (change)="updateRatings(ratings.quality, 2)" />
+            <label for="quality3" class="circle-label"></label>
+
+            <input type="checkbox" id="quality4" [(ngModel)]="ratings.quality[3]" (change)="updateRatings(ratings.quality, 3)" />
+            <label for="quality4" class="circle-label"></label>
+
+            <input type="checkbox" id="quality5" [(ngModel)]="ratings.quality[4]" (change)="updateRatings(ratings.quality, 4)" />
+            <label for="quality5" class="circle-label"></label>
+          </div>
+        </div>
+
+        <div class="separator-line mb-3 w-100"></div>
+
+        <!-- Limpieza -->
+        <div class="rating-input d-flex align-items-center mb-3">
+          <label class="me-3">Limpieza:</label>
+          <div class="circle-input-group">
+            <input type="checkbox" id="cleanliness1" [(ngModel)]="ratings.cleanliness[0]" (change)="updateRatings(ratings.cleanliness, 0)" />
+            <label for="cleanliness1" class="circle-label"></label>
+
+            <input type="checkbox" id="cleanliness2" [(ngModel)]="ratings.cleanliness[1]" (change)="updateRatings(ratings.cleanliness, 1)" />
+            <label for="cleanliness2" class="circle-label"></label>
+
+            <input type="checkbox" id="cleanliness3" [(ngModel)]="ratings.cleanliness[2]" (change)="updateRatings(ratings.cleanliness, 2)" />
+            <label for="cleanliness3" class="circle-label"></label>
+
+            <input type="checkbox" id="cleanliness4" [(ngModel)]="ratings.cleanliness[3]" (change)="updateRatings(ratings.cleanliness, 3)" />
+            <label for="cleanliness4" class="circle-label"></label>
+
+            <input type="checkbox" id="cleanliness5" [(ngModel)]="ratings.cleanliness[4]" (change)="updateRatings(ratings.cleanliness, 4)" />
+            <label for="cleanliness5" class="circle-label"></label>
+          </div>
+        </div>
+
+        <div class="separator-line mb-3 w-100"></div>
+
+        <!-- Rapidez -->
+        <div class="rating-input d-flex align-items-center mb-3">
+          <label class="me-3">Rapidez:</label>
+          <div class="circle-input-group">
+            <input type="checkbox" id="speed1" [(ngModel)]="ratings.speed[0]" (change)="updateRatings(ratings.speed, 0)" />
+            <label for="speed1" class="circle-label"></label>
+
+            <input type="checkbox" id="speed2" [(ngModel)]="ratings.speed[1]" (change)="updateRatings(ratings.speed, 1)" />
+            <label for="speed2" class="circle-label"></label>
+
+            <input type="checkbox" id="speed3" [(ngModel)]="ratings.speed[2]" (change)="updateRatings(ratings.speed, 2)" />
+            <label for="speed3" class="circle-label"></label>
+
+            <input type="checkbox" id="speed4" [(ngModel)]="ratings.speed[3]" (change)="updateRatings(ratings.speed, 3)" />
+            <label for="speed4" class="circle-label"></label>
+
+            <input type="checkbox" id="speed5" [(ngModel)]="ratings.speed[4]" (change)="updateRatings(ratings.speed, 4)" />
+            <label for="speed5" class="circle-label"></label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="separator-line mb-3 w-100"></div>
+       <!-- Textarea para comentarios o notas adicionales -->
+       <div class="form-group mt-4 mb-3">
+        <label for="additionalComments" class="form-label ms-3">Comentarios Adicionales:</label>
+        <textarea
+          id="additionalComments"
+          class="form-control rounded-3 shadow-sm p-2 mx-auto"
+          rows="3"
+          [(ngModel)]="additionalComments"
+          placeholder="Escribe tus comentarios aquí..."
+          style="resize: none; max-width: 95%;"
+        ></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="addReview()">Guardar</button>
+      </div>
+    </div>
+  </div>
 </div>

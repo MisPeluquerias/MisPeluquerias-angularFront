@@ -5,3 +5,10 @@ main{
     margin-bottom: 10vh;
 }
 
+*:not(i) {
+  box-sizing: border-box;
+
+  font-family: "Merriweather", system-ui;
+  font-weight: 400;
+  font-style: italic;
+}

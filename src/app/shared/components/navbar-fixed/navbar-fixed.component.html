@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary" >
   <div class="container-fluid">
     <!-- Logo -->
     <a class="navbar-brand" href="/">
       <img
-        src="../../../../assets/img/web/logo-mis-peluquerias-bk.svg"
+        src="../../../../assets/img/web/logo-mis-peluquerias.svg"
         width="300"
         alt=""
         class="ms-5 mt-3 img-fluid"
@@ -11,7 +11,7 @@
     </a>
 
     <!-- Botón de menú hamburguesa -->
-    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+    <button class="navbar-toggler" type="button" data-bs-theme="dark" (click)="toggleNavbar()">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -33,10 +33,11 @@
                 type="text"
                 id="serviceInput"
                 name="service"
-                class="form-control border-bottom-only mt-4"
+                class="form-control border-bottom-only mt-4 input-service-icon"
                 placeholder="Buscar servicios"
                 (input)="onInputService($event)"
                 [(ngModel)]="service"
+                style="background-color: #ffffff;"
                 autocomplete="off"
               />
               <div *ngIf="services.length > 0" class="results-list">
@@ -57,8 +58,9 @@
               <input
                 type="text"
                 id="salonInput"
-                class="form-control border-bottom-only mt-4"
+                class="form-control border-bottom-only mt-4 input-salon-icon"
                 placeholder="Buscar salones"
+                style="background-color: #ffffff;"
                 (input)="onInputSalon($event)"
                 name="salonName"
                 [(ngModel)]="salonName"
@@ -79,16 +81,19 @@
           </div>
           <div class="col-md-3">
             <div class="input-container" style="position: relative">
+              <div class="input-group">
               <input
                 type="text"
                 id="zoneInput"
-                class="form-control border-bottom-only mt-4"
+                class="form-control border-bottom-only mt-4 input-location-icon"
                 placeholder="¿Dónde? Ciudad o C.P."
                 (input)="onInputCity($event)"
                 name="zone"
+                style="background-color: #ffffff;"
                 [(ngModel)]="zone"
                 autocomplete="off"
               />
+            </div>
               <div *ngIf="cities.length > 0" class="results-list">
                 <ul class="list-group">
                   <li
@@ -105,12 +110,12 @@
           </div>
           <div class="col-md-2 d-flex align-items-center">
             <button
-              class="btn btn-danger rounded-pill btn-custom mt-4"
+              class="btn btn-outline-secondary rounded-pill btn-custom mt-4"
               type="submit"
               style="font-size: 1rem"
               (click)="onSearch()"
             >
-              <i class="las la-search"></i> Buscar
+              <i style="color: #b71622;" class="las la-search"></i> Buscar
             </button>
           </div>
         </div>
@@ -119,7 +124,7 @@
       <div class="d-flex align-items-center ms-auto">
         <div class="btn-group ms-auto">
           <button
-            class="btn btn-danger rounded-pill btn-custom loginMTR"
+            class="btn btn-outline-secondary rounded-pill btn-custom loginMTR"
             type="button"
             style="margin-top: 22px;"
             id="dropdownMenuButton"
@@ -133,7 +138,7 @@
           </button>
           <ul
             *ngIf="isAuthenticated && isDropdownOpen"
-            class="dropdown-menu dropdown-menu-center show bg-danger ulMTR"
+            class="dropdown-menu dropdown-menu-center show bg-light ulMTR"
             aria-labelledby="dropdownMenuButton"
             style="left: 50%; transform: translateX(-50%); margin-top: 57.5px"
           >
@@ -141,7 +146,7 @@
               <a
                 class="dropdown-item hover-list-red"
                 routerLink="/profile"
-                style="color: #ffffff; font-size: 0.8rem"
+                style="color: #000; font-size: 0.8rem"
               >
                 <i class="las la-user" style="font-size: 0.8rem"></i> Mi Perfil</a
               >
@@ -151,7 +156,7 @@
               <a
                 class="dropdown-item hover-list-red"
                 routerLink="/centros"
-                style="color: #ffffff; font-size: 0.8rem"
+                style="color: #000; font-size: 0.8rem"
               >
                 <i class="las la-map" style="font-size: 0.8rem"></i> Cerca de Mí</a
               >
@@ -161,7 +166,7 @@
               <a
                 class="dropdown-item hover-list-red"
                 routerLink="/favorite"
-                style="color: #ffffff; font-size: 0.8rem"
+                style="color: #000; font-size: 0.8rem"
                 ><i class="las la-heart" style="font-size: 0.8rem"></i> Mis
                 Favoritos</a
               >
@@ -171,7 +176,7 @@
               <a
                 class="dropdown-item hover-list-red"
                 (click)="logout()"
-                style="color: #ffffff; font-size: 0.8rem"
+                style="color: #000; font-size: 0.8rem"
                 ><i class="las la-door-closed" style="font-size: 0.8rem"></i>
                 Salir</a
               >

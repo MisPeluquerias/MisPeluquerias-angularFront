@@ -2,6 +2,7 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
 
 .toast-center-center {
   top: 50%;
@@ -32,4 +33,10 @@
 .toast-center-center .toast-message i{
   font-size: 3rem;
 }
+
+.btn-danger {
+  background-color: #b71622;
+}
+
+
 

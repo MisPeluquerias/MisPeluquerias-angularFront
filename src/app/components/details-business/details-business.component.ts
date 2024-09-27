@@ -7,6 +7,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-details-business',
@@ -34,6 +36,18 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   editAnswerText: string = '';
   faqToEdit: any;
   userType: string = 'client';
+  selectedService: any;
+  ratingBreakdown:any[] = [];
+  reviewData:any=[];
+  ratings = {
+    service: [false, false, false, false, false],
+    quality: [false, false, false, false, false],
+    cleanliness: [false, false, false, false, false],
+    speed: [false, false, false, false, false]
+  };
+
+  additionalComments: string = '';
+
 
 
   loginForm: FormGroup;
@@ -45,7 +59,8 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     private detailsBusinessService: DetailsBusinesstService,
     private modalService: NgbModal,
     public authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastr:ToastrService
   ) {
     this.currentDay = this.getCurrentDay();
     this.loginForm = this.fb.group({
@@ -66,12 +81,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       const id = params['id'];
       this.idSalon = id;
 
+
       if (id) {
         this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id).subscribe(
           data => {
             if (data.length > 0) {
               this.business = data[0];
-
               // Formatear los horarios para mostrarlos como en Google
               this.business.formattedHours = this.formatHours(this.business.hours_old);
               console.log(this.business.formattedHours);
@@ -80,6 +95,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
+
 
               setTimeout(() => {
                 this.initMap();
@@ -96,10 +112,24 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         console.error('No se encontró el ID en la URL');
       }
     });
+    this.getReviewSalon();
   }
 
+  updateRatings(ratingArray: boolean[], index: number): void {
+    // Marca los checkboxes anteriores si uno es seleccionado
+    if (ratingArray[index]) {
+      for (let i = 0; i <= index; i++) {
+        ratingArray[i] = true;
+      }
+    } else {
+      // Desmarca los checkboxes siguientes si uno es deseleccionado
+      for (let i = index + 1; i < ratingArray.length; i++) {
+        ratingArray[i] = false;
+      }
+    }
+  }
 
-  private formatHours(hoursOld: string): string {
+ private formatHours(hoursOld: string): string {
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
     const todayIndex = new Date().getDay();
     const currentDay = daysOfWeek[(todayIndex + 6) % 7];
@@ -107,25 +137,29 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     const dayMap = new Map<string, string>();
 
     days.forEach(day => {
-      const [dayName, ...hours] = day.split(':').map(part => part.trim());
-      if (dayName && hours.length > 0) {
-        dayMap.set(dayName, hours.join(':'));
-      }
+        const [dayName, ...hours] = day.split(':').map(part => part.trim());
+        if (dayName && hours.length > 0) {
+            dayMap.set(dayName, hours.join(':'));
+        }
     });
 
-
+    // Crear el HTML formateado con flexbox
     const formattedHours = daysOfWeek.map(dayName => {
-      const hours = dayMap.get(dayName) || 'Cerrado';
-      const formattedDay = `${dayName}: ${hours}`;
+        const hours = dayMap.get(dayName) || 'Cerrado';
+        const formattedDay = `
+          <div class="d-flex justify-content-between">
+             <span>\u2022 ${dayName}:</span>
+            <span class="ms-auto">${hours}</span>
+          </div>`;
 
-      if (dayName === currentDay) {
-        return `<b>${formattedDay}</b>`;
-      }
-      return formattedDay;
-    }).join('<br>');
+        if (dayName === currentDay) {
+            return `<b>${formattedDay}</b>`;
+        }
+        return formattedDay;
+    }).join('<br>'); // Utiliza <br> para separar las líneas
 
     return formattedHours;
-  }
+}
 
 
   // Función para abrir la página de Google Maps con las coordenadas del salón
@@ -187,20 +221,32 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       error => console.error('Error al cargar preguntas frecuentes para el ID:', id, error)
     );
   }
+  openServiceModal(service: any): void {
+    this.selectedService = service;
+  }
 
   private getServicesSalon(id_salon: string): void {
-    //console.log('Cargando servicios para el ID:', id_salon); // Depuración: Verifica cuando se cargan los servicios
     this.detailsBusinessService.getServicesSalon(id_salon).subscribe(
       (response: any) => {
-        if (response && Array.isArray(response.services)) {
-          this.services = response.services;
-          //console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
+        // Verifica si la respuesta es un objeto y no un array
+        if (response && typeof response === 'object' && !Array.isArray(response)) {
+          // Convierte el objeto en un array de servicios
+          this.services = Object.entries(response).map(([serviceName, subservices]) => {
+            // Verificar si subservices es realmente un array
+            const validSubservices = Array.isArray(subservices) ? subservices : [];
+            return {
+              serviceName,  // Nombre del servicio
+              subservices: validSubservices   // Array de subservicios
+            };
+          });
+
+          console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
         } else {
           console.error('La propiedad `services` no es un array para el ID:', id_salon, response); // Depuración: Verifica si hay un error en la respuesta
           this.services = [];
         }
       },
-      error => {
+      (error) => {
         console.error('Error al cargar servicios para el ID:', id_salon, error);
         this.services = [];
       }
@@ -244,8 +290,9 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     this.modalService.open(LoginComponent);
   }
 
-  submitReview(): void {
+  addReview(): void {
     const id_user = this.userId;
+
     if (!id_user) {
       console.error('No se encontró el ID del usuario en el almacenamiento local.');
       return;
@@ -256,18 +303,41 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const id_salon = this.idSalon;
-    const observacion = this.reviewText;
-    const qualification = this.rating;
+    // Función para contar los valores true en un array
+    const countTrueValues = (array: boolean[]): number => {
+      return array.filter(value => value).length;
+    };
 
-    this.detailsBusinessService.saveReview(id_user, id_salon, observacion, qualification).subscribe(
-      response => {
-        //console.log('Reseña guardada:', response);
-        this.loadReviews(id_salon);
+    // Convertir los arrays de ratings a números contando los valores true
+    const numericRatings = {
+      service: countTrueValues(this.ratings.service),
+      quality: countTrueValues(this.ratings.quality),
+      cleanliness: countTrueValues(this.ratings.cleanliness),
+      speed: countTrueValues(this.ratings.speed),
+    };
+
+    // Convertir los ratings a un formato string o JSON que tu backend espere
+    const qualification = JSON.stringify(numericRatings); // Ajusta si tu API necesita un formato diferente
+
+    // Obtener el valor del textarea para los comentarios
+    const observacion = this.additionalComments;
+
+    // Llamar al servicio para enviar los datos
+    this.detailsBusinessService.adddReview(id_user, this.idSalon, observacion, qualification).subscribe({
+      next: (response) => {
+        console.log('Reseña enviada exitosamente:', response);
+        this.toastr.success('Su valoración fue enviada correctamente, gracias');
+        // Lógica adicional como limpiar el formulario o mostrar una notificación de éxito
       },
-      error => console.error('Error al guardar la reseña', error)
-    );
+      error: (error) => {
+        console.error('Error al enviar la reseña:', error);
+        this.toastr.error('No pudimos guardar su valoracion, intentelo de nuevo mas tarde')
+        // Mostrar mensaje de error o manejar el error de acuerdo a tu necesidad
+      }
+    });
   }
+
+
 
   updateReview(): void {
     const updatedReview = {
@@ -362,6 +432,27 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         },
         error => console.error('Error al eliminar la pregunta', error)
       );
+    } else {
+      console.error('No se encontró el ID del salón.');
+    }
+  }
+  getReviewSalon() {
+    // Verificar si existe el idSalon
+    if (this.idSalon) {
+      this.detailsBusinessService.getReviewSalon(this.idSalon).subscribe({
+        next: (response) => {
+          // Almacenar la respuesta recibida en una propiedad para mostrarla o procesarla
+          this.reviewData = response;
+
+          // Puedes agregar lógica adicional para procesar la respuesta si es necesario
+          console.log('Datos de la reseña recibidos:', this.reviewData);
+        },
+        error: (error) => {
+          // Manejo de errores si la llamada falla
+          console.error('Error al obtener la reseña del salón:', error);
+          // Aquí podrías mostrar un mensaje al usuario o manejar el error según tu aplicación
+        }
+      });
     } else {
       console.error('No se encontró el ID del salón.');
     }

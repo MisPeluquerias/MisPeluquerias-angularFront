@@ -48,6 +48,7 @@
               "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
+
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/slick-carousel/slick/slick.min.js",
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
@@ -66,7 +67,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all"

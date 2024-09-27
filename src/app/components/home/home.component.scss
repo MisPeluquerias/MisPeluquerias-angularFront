@@ -1,5 +1,9 @@
-* {
+*:not(i) {
   box-sizing: border-box;
+
+  font-family: "Merriweather", system-ui;
+  font-weight: 400;
+  font-style: italic;
 }
 
 .search-bar {
@@ -18,29 +22,91 @@
 
 }
 
+
+.h1 {
+  font-family: "Merriweather", system-ui;
+  font-weight: 520;
+  font-style: italic;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); /* Sombra del texto */
+  transition: all 0.3s ease; /* Transición suave para los efectos */
+}
+
+/* Efecto al pasar el ratón */
+.h1:hover {
+  color: #000; /* Cambia el color del texto al resaltar (ajusta según tu preferencia) */
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.6); /* Aumenta la sombra del texto */
+  /* Aumenta ligeramente el tamaño para resaltar */
+}
+
+
+.input-service-icon {
+  padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+  background-size: 22px; /* Tamaño del icono */
+}
+
+.input-salon-icon {
+  padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+  background-size: 22px; /* Tamaño del icono */
+}
+
+.input-location-icon {
+  padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+  background-size: 24px; /* Tamaño del icono */
+}
+
+
 .custom-img-height {
   height: 250px;
   object-fit: cover;
   cursor: pointer;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0px 0px 20px  rgb(99, 99, 99);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .custom-img-height:hover {
   transform: scale(1.05);
-  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+
 }
 
+.custom-img-height2 {
+  height: 250px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px  rgb(99, 99, 99);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.custom-img-height2:hover {
+  transform: scale(1.05);
+
+}
 
 li, a {
   text-decoration: none;
   text-align: left;
   cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease; /* Añade transición para el zoom y el color */
+}
+
+/* Efecto de zoom al pasar el ratón */
+li:hover, a:hover {
+  transform: scale(1.3); /* Aumenta el tamaño al pasar el cursor */
+  /* Cambia el color al pasar el ratón, ajusta según tu preferencia */
+}
+.noTransform{
+  li:hover, a:hover {
+  transform: scale(1) !important;
+  }
 }
 
 .card {
   margin: 10px;
+  border-radius: 15px;
 }
 
 .carousel-inner {
@@ -121,7 +187,6 @@ app-search-bar {
 }
 
 
-
 .results-list li:hover {
   background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
 }
@@ -177,11 +242,40 @@ responsive-text{
     flex-direction: row !important;
   }
 
+  .h1PhoneTop{
+    margin-top: 20px !important ;
+  }
 
+  .zoom-element {
+    transition: transform 0.3s ease !important; /* Transición suave */
+  }
+
+  .in-view {
+    transform: scale(1.05) !important; /* Ajusta el valor de scale según la ampliación deseada */
+  }
+
+  .input-service-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+    background-size: 22px; /* Tamaño del icono */
+  }
+
+  .input-salon-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+    background-size: 22px; /* Tamaño del icono */
+  }
+
+  .input-location-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+    background-size: 24px; /* Tamaño del icono */
+  }
 
   .loginMT{
     margin-top: 1.5rem !important;
   }
+
 
 .video-background{
   height: 370px !important;
@@ -193,6 +287,7 @@ responsive-text{
   }
   .d-flex img {
     width: auto ;
+    margin-top: 12px;
     max-width: 200px; /* Ajustar el tamaño del logo */
   }
   h4{
@@ -205,6 +300,7 @@ responsive-text{
 li,a{
   font-size: 1rem;
 }
+
 .btn-small {
   font-size: 0.75rem !important; /* Tamaño de fuente más pequeño */
   padding: 0.25rem 0.5rem !important; /* Reducir el padding */
@@ -216,7 +312,7 @@ li,a{
   }
 
   .container {
-    margin-top: -4rem;
+    margin-top: -2rem;
   }
 
   .sticky {
@@ -275,7 +371,6 @@ li,a{
 
   .custom-card-height {
     height: 150px; /* Reduce la altura de las tarjetas en pantallas pequeñas */
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
 
   .custom-img-height {
@@ -286,7 +381,6 @@ li,a{
   h2{
     font-size: 1rem;
   }
-
 }
 
 
@@ -299,5 +393,22 @@ li,a{
 
 
 
+  .input-service-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+    background-size: 22px; /* Tamaño del icono */
+  }
+
+  .input-salon-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+    background-size: 22px; /* Tamaño del icono */
+  }
+
+  .input-location-icon {
+    padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+    background-size: 24px; /* Tamaño del icono */
+  }
 
 }

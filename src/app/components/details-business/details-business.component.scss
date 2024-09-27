@@ -10,11 +10,19 @@
   flex: 1;
 }
 
+*:not(i) {
+  box-sizing: border-box;
+
+  font-family: "Merriweather", system-ui;
+  font-weight: 400;
+  font-style: italic;
+}
+
 .container-fluid {
   margin-top: 50px; /* Ajusta esta altura para que coincida con la altura del navbar */
   padding: 1em;
   width: 100%; /* Asegura que el contenedor ocupe todo el ancho en pantallas pequeñas */
-  max-width: 1200px; /* Controla el ancho máximo para pantallas grandes */
+  max-width: 1600px; /* Controla el ancho máximo para pantallas grandes */
   z-index: 1;
   position: relative;
 }
@@ -27,8 +35,61 @@ app-navbar-fixed {
   z-index: 1000;
 }
 
+.btn-custom{
+  font-size:0.8rem;
+}
+
+.separator-line {
+    width: 50%; /* Ajusta el ancho según lo necesites */
+    height: 2px; /* Ajusta el grosor de la línea */
+    background-color: #ccc; /* Cambia el color de la línea */
+    margin: 0 auto; /* Centra la línea horizontalmente */
+    display: block;
+  }
+
+  .btn-secondary {
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .circle-input-group {
+    display: flex;
+    gap: 5px; /* Espacio entre los círculos */
+  }
+
+  .circle-input-group input {
+    display: none; /* Oculta los radio buttons */
+  }
+
+  .circle-label {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd; /* Borde gris */
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  /* Estilo del círculo cuando está seleccionado */
+  .circle-input-group input:checked + .circle-label {
+    background-color:#b71622;
+    border: 1px solid gray;
+  }
+
+
 .fixed-image-size {
-  width: 100%;
+  width: 95% !important;
   height: 400px; /* Fija la altura del carrusel según tus necesidades */
   object-fit: cover;
   object-position: center;
@@ -115,6 +176,8 @@ app-navbar-fixed {
   transition: background-color 0.2s ease-in-out;
 }
 
+
+
 .carousel-indicators .active {
   background-color: #007bff;
   margin-right: 12px;
@@ -125,12 +188,35 @@ app-navbar-fixed {
   background-color: #0056b3;
 }
 
+.btn-como-llegar {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-como-llegar:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: scale(1.05);
+}
+
+
 @media (max-width: 576px) {
 
   .fixed-image-size {
     height: auto; /* Deja que la altura de la imagen se ajuste automáticamente */
     height: 200px; /* Limita la altura máxima de la imagen */
+    width: 100% !important;
   }
+
 
 .text-responsive{
   font-size: 0.9rem;
@@ -144,5 +230,4 @@ app-navbar-fixed {
   .btn i {
     font-size: 0.875rem;
   }
-
 }

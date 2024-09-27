@@ -83,6 +83,9 @@ export class UnRegisteredSearchBusinessComponent
       }
     });
     this.cdr.detectChanges();
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 2000);
   }
 
   private initMap(params: {

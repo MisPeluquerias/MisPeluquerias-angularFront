@@ -39,6 +39,14 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
     });
   }
 
+  getReviewSalon(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getReviews`, {
+      params: {
+        salon_id
+      }
+    });
+  }
+
   getServicesSalon(id_salon:string){
     return this.http.get<any[]>(`${this.baseUrl}/details-business/getServicesSalon`, {
       params:{
@@ -55,14 +63,15 @@ getDescrptionSalon(id_salon:string){
 });
 }
 
-  saveReview(id_user: string, id_salon: string, observacion: string, qualification: string): Observable<any[]> {
-    const body = {
-      id_user,
-      id_salon,
-      observacion,
-      qualification
-    };
-    return this.http.post<any[]>(`${this.baseUrl}/details-business/saveReview`, body);
+adddReview(id_user: string, id_salon: string, observacion: string, qualification: string): Observable<any[]> {
+  const body = {
+    id_user,
+    id_salon,
+    observacion,
+    qualification
+  };
+
+    return this.http.post<any[]>(`${this.baseUrl}/details-business/addReview`, body);
   }
 
   loadQuestions(id: string): Observable<any[]> {
@@ -77,6 +86,8 @@ getDescrptionSalon(id_salon:string){
   updateReview(review: any): Observable<any[]> {
     return this.http.post<any[]>(`${this.baseUrl}/details-business/updateReview`, review);
   }
+
+
 
 
   deleteReview(id_review:string){
