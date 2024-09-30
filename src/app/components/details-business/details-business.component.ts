@@ -7,7 +7,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr'
+
 
 
 @Component({
@@ -15,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './details-business.component.html',
   styleUrls: ['./details-business.component.scss']
 })
-export class DetailsBusinessComponent implements OnInit, AfterViewInit {
+export class DetailsBusinessComponent implements OnInit {
   business: any;
   private map: L.Map | undefined;
   currentDay: string;
@@ -39,17 +40,23 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   selectedService: any;
   ratingBreakdown:any[] = [];
   reviewData:any=[];
+  averageRatings:any={}
+  stars: number[] = [];
+  total_reviews: number = 280;
+  excelentePercent: number = 42;
+  muyBuenoPercent: number = 22;
+  normalPercent: number = 16;
+  maloPercent: number = 14;
+  pesimoPercent: number = 2;
+  ratingPorcent:any=[];
+  isUserAuthenticated: boolean = false;
   ratings = {
     service: [false, false, false, false, false],
     quality: [false, false, false, false, false],
     cleanliness: [false, false, false, false, false],
     speed: [false, false, false, false, false]
   };
-
   additionalComments: string = '';
-
-
-
   loginForm: FormGroup;
   errorMessage: string = '';
 
@@ -60,7 +67,9 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     private modalService: NgbModal,
     public authService: AuthService,
     private fb: FormBuilder,
-    private toastr:ToastrService
+    private toastr:ToastrService,
+
+
   ) {
     this.currentDay = this.getCurrentDay();
     this.loginForm = this.fb.group({
@@ -71,17 +80,19 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
+    
+    this.isUserAuthenticated=this.authService.isAuthenticated();
 
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
     });
 
+
+
     this.route.params.subscribe(params => {
       const slug = params['salonSlug'];
       const id = params['id'];
       this.idSalon = id;
-
-
       if (id) {
         this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id).subscribe(
           data => {
@@ -90,13 +101,11 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
               // Formatear los horarios para mostrarlos como en Google
               this.business.formattedHours = this.formatHours(this.business.hours_old);
               console.log(this.business.formattedHours);
-              this.loadReviews(id);
+              this.getScoreReviewSalon();
               this.loadFaq(id);
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
-
-
               setTimeout(() => {
                 this.initMap();
               }, 0);
@@ -112,7 +121,10 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
         console.error('No se encontró el ID en la URL');
       }
     });
-    this.getReviewSalon();
+  }
+
+  generateStars(rating: number): void {
+    this.stars = Array(5).fill(0).map((_, i) => (i < rating ? 1 : 0));
   }
 
   updateRatings(ratingArray: boolean[], index: number): void {
@@ -200,9 +212,9 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private loadReviews(id: string): void {
+  private loadScoreReviews(id: string): void {
     //console.log('Cargando reseñas para el ID:', id); // Depuración: Verifica cuando se cargan las reseñas
-    this.detailsBusinessService.loadReview(id).subscribe(
+    this.detailsBusinessService.getScoreReviews(id).subscribe(
       reviews => {
         this.reviews = reviews;
         //console.log('Reseñas cargadas:', this.reviews); // Depuración: Verifica las reseñas cargadas
@@ -253,7 +265,6 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     );
   }
 
-  ngAfterViewInit(): void {}
 
   private initMap(): void {
     if (!this.business) return;
@@ -303,6 +314,12 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if(!this.additionalComments){
+      this.toastr.error('Por favor completa todos los campos antes de enviar la reseña');
+      console.log('No se encontró el texto de la reseña.');
+      return;
+    }
+
     // Función para contar los valores true en un array
     const countTrueValues = (array: boolean[]): number => {
       return array.filter(value => value).length;
@@ -316,14 +333,20 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       speed: countTrueValues(this.ratings.speed),
     };
 
+    if(numericRatings.service === 0 || numericRatings.quality === 0 || numericRatings.cleanliness === 0 || numericRatings.speed === 0){
+      this.toastr.error('Por favor selecciona al menos una opción  calificación');
+      console.log('No se encontraron opciones para la calificación.');
+      return;
+    }
+
     // Convertir los ratings a un formato string o JSON que tu backend espere
     const qualification = JSON.stringify(numericRatings); // Ajusta si tu API necesita un formato diferente
 
-    // Obtener el valor del textarea para los comentarios
+    const averageQualification =   Math.round((numericRatings.service + numericRatings.quality + numericRatings.cleanliness + numericRatings.speed) / 4);
     const observacion = this.additionalComments;
 
     // Llamar al servicio para enviar los datos
-    this.detailsBusinessService.adddReview(id_user, this.idSalon, observacion, qualification).subscribe({
+    this.detailsBusinessService.adddReview(id_user, this.idSalon, observacion, qualification,averageQualification).subscribe({
       next: (response) => {
         console.log('Reseña enviada exitosamente:', response);
         this.toastr.success('Su valoración fue enviada correctamente, gracias');
@@ -338,7 +361,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
   }
 
 
-
+/*
   updateReview(): void {
     const updatedReview = {
       ...this.reviewToEdit,
@@ -354,13 +377,14 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       error => console.error('Error al actualizar la reseña', error)
     );
   }
-
+*/
   editReview(review: any): void {
     this.reviewToEdit = review;
     this.editReviewText = review.observacion;
     this.editRating = review.qualification;
   }
 
+  /*
   deleteReview(reviewId: string): void {
     //console.log('Eliminar reseña con ID:', reviewId);
     if (this.idSalon) {
@@ -401,6 +425,7 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
     );
   }
 
+
   updateQuestion(): void {
     const updatedQuestion = {
       id_faq: this.faqToEdit.id_faq,
@@ -415,12 +440,16 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       error => console.error('Error al actualizar la pregunta', error)
     );
   }
+*/
+
 
   editQuestion(faq: any): void {
     this.faqToEdit = faq;
     this.editQuestionText = faq.question;
     this.editAnswerText = faq.answer;
   }
+
+
 
   deleteQuestion(id_faq: string): void {
     console.log('Eliminar pregunta con ID:', id_faq);
@@ -436,21 +465,53 @@ export class DetailsBusinessComponent implements OnInit, AfterViewInit {
       console.error('No se encontró el ID del salón.');
     }
   }
-  getReviewSalon() {
+
+
+  getScoreReviewSalon() {
     // Verificar si existe el idSalon
     if (this.idSalon) {
-      this.detailsBusinessService.getReviewSalon(this.idSalon).subscribe({
-        next: (response) => {
-          // Almacenar la respuesta recibida en una propiedad para mostrarla o procesarla
-          this.reviewData = response;
+      this.detailsBusinessService.getScoreReviews(this.idSalon).subscribe({
+        next: (response: any) => {
+          // Asignar los promedios recibidos del backend a las variables de puntuación
+          this.averageRatings.promedio_servicio = response.promedio_servicio;
+          this.averageRatings.promedio_calidad_precio = response.promedio_calidad_precio;
+          this.averageRatings.promedio_limpieza = response.promedio_limpieza;
+          this.averageRatings.promedio_puntualidad = response.promedio_puntualidad;
+          this.averageRatings.promedio_qualification = response.promedio_qualification;
+          this.averageRatings.total_reviews = response.total_reviews;
+          this.generateStars(Math.round(this.averageRatings.promedio_qualification));
 
-          // Puedes agregar lógica adicional para procesar la respuesta si es necesario
-          console.log('Datos de la reseña recibidos:', this.reviewData);
+          this.ratingPorcent = [
+            { label: 'EXCELENTE', percentage: response.porcentajes.excelente },
+            { label: 'MUY BUENO', percentage: response.porcentajes.muy_bueno },
+            { label: 'NORMAL', percentage: response.porcentajes.normal },
+            { label: 'MALO', percentage: response.porcentajes.malo },
+            { label: 'PÉSIMO', percentage: response.porcentajes.pesimo }
+          ];
+          console.log('Datos de la reseña recibidos:', this.averageRatings);
         },
         error: (error) => {
-          // Manejo de errores si la llamada falla
-          console.error('Error al obtener la reseña del salón:', error);
-          // Aquí podrías mostrar un mensaje al usuario o manejar el error según tu aplicación
+          if (error.status === 404) {
+            // Asignar valores predeterminados en caso de que no haya reseñas (error 404)
+            this.averageRatings = {
+              promedio_servicio: 0,
+              promedio_calidad_precio: 0,
+              promedio_limpieza: 0,
+              promedio_puntualidad: 0,
+              promedio_qualification: 0,
+              total_reviews: 0
+            };
+            this.ratingPorcent = [
+              { label: 'EXCELENTE', percentage: 0 },
+              { label: 'MUY BUENO', percentage: 0 },
+              { label: 'NORMAL', percentage: 0 },
+              { label: 'MALO', percentage: 0 },
+              { label: 'PÉSIMO', percentage: 0 }
+            ];
+            console.log('No hay reseñas para este salón.');
+          } else {
+            console.error('Error al obtener la reseña del salón:', error);
+          }
         }
       });
     } else {

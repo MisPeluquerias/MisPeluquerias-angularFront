@@ -14,13 +14,15 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
 
 
 
-  loadReview(id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/loadReview`, {
+  getScoreReviews(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getScoreReviews`, {
       params: {
         id
       },
     });
   }
+
+
 
   loadFaq(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/loadFaq`, {
@@ -63,12 +65,13 @@ getDescrptionSalon(id_salon:string){
 });
 }
 
-adddReview(id_user: string, id_salon: string, observacion: string, qualification: string): Observable<any[]> {
+adddReview(id_user: string, id_salon: string, observacion: string, qualification: string,averageQualification: number): Observable<any[]> {
   const body = {
     id_user,
     id_salon,
     observacion,
-    qualification
+    qualification,
+    averageQualification
   };
 
     return this.http.post<any[]>(`${this.baseUrl}/details-business/addReview`, body);
