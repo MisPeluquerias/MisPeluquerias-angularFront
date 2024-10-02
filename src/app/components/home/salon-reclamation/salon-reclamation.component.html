@@ -17,6 +17,10 @@
         con tus datos y podrás disfrutar de las ventajas de MisPeluquerias.com
       </p>
 
+      <p class="fw-light text-secondary">
+        * Si tu negoicio no aparece en la lista, ponte en contacto con nosotros <a class="fw-light text-secondary" routerLink="/profesionales">aquí</a>
+      </p>
+
       <form (ngSubmit)="addReclamation()" #reclamationForm="ngForm">
         <h4 class="fs-4 fw-light mt-5">Datos del Negocio</h4>
 
@@ -79,7 +83,7 @@
 
             <!-- Select de Ciudad -->
             <div class="col-md-12 form-group py-3">
-              <label for="id_city" class="form-label">Ciudad-CP</label>
+              <label for="id_city" class="form-label">Población - C.P.</label>
               <select
                 class="form-select"
                 id="id_city"
@@ -117,7 +121,7 @@
 
           <div class="col-md-12">
             <small
-              >* Podrá modificar los datos de su salón una vez que esté
+              >* Podrás modificar los datos de tu negocio una vez que esté
               verificado</small
             >
           </div>
@@ -227,7 +231,7 @@
 
           <div class="col-md-12" id="files">
             <div class="form-group py-3">
-              <label for="dnifront_path">DNI por delante</label>
+              <label for="dnifront_path">DNI anverso</label>
               <input type="file" class="form-control file" id="dnifront_path" name="dnifront_path" (change)="onFileSelected($event, 'dniFrontFile')" required>
               <div *ngIf="reclamationForm.submitted && !dniFrontFile" class="text-danger">
                 El archivo del DNI por delante es obligatorio.
@@ -235,7 +239,7 @@
             </div>
 
             <div class="form-group py-3 mb-2">
-              <label for="dniback_path">DNI por detrás</label>
+              <label for="dniback_path">DNI reverso</label>
               <input type="file" class="form-control file" id="dniback_path" name="dniback_path" (change)="onFileSelected($event, 'dniBackFile')" required>
               <div *ngIf="reclamationForm.submitted && !dniBackFile" class="text-danger">
                 El archivo del DNI por detrás es obligatorio.
@@ -243,6 +247,7 @@
             </div>
 
             <div class="form-group py-3">
+              <label for="d">Documentación</label>
               <input type="file" class="form-control file" id="file_path" name="file_path" (change)="onFileSelected($event, 'otherFile')" required>
               <div *ngIf="reclamationForm.submitted && !otherFile" class="text-danger">
                 El archivo adicional es obligatorio.
@@ -253,16 +258,28 @@
             </div>
 
             <div class="col-md-12">
+
               <p class="mt-1 small">
-                Adjúntanos algún documento que demuestre que eres el propietario
-                (copia del recibo de autónomos, datos de la empresa si es una
-                sociedad, etc.)
+                Adjunta algún documento que demuestre que eres el propietario
+                (copia del recibo de autónomos, modelo 036, tarjeta de identificación fiscal de tu empresa, etc.)
+              </p>
+            </div>
+
+
+            <div class="col-md-12">
+              <label for="d">Facturas</label>
+              <p class="mt-1 small">
+                Adjunta la factura de algún suministro de tu negocio (Luz,Agua,Teléfono...)
               </p>
               <p class="mt-1 small text-danger">
                 <strong>Archivos Permitidos: png | jpg | jpeg | pdf</strong>
               </p>
             </div>
-          </div>
+
+
+
+
+
 
           <div class="col-md-12 my-5 d-flex justify-content-between">
             <div class="col-md-6">
@@ -296,6 +313,7 @@
               Enviar
             </button>
           </div>
+        </div>
         </div>
       </form>
     </div>

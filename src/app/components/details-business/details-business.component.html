@@ -554,9 +554,11 @@
                   respuestas y en las valoraciones de los clientes.
                 </p>
                 <textarea
-                  class="form-control w-md-50 w-lg-50 rounded-3 shadow-sm p-2"
+                  class="form-control w-50 rounded-3 shadow-sm p-2 text-area-pregunta"
                   placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
+                  maxlength="300"
                   rows="3"
+                  (click)="verifyUser()"
                 ></textarea>
               </div>
             </div>
@@ -648,8 +650,8 @@
               </li>
             </ul>
             <ng-container *ngIf="business.state !== 'Reclamado';" >
-               <p><u><b><strong>¡Atención!</strong></b></u> La información que contiene esta página puede no ser verídica si el negocio
-              no esta verificado.</p>
+               <p><u><b><strong>¡Atención!</strong></b></u> La información que contiene esta página puede no ser correcta por que el negocio
+              no está verificado.</p>
               </ng-container>
           </div>
         </div>

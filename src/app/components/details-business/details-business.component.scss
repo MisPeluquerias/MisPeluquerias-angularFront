@@ -257,6 +257,11 @@ app-navbar-fixed {
 
 }
 
+.text-area-pregunta{
+  border: 1px solid black;
+  outline: none;
+}
+
 
 @media (max-width: 576px) {
   .fixed-image-size {
@@ -280,6 +285,10 @@ app-navbar-fixed {
   /* Ajustar el tamaño del ícono dentro del botón */
   .btn i {
     font-size: 0.875rem;
+  }
+
+  .text-area-pregunta{
+    width: 100% !important;
   }
 
 }

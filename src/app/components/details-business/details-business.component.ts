@@ -141,15 +141,23 @@ export class DetailsBusinessComponent implements OnInit {
     event.target.src = '../../../assets/img/web/sello.jpg';
   }
 
+  verifyUser(){
+    if(!this.authService.isAuthenticated()){
+      this.openLoginModal();
+    }
+  }
+
+
+
 
   generateStars(rating: number): void {
     this.stars = Array(5).fill(0).map((_, i) => {
       if (i + 1 <= rating) {
-        return 'fas fa-star'; // Estrella completa
+        return 'fas fa-star';
       } else if (i < rating && i + 1 > rating) {
-        return 'fas fa-star-half-alt'; // Media estrella
+        return 'fas fa-star-half-alt';
       } else {
-        return 'far fa-star'; // Estrella vacía
+        return 'far fa-star';
       }
     });
   }
