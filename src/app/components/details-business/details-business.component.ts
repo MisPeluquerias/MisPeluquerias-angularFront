@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
 import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
@@ -41,7 +42,8 @@ export class DetailsBusinessComponent implements OnInit {
   ratingBreakdown:any[] = [];
   reviewData:any=[];
   averageRatings:any={}
-  stars: number[] = [];
+  stars: string[] = [];
+  starsObservation: number[] = [];
   total_reviews: number = 280;
   excelentePercent: number = 42;
   muyBuenoPercent: number = 22;
@@ -59,6 +61,12 @@ export class DetailsBusinessComponent implements OnInit {
   additionalComments: string = '';
   loginForm: FormGroup;
   errorMessage: string = '';
+  observations: any[] = [];
+  currentPage = 1; // Página actual
+  limit = 2; // Reseñas por página
+  hasMorePages = true; // Determina si hay más páginas
+ reviewToDeleteId: string | null = null;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -78,14 +86,17 @@ export class DetailsBusinessComponent implements OnInit {
     });
   }
 
+
+
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
-    
+
     this.isUserAuthenticated=this.authService.isAuthenticated();
 
     this.authService.getUserType().subscribe(userType => {
       this.userType = userType;
     });
+
 
 
 
@@ -102,6 +113,7 @@ export class DetailsBusinessComponent implements OnInit {
               this.business.formattedHours = this.formatHours(this.business.hours_old);
               console.log(this.business.formattedHours);
               this.getScoreReviewSalon();
+              this.getObservationReviewSalon();
               this.loadFaq(id);
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
@@ -121,11 +133,28 @@ export class DetailsBusinessComponent implements OnInit {
         console.error('No se encontró el ID en la URL');
       }
     });
+
   }
 
-  generateStars(rating: number): void {
-    this.stars = Array(5).fill(0).map((_, i) => (i < rating ? 1 : 0));
+
+  onImageError(event: any) {
+    event.target.src = '../../../assets/img/web/sello.jpg';
   }
+
+
+  generateStars(rating: number): void {
+    this.stars = Array(5).fill(0).map((_, i) => {
+      if (i + 1 <= rating) {
+        return 'fas fa-star'; // Estrella completa
+      } else if (i < rating && i + 1 > rating) {
+        return 'fas fa-star-half-alt'; // Media estrella
+      } else {
+        return 'far fa-star'; // Estrella vacía
+      }
+    });
+  }
+
+
 
   updateRatings(ratingArray: boolean[], index: number): void {
     // Marca los checkboxes anteriores si uno es seleccionado
@@ -140,6 +169,7 @@ export class DetailsBusinessComponent implements OnInit {
       }
     }
   }
+
 
  private formatHours(hoursOld: string): string {
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -212,16 +242,6 @@ export class DetailsBusinessComponent implements OnInit {
     );
   }
 
-  private loadScoreReviews(id: string): void {
-    //console.log('Cargando reseñas para el ID:', id); // Depuración: Verifica cuando se cargan las reseñas
-    this.detailsBusinessService.getScoreReviews(id).subscribe(
-      reviews => {
-        this.reviews = reviews;
-        //console.log('Reseñas cargadas:', this.reviews); // Depuración: Verifica las reseñas cargadas
-      },
-      error => console.error('Error al cargar reseñas para el ID:', id, error)
-    );
-  }
 
   private loadFaq(id: string): void {
     //console.log('Cargando preguntas frecuentes para el ID:', id); // Depuración: Verifica cuando se cargan las preguntas frecuentes
@@ -252,7 +272,7 @@ export class DetailsBusinessComponent implements OnInit {
             };
           });
 
-          console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
+          //console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
         } else {
           console.error('La propiedad `services` no es un array para el ID:', id_salon, response); // Depuración: Verifica si hay un error en la respuesta
           this.services = [];
@@ -268,6 +288,11 @@ export class DetailsBusinessComponent implements OnInit {
 
   private initMap(): void {
     if (!this.business) return;
+
+
+    if (this.map) {
+      this.map.remove(); // Elimina el mapa anterior
+    }
 
     //console.log('Inicializando mapa con latitud:', this.business.latitud, 'y longitud:', this.business.longitud); // Depuración: Verifica las coordenadas del mapa
     this.map = L.map('map', {
@@ -299,6 +324,15 @@ export class DetailsBusinessComponent implements OnInit {
 
   openLoginModal(): void {
     this.modalService.open(LoginComponent);
+  }
+
+  formatQualification(qualification: number): string {
+    // Si el número es entero, agrega ",0"
+    if (Number.isInteger(qualification)) {
+      return qualification.toFixed(1).replace('.', ',');
+    }
+    // Si el número tiene decimales, simplemente reemplaza el punto por la coma
+    return qualification.toString().replace('.', ',');
   }
 
   addReview(): void {
@@ -342,15 +376,18 @@ export class DetailsBusinessComponent implements OnInit {
     // Convertir los ratings a un formato string o JSON que tu backend espere
     const qualification = JSON.stringify(numericRatings); // Ajusta si tu API necesita un formato diferente
 
-    const averageQualification =   Math.round((numericRatings.service + numericRatings.quality + numericRatings.cleanliness + numericRatings.speed) / 4);
+    const averageQualification = Math.round(((numericRatings.service + numericRatings.quality + numericRatings.cleanliness + numericRatings.speed) / 4) * 2) / 2;
     const observacion = this.additionalComments;
 
     // Llamar al servicio para enviar los datos
     this.detailsBusinessService.adddReview(id_user, this.idSalon, observacion, qualification,averageQualification).subscribe({
       next: (response) => {
+        console.log('Media envida',averageQualification);
         console.log('Reseña enviada exitosamente:', response);
         this.toastr.success('Su valoración fue enviada correctamente, gracias');
-        // Lógica adicional como limpiar el formulario o mostrar una notificación de éxito
+        this.getScoreReviewSalon();
+        this.getObservationReviewSalon();
+        // Lógica adicional como limpiar el formulario o  una notificación de éxito
       },
       error: (error) => {
         console.error('Error al enviar la reseña:', error);
@@ -360,87 +397,33 @@ export class DetailsBusinessComponent implements OnInit {
     });
   }
 
+editReview(observation: any): void {
+  this.reviewToEdit = observation;
+  this.editReviewText = observation.observacion;
+}
 
-/*
-  updateReview(): void {
-    const updatedReview = {
-      ...this.reviewToEdit,
-      observacion: this.editReviewText,
-      qualification: this.editRating
-    };
+setReviewToDelete(reviewId: string): void {
+  this.reviewToDeleteId = reviewId;
+}
 
-    this.detailsBusinessService.updateReview(updatedReview).subscribe(
-      response => {
-        //console.log('Reseña actualizada:', response);
-        this.loadReviews(this.idSalon!);
+
+confirmDeleteReview(): void {
+  if (this.reviewToDeleteId) {
+    this.detailsBusinessService.deleteReview(this.reviewToDeleteId).subscribe({
+      next: () => {
+        this.toastr.success('Reseña eliminada con éxito');
+        // Lógica adicional para recargar o actualizar la lista de reseñas
+        this.getObservationReviewSalon();
+        this.getScoreReviewSalon();
       },
-      error => console.error('Error al actualizar la reseña', error)
-    );
+      error: (error) => {
+        console.error('Error al eliminar la reseña:', error);
+        this.toastr.error('No se pudo eliminar la reseña, inténtelo de nuevo.');
+      }
+    });
+    this.reviewToDeleteId = null; // Limpiar la variable después de la eliminación
   }
-*/
-  editReview(review: any): void {
-    this.reviewToEdit = review;
-    this.editReviewText = review.observacion;
-    this.editRating = review.qualification;
-  }
-
-  /*
-  deleteReview(reviewId: string): void {
-    //console.log('Eliminar reseña con ID:', reviewId);
-    if (this.idSalon) {
-      this.detailsBusinessService.deleteReview(reviewId).subscribe(
-        response => {
-          //console.log('Reseña eliminada:', response);
-          this.loadReviews(this.idSalon!);
-        },
-        error => console.error('Error al eliminar la reseña', error)
-      );
-    } else {
-      console.error('No se encontró el ID del salón.');
-    }
-  }
-
-  submitQuestion(): void {
-    const id_user = this.userId;
-    if (!id_user) {
-      console.error('No se encontró el ID del usuario en el almacenamiento local.');
-      return;
-    }
-
-    if (!this.idSalon) {
-      console.error('No se encontró el ID del salón.');
-      return;
-    }
-
-    const id_salon = this.idSalon;
-    const question = this.questionText;
-
-    this.detailsBusinessService.saveFaq(id_user, id_salon, question).subscribe(
-      response => {
-        //console.log('Pregunta guardada:', response);
-        this.loadFaq(id_salon);
-        this.questionText = '';
-      },
-      error => console.error('Error al guardar la pregunta', error)
-    );
-  }
-
-
-  updateQuestion(): void {
-    const updatedQuestion = {
-      id_faq: this.faqToEdit.id_faq,
-      answer: this.editAnswerText
-    };
-
-    this.detailsBusinessService.updateFaq(updatedQuestion.id_faq, updatedQuestion.answer).subscribe(
-      response => {
-        //console.log('Pregunta actualizada:', response);
-        this.loadFaq(this.idSalon!);
-      },
-      error => console.error('Error al actualizar la pregunta', error)
-    );
-  }
-*/
+}
 
 
   editQuestion(faq: any): void {
@@ -466,7 +449,6 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
-
   getScoreReviewSalon() {
     // Verificar si existe el idSalon
     if (this.idSalon) {
@@ -479,7 +461,7 @@ export class DetailsBusinessComponent implements OnInit {
           this.averageRatings.promedio_puntualidad = response.promedio_puntualidad;
           this.averageRatings.promedio_qualification = response.promedio_qualification;
           this.averageRatings.total_reviews = response.total_reviews;
-          this.generateStars(Math.round(this.averageRatings.promedio_qualification));
+          this.generateStars(this.averageRatings.promedio_qualification);
 
           this.ratingPorcent = [
             { label: 'EXCELENTE', percentage: response.porcentajes.excelente },
@@ -488,7 +470,8 @@ export class DetailsBusinessComponent implements OnInit {
             { label: 'MALO', percentage: response.porcentajes.malo },
             { label: 'PÉSIMO', percentage: response.porcentajes.pesimo }
           ];
-          console.log('Datos de la reseña recibidos:', this.averageRatings);
+          console.log('Datos de la reseña recibidos:', this.ratingPorcent);
+
         },
         error: (error) => {
           if (error.status === 404) {
@@ -517,5 +500,119 @@ export class DetailsBusinessComponent implements OnInit {
     } else {
       console.error('No se encontró el ID del salón.');
     }
+  }
+
+  generateStarsObservation(rating: number): string[] {
+    const stars: string[] = [];
+
+    // Recorre las 5 posiciones de las estrellas
+    for (let i = 0; i < 5; i++) {
+      if (rating >= 1) {
+        stars.push('fas fa-star'); // Estrella completa
+        rating--; // Restamos 1 por cada estrella completa añadida
+      } else if (rating >= 0.5) {
+        stars.push('fas fa-star-half-alt'); // Media estrella
+        rating -= 0.5; // Restamos 0.5 por cada media estrella
+      } else {
+        stars.push('far fa-star'); // Estrella vacía
+      }
+    }
+
+    return stars;
+  }
+
+  getObservationReviewSalon(page: number = 1, limit: number = 2) {
+    if (this.idSalon) {
+      this.detailsBusinessService.getObservationReviews(this.idSalon, page, limit).subscribe({
+        next: (response: any) => {
+          //console.log('Response from server:', response); // Verifica la respuesta del servidor
+
+          if (response && Array.isArray(response.results)) {
+            this.observations = response.results.map((observation: any) => {
+              const starsObservation = this.generateStarsObservation(observation.qualification);
+              console.log('Observation:', observation); // Verifica los valores de cada observación
+              console.log('Generated stars:', starsObservation);   // Verifica cómo se generan las estrellas
+              return {
+                ...observation,
+                starsObservation: starsObservation // Asigna las estrellas generadas a cada observación
+              };
+            });
+
+            this.currentPage = page;
+            this.hasMorePages = (page * limit) < response.total;
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching observations:', err); // Captura cualquier error en la llamada
+        }
+      });
+    }
+  }
+
+
+
+  openEditModal(observation: any): void {
+    this.reviewToEdit = observation;
+    //console.log('Observation',observation);
+
+    // Usamos la calificación general para todas las categorías
+    const overallRating = observation.qualification;
+
+
+    // Llenamos todas las categorías con la misma calificación general
+    this.ratings = {
+      service: this.getCheckboxState(observation.servicio),
+      quality: this.getCheckboxState(observation.calidad_precio),
+      cleanliness: this.getCheckboxState(observation.limpieza),
+      speed: this.getCheckboxState(observation.puntualidad),
+    };
+
+    // Asignar los comentarios adicionales
+    this.additionalComments = observation.observacion;
+
+    //console.log('Estado de ratings:', this.ratings);
+  }
+
+  // Helper para convertir calificaciones numéricas en checkboxes booleanos
+  getCheckboxState(rating: number): boolean[] {
+    return [1, 2, 3, 4, 5].map((val) => val <= rating);
+  }
+
+
+
+  // Método para actualizar la reseña existente
+  updateReview(): void {
+    const updatedReview = {
+      ...this.reviewToEdit, // Mantener otros datos de la reseña
+      observacion: this.additionalComments,
+      qualification: {
+        service: this.countSelectedRatings(this.ratings.service),
+        quality: this.countSelectedRatings(this.ratings.quality),
+        cleanliness: this.countSelectedRatings(this.ratings.cleanliness),
+        speed: this.countSelectedRatings(this.ratings.speed),
+      }
+    };
+
+    // Llamada al servicio para actualizar la reseña en el backend
+    this.detailsBusinessService.updateReview(updatedReview).subscribe({
+      next: () => {
+        this.toastr.success('Reseña actualizada con éxito');
+
+        // Refrescar todos los datos
+        this.getObservationReviewSalon();  // Recargar las reseñas
+        this.getScoreReviewSalon();        // Recargar las puntuaciones
+
+
+      },
+      error: (error) => {
+        //console.error('Error al actualizar la reseña:', error);
+        this.toastr.error('No se pudo actualizar la reseña.');
+      }
+    });
+  }
+
+  // Helper para contar los ratings seleccionados
+  countSelectedRatings(ratingArray: boolean[]): number {
+    return ratingArray.filter(Boolean).length;
   }
 }

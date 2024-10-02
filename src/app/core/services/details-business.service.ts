@@ -22,6 +22,16 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
     });
   }
 
+  getObservationReviews(id_salon: string,page: number, limit: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getObservationReviews`, {
+      params: {
+        id_salon,
+        page,
+        limit
+      },
+    });
+  }
+
 
 
   loadFaq(id: string): Observable<any[]> {
@@ -89,9 +99,6 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
   updateReview(review: any): Observable<any[]> {
     return this.http.post<any[]>(`${this.baseUrl}/details-business/updateReview`, review);
   }
-
-
-
 
   deleteReview(id_review:string){
     const body = {

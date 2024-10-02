@@ -11,17 +11,30 @@
             <h1 class="mb-2 h3">
               <b>{{ business.name }}</b>
             </h1>
+
             <div class="d-flex justify-content-end">
-              <ng-container
-                *ngIf="authService.isAuthenticated(); else loginToClaim"
-              >
-                <a
-                  class="btn btn-lg btn-danger rounded-pill btn-custom mt-3"
-                  routerLink="/reclamation"
+              <!-- Mostrar el botón "Verificado" si el negocio está validado -->
+              <ng-container *ngIf="business.state === 'Validado'; else notVerified">
+                <button
+                  class="btn btn-lg btn-success rounded-pill btn-custom mt-3"
+                  disabled
                 >
-                  <i class="las la-hand-paper"></i> Reclamalo ahora
-                </a>
+                  <i class="las la-check-circle"></i> Verificado
+                </button>
               </ng-container>
+
+              <!-- Si no está validado, mostrar el botón "Reclamalo ahora" -->
+              <ng-template #notVerified>
+                <ng-container *ngIf="authService.isAuthenticated(); else loginToClaim">
+                  <a
+                    class="btn btn-lg btn-danger rounded-pill btn-custom mt-3"
+                    routerLink="/reclamation"
+                  >
+                    <i class="las la-hand-paper"></i> Reclamalo ahora
+                  </a>
+                </ng-container>
+              </ng-template>
+
               <ng-template #loginToClaim>
                 <button
                   class="btn btn-danger rounded-pill btn-custom mt-3"
@@ -100,6 +113,7 @@
                 [src]="business.image"
                 class="d-block w-100 fixed-image-size img-fluid"
                 alt="Imagen principal del salón"
+                (error)="onImageError($event)"
               />
             </div>
           </ng-template>
@@ -164,373 +178,436 @@
 
           <!-- Contenedor de dos columnas -->
 
-          <div class="row">
-            <!-- Primera columna -->
-            <div
-              class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center"
-            >
-              <div
-                class="d-flex align-items-center justify-content-center mb-3"
-              >
-                <!-- Mostrar el promedio de calificación -->
-                <h6
-                  class="h4"
-                  style="
-                    color: #b71622;
-                    display: inline-block;
-                    margin-right: 10px;
-                  "
-                >
-                  {{
-                    averageRatings.promedio_qualification | number : "1.0-0"
-                  }},0
-                </h6>
-                <!-- Estrellas de calificación -->
-                <span class="d-flex align-items-center">
-                  <ng-container *ngFor="let star of stars">
-                    <i
-                      class="fa"
-                      [ngClass]="star === 1 ? 'fa-star' : 'fa-star-o'"
-                      style="
-                        color: #b71622;
-                        margin-right: 5px;
-                        font-size: 1.2rem;
-                      "
-                    ></i>
-                  </ng-container>
-                </span>
-                <span style="margin-left: 15px"
-                  >{{ averageRatings.total_reviews }} Opiniones</span
-                >
-              </div>
+          <div class="d-flex justify-content-center flex-column mt-5" style="margin: 0 auto !important;">
+            <div class="row">
+              <!-- Primera columna -->
+              <div class="col-12 col-md-6 mb-4 d-flex flex-column">
+                <div class="d-flex mb-3">
+                  <!-- Mostrar el promedio de calificación -->
+                  <h6 class="h4" style="color: #b71622; margin-right: 10px" *ngIf="averageRatings.promedio_qualification !== undefined">
+                    {{ averageRatings.promedio_qualification.toFixed(1).replace('.', ',') }}
+                  </h6>
+                  <h6 *ngIf="averageRatings.promedio_qualification === undefined">
+                    N/A
+                  </h6>
+                  <!-- Estrellas de calificación -->
+                  <span class="d-flex align-items-center">
+                    <ng-container *ngFor="let star of stars">
+                      <i class="fa" [ngClass]="star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                    </ng-container>
+                  </span>
 
-              <!-- Barras de progreso para calificaciones -->
-              <div class="rating-bars w-75">
-                <div *ngFor="let rating of ratingPorcent">
-                  <div class="d-flex justify-content-between">
-                    <span>{{ rating.label }}</span>
-                    <span>{{ rating.percentage }}%</span>
-                  </div>
-                  <div class="progress" style="height: 10px">
-                    <div
-                      class="progress-bar"
-                      role="progressbar"
-                      [ngStyle]="{ width: rating.percentage + '%' }"
-                      [attr.aria-valuenow]="rating.percentage"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                    ></div>
+                  <span style="margin-left: 15px">
+                    {{ averageRatings.total_reviews }} Opiniones
+                  </span>
+                </div>
+
+                <!-- Barras de progreso para calificaciones -->
+                <div class="rating-bars w-100 align-items-left">
+                  <div *ngFor="let rating of ratingPorcent">
+                    <div class="d-flex justify-content-between">
+                      <span>{{ rating.label }}</span>
+                      <span>{{ rating.percentage }}%</span>
+                    </div>
+                    <div class="progress" style="height: 10px">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        [ngStyle]="{ width: rating.percentage + '%' }"
+                        [attr.aria-valuenow]="rating.percentage"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Segunda columna -->
+              <div class="col-12 col-md-6 mb-4 d-flex flex-column" style="max-width: 27%;">
+                <h5 class="fw-bold">Puntuaciones</h5>
+                <!-- Servicio -->
+                <div class="rating-input d-flex mb-3 mt-5 justify-content-between">
+                  <label class="me-3">Servicio:</label>
+                  <div class="circle-input-group">
+                    <input
+                      type="checkbox"
+                      id="averageService1"
+                      [checked]="averageRatings.promedio_servicio >= 1"
+                      disabled
+                    />
+                    <label for="averageService1" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageService2"
+                      [checked]="averageRatings.promedio_servicio >= 2"
+                      disabled
+                    />
+                    <label for="averageService2" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageService3"
+                      [checked]="averageRatings.promedio_servicio >= 3"
+                      disabled
+                    />
+                    <label for="averageService3" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageService4"
+                      [checked]="averageRatings.promedio_servicio >= 4"
+                      disabled
+                    />
+                    <label for="averageService4" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageService5"
+                      [checked]="averageRatings.promedio_servicio >= 5"
+                      disabled
+                    />
+                    <label for="averageService5" class="circle-label"></label>
+                  </div>
+                </div>
+
+                <!-- Calidad/Precio -->
+                <div class="rating-input d-flex mb-3 justify-content-between">
+                  <label class="me-3">Calidad/Precio:</label>
+                  <div class="circle-input-group">
+                    <input
+                      type="checkbox"
+                      id="averageQuality1"
+                      [checked]="averageRatings.promedio_calidad_precio >= 1"
+                      disabled
+                    />
+                    <label for="averageQuality1" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageQuality2"
+                      [checked]="averageRatings.promedio_calidad_precio >= 2"
+                      disabled
+                    />
+                    <label for="averageQuality2" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageQuality3"
+                      [checked]="averageRatings.promedio_calidad_precio >= 3"
+                      disabled
+                    />
+                    <label for="averageQuality3" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageQuality4"
+                      [checked]="averageRatings.promedio_calidad_precio >= 4"
+                      disabled
+                    />
+                    <label for="averageQuality4" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageQuality5"
+                      [checked]="averageRatings.promedio_calidad_precio >= 5"
+                      disabled
+                    />
+                    <label for="averageQuality5" class="circle-label"></label>
+                  </div>
+                </div>
+
+                <!-- Limpieza -->
+                <div class="rating-input d-flex mb-3 justify-content-between">
+                  <label class="me-3">Limpieza:</label>
+                  <div class="circle-input-group">
+                    <input
+                      type="checkbox"
+                      id="averageCleanliness1"
+                      [checked]="averageRatings.promedio_limpieza >= 1"
+                      disabled
+                    />
+                    <label
+                      for="averageCleanliness1"
+                      class="circle-label"
+                    ></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageCleanliness2"
+                      [checked]="averageRatings.promedio_limpieza >= 2"
+                      disabled
+                    />
+                    <label
+                      for="averageCleanliness2"
+                      class="circle-label"
+                    ></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageCleanliness3"
+                      [checked]="averageRatings.promedio_limpieza >= 3"
+                      disabled
+                    />
+                    <label
+                      for="averageCleanliness3"
+                      class="circle-label"
+                    ></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageCleanliness4"
+                      [checked]="averageRatings.promedio_limpieza >= 4"
+                      disabled
+                    />
+                    <label
+                      for="averageCleanliness4"
+                      class="circle-label"
+                    ></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageCleanliness5"
+                      [checked]="averageRatings.promedio_limpieza >= 5"
+                      disabled
+                    />
+                    <label
+                      for="averageCleanliness5"
+                      class="circle-label"
+                    ></label>
+                  </div>
+                </div>
+
+                <!-- Rapidez -->
+                <div class="rating-input d-flex mb-3 justify-content-between">
+                  <label class="me-3">Rapidez:</label>
+                  <div class="circle-input-group">
+                    <input
+                      type="checkbox"
+                      id="averageSpeed1"
+                      [checked]="averageRatings.promedio_puntualidad >= 1"
+                      disabled
+                    />
+                    <label for="averageSpeed1" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageSpeed2"
+                      [checked]="averageRatings.promedio_puntualidad >= 2"
+                      disabled
+                    />
+                    <label for="averageSpeed2" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageSpeed3"
+                      [checked]="averageRatings.promedio_puntualidad >= 3"
+                      disabled
+                    />
+                    <label for="averageSpeed3" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageSpeed4"
+                      [checked]="averageRatings.promedio_puntualidad >= 4"
+                      disabled
+                    />
+                    <label for="averageSpeed4" class="circle-label"></label>
+
+                    <input
+                      type="checkbox"
+                      id="averageSpeed5"
+                      [checked]="averageRatings.promedio_puntualidad >= 5"
+                      disabled
+                    />
+                    <label for="averageSpeed5" class="circle-label"></label>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Segunda columna -->
-            <div
-              class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center"
+            <!-- Fila para observaciones (deben estar debajo de las columnas superiores) -->
+            <div class="row mt-5 mb-5">
+              <div class="col-12 col-md-6" *ngFor="let observation of observations; let i = index">
+                <div class="stars-text text-wrap text-break">
+                  <!-- Estrellas -->
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="d-flex align-items-center">
+                        <div>
+                          <!-- Recorre las estrellas y muestra los iconos -->
+                          <i style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"  *ngFor="let starClass of observation.starsObservation" [ngClass]="starClass"></i>
+                        </div>
+                    </span>
+                    <!-- Fecha -->
+                    <span class="ms-3" style="color: #8c8c8c; font-size: 0.8rem;">
+                      Opinión escrita el {{ observation.created_at | date : "dd MMMM yyyy" }}
+                    </span>
+                  </div>
+
+                  <!-- Observación -->
+                  <p style="font-size: 1.2rem; font-weight: bold;">{{ observation.recommendation }}</p>
+                  <p class="mb-5">{{ observation.observacion }}</p>
+
+                  <!-- Botones de editar y eliminar -->
+                  <div class="d-flex justify-content-end" *ngIf="observation.user_id === userId || userType === 'admin'">
+                    <button class="btn btn-secondary btn-sm me-2"  data-bs-toggle="modal"  data-bs-target="#modificarValoracionesModal" (click)="openEditModal(observation)">
+                      Editar
+                    </button>
+                    <button class="btn btn-danger btn-sm" style="box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;" data-bs-toggle="modal" data-bs-target="#deleteReviewModal" (click)="setReviewToDelete(observation.id_review)">
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center mt-5">
+            <button
+              class="btn btn-preview me-2"
+              (click)="getObservationReviewSalon(currentPage - 1)"
+              [disabled]="currentPage === 1"
             >
-              <h5 class="fw-bold">Puntuaciones</h5>
-              <!-- Servicio -->
-              <div class="rating-input d-flex mb-3 mt-5">
-                <label class="me-3">Servicio:</label>
-                <div class="circle-input-group">
-                  <input
-                    type="checkbox"
-                    id="averageService1"
-                    [checked]="averageRatings.promedio_servicio >= 1"
-                    disabled
-                  />
-                  <label for="averageService1" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageService2"
-                    [checked]="averageRatings.promedio_servicio >= 2"
-                    disabled
-                  />
-                  <label for="averageService2" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageService3"
-                    [checked]="averageRatings.promedio_servicio >= 3"
-                    disabled
-                  />
-                  <label for="averageService3" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageService4"
-                    [checked]="averageRatings.promedio_servicio >= 4"
-                    disabled
-                  />
-                  <label for="averageService4" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageService5"
-                    [checked]="averageRatings.promedio_servicio >= 5"
-                    disabled
-                  />
-                  <label for="averageService5" class="circle-label"></label>
-                </div>
-              </div>
-
-              <!-- Calidad/Precio -->
-              <div
-                class="rating-input d-flex align-items-center justify-content-center mb-3"
-              >
-                <label class="me-3">Calidad/Precio:</label>
-                <div class="circle-input-group">
-                  <input
-                    type="checkbox"
-                    id="averageQuality1"
-                    [checked]="averageRatings.promedio_calidad_precio >= 1"
-                    disabled
-                  />
-                  <label for="averageQuality1" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageQuality2"
-                    [checked]="averageRatings.promedio_calidad_precio >= 2"
-                    disabled
-                  />
-                  <label for="averageQuality2" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageQuality3"
-                    [checked]="averageRatings.promedio_calidad_precio >= 3"
-                    disabled
-                  />
-                  <label for="averageQuality3" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageQuality4"
-                    [checked]="averageRatings.promedio_calidad_precio >= 4"
-                    disabled
-                  />
-                  <label for="averageQuality4" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageQuality5"
-                    [checked]="averageRatings.promedio_calidad_precio >= 5"
-                    disabled
-                  />
-                  <label for="averageQuality5" class="circle-label"></label>
-                </div>
-              </div>
-
-              <!-- Limpieza -->
-              <div
-                class="rating-input d-flex align-items-center justify-content-center mb-3"
-              >
-                <label class="me-3">Limpieza:</label>
-                <div class="circle-input-group">
-                  <input
-                    type="checkbox"
-                    id="averageCleanliness1"
-                    [checked]="averageRatings.promedio_limpieza >= 1"
-                    disabled
-                  />
-                  <label for="averageCleanliness1" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageCleanliness2"
-                    [checked]="averageRatings.promedio_limpieza >= 2"
-                    disabled
-                  />
-                  <label for="averageCleanliness2" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageCleanliness3"
-                    [checked]="averageRatings.promedio_limpieza >= 3"
-                    disabled
-                  />
-                  <label for="averageCleanliness3" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageCleanliness4"
-                    [checked]="averageRatings.promedio_limpieza >= 4"
-                    disabled
-                  />
-                  <label for="averageCleanliness4" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageCleanliness5"
-                    [checked]="averageRatings.promedio_limpieza >= 5"
-                    disabled
-                  />
-                  <label for="averageCleanliness5" class="circle-label"></label>
-                </div>
-              </div>
-
-              <!-- Rapidez -->
-              <div
-                class="rating-input d-flex align-items-center justify-content-center mb-3"
-              >
-                <label class="me-3">Rapidez:</label>
-                <div class="circle-input-group">
-                  <input
-                    type="checkbox"
-                    id="averageSpeed1"
-                    [checked]="averageRatings.promedio_puntualidad >= 1"
-                    disabled
-                  />
-                  <label for="averageSpeed1" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageSpeed2"
-                    [checked]="averageRatings.promedio_puntualidad >= 2"
-                    disabled
-                  />
-                  <label for="averageSpeed2" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageSpeed3"
-                    [checked]="averageRatings.promedio_puntualidad >= 3"
-                    disabled
-                  />
-                  <label for="averageSpeed3" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageSpeed4"
-                    [checked]="averageRatings.promedio_puntualidad >= 4"
-                    disabled
-                  />
-                  <label for="averageSpeed4" class="circle-label"></label>
-
-                  <input
-                    type="checkbox"
-                    id="averageSpeed5"
-                    [checked]="averageRatings.promedio_puntualidad >= 5"
-                    disabled
-                  />
-                  <label for="averageSpeed5" class="circle-label"></label>
-                </div>
-              </div>
-            </div>
+              &lt; ANTERIOR
+            </button>
+            <button
+              class="btn-next"
+              (click)="getObservationReviewSalon(currentPage + 1)"
+              [disabled]="!hasMorePages"
+            >
+              SIGUIENTE &gt;
+            </button>
           </div>
-
-
-          <div class="row">
-            <!-- Primera columna (contenidos superiores) -->
-            <div class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center">
-              <div class="d-flex align-items-center justify-content-center mb-3">
-                <!-- Contenido de la primera columna -->
-                <!--<h1>Primera columna</h1>-->
-              </div>
-            </div>
-
-            <!-- Segunda columna (contenidos superiores) -->
-            <div class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center">
-              <div class="d-flex align-items-center justify-content-center mb-3">
-                <!-- Contenido de la segunda columna -->
-               <!-- <h1>Segunda columna</h1>-->
-              </div>
-            </div>
-          </div>
-
-          <!-- Nueva fila para los nuevos contenidos -->
-          <div class="row">
-            <!-- Primera columna (contenidos adicionales) -->
-            <div class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center">
-              <div class="d-flex align-items-center justify-content-center mb-3">
-               <!-- <h1>Contenido adicional de la primera columna</h1> -->
-              </div>
-            </div>
-
-            <!-- Segunda columna (contenidos adicionales) -->
-            <div class="col-12 col-md-6 mb-4 d-flex flex-column align-items-center">
-              <div class="d-flex align-items-center justify-content-center mb-3">
-               <!-- <h1>Contenido adicional de la segunda columna</h1> -->
-              </div>
-            </div>
-          </div>
-
-          
-
-
 
           <ng-container *ngIf="isUserAuthenticated === true; else modalToReview">
-            <!-- Si el usuario está autenticado, abrir el modal de valoraciones -->
-            <h2
-              style="cursor: pointer"
-              class="mt-5 h5 text-center mb-5 fw-bold"
-              data-bs-toggle="modal"
-              data-bs-target="#valoracionesModal"
-            >
-              Para dejar valoración pulsa aquí
-            </h2>
+            <!-- Verificar si el negocio está validado antes de permitir hacer la reseña -->
+            <ng-container *ngIf="business.state === 'Validado'; else cannotReview">
+              <!-- Si el usuario está autenticado y el negocio está validado, abrir el modal de valoraciones -->
+              <h2
+                style="cursor: pointer"
+                class="mt-5 h5 text-center mb-3 fw-bold"
+                data-bs-toggle="modal"
+                data-bs-target="#valoracionesModal"
+              >
+                Para dejar valoración pulsa aquí
+              </h2>
+              <div class="d-flex justify-content-center">
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              </div>
+            </ng-container>
+
+            <!-- Mensaje si el negocio no está validado -->
+            <ng-template #cannotReview>
+              <h2 class="mt-5 h5 text-center mb-3 fw-bold">
+                No se pueden dejar valoraciones ya que el negocio no está validado.
+              </h2>
+              <div class="d-flex justify-content-center">
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              </div>
+            </ng-template>
           </ng-container>
 
           <!-- Si el usuario NO está autenticado, mostrar la opción que abre el modal de login -->
           <ng-template #modalToReview>
             <h2
               style="cursor: pointer"
-              class="mt-5 h5 text-center mb-5 fw-bold"
+              class="mt-5 h5 text-center mb-3 fw-bold"
               (click)="openLoginModal()"
             >
               Para dejar valoración pulsa aquí
             </h2>
+            <div class="d-flex justify-content-center">
+              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+            </div>
           </ng-template>
-
-
 
           <div class="separator-line mt-5 mb-5"></div>
 
           <!-- Preguntas Frecuentes -->
-          <div class="row d-flex align-items-center mt-5">
-            <h2 class="mt-5 h4 text-center">Preguntas</h2>
-          </div>
+          <div class="container mt-5">
+            <div class="row">
+              <!-- Título principal -->
+              <div class="col-12 text-center">
+                <h2 class="h4 fw-bold">Preguntas y respuestas</h2>
+              </div>
+            </div>
 
-          <div class="row d-flex">
-            <div class="col">
-              <div *ngIf="faqs.length > 0">
+            <!-- Sección de Preguntas -->
+            <div class="row mt-5">
+              <div class="col-12">
+                <h2 class="fw-bold h6">¿TIENES ALGUNA PREGUNTA?</h2>
+                <p class="text-muted">
+                  Encuentra respuestas en los detalles de la peluquería, en preguntas y
+                  respuestas y en las valoraciones de los clientes.
+                </p>
+                <textarea
+                  class="form-control w-md-50 w-lg-50 rounded-3 shadow-sm p-2"
+                  placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Listado de Preguntas y Respuestas -->
+            <div class="row mt-5">
+              <div class="col-12 col-lg-6">
                 <ul class="list-unstyled faq-list">
-                  <li *ngFor="let faq of faqs" class="faq-item mt-5">
+                  <li *ngFor="let faq of faqs" class="faq-item my-4">
                     <div class="faq-question">
-                      <strong>Cliente Mis Peluquerias</strong>
-                      <span> {{ faq.question }}</span>
+                      <strong class="d-block">Pregunta</strong>
+                      <p>{{ faq.question }}</p>
                     </div>
                     <div class="faq-answer">
-                      <strong> Respuesta del Propietario: </strong>
-                      <span> {{ faq.answer }}</span>
-                    </div>
-                    <div class="d-flex justify-content-end mt-2">
-                      <button
-                        class="btn btn-primary btn-sm me-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editQuestionModal"
-                        (click)="editQuestion(faq)"
-                        *ngIf="userType !== 'client' && userType !== 'salon'"
-                      >
-                        Responder
-                      </button>
-                      <button
-                        class="btn btn-danger btn-sm"
-                        *ngIf="userType !== 'client' && userType !== 'salon'"
-                        (click)="deleteQuestion(faq.id_faq)"
-                      >
-                        Eliminar
-                      </button>
+                      <strong class="text-muted">Respuesta</strong>
+                      <p>{{ faq.answer }}</p>
                     </div>
                   </li>
                 </ul>
               </div>
-              <div *ngIf="faqs.length === 0">
-                <p>No hay preguntas disponibles.</p>
+
+              <div class="col-12 col-lg-6">
+                <ul class="list-unstyled faq-list">
+                  <li *ngFor="let faq of faqs" class="faq-item my-4">
+                    <div class="faq-question">
+                      <strong class="d-block">Pregunta</strong>
+                      <p>{{ faq.question }}</p>
+                    </div>
+                    <div class="faq-answer">
+                      <strong class="text-muted">Respuesta</strong>
+                      <p>{{ faq.answer }}</p>
+                    </div>
+                  </li>
+                </ul>
               </div>
+            </div>
+
+            <!-- Paginación -->
+            <div class="d-flex justify-content-center align-items-center mt-5">
+              <button
+                class="btn btn-preview me-2"
+                [disabled]="currentPage === 1"
+              >
+                &lt; ANTERIOR
+              </button>
+              <button
+                class="btn-next"
+                [disabled]="!hasMorePages"
+              >
+                SIGUIENTE &gt;
+              </button>
             </div>
           </div>
         </div>
@@ -652,9 +729,9 @@
         </div>
 
         <!-- Servicio -->
-        <div class="rating-input d-flex align-items-center mb-3 mt-3">
+        <div class="rating-input d-flex align-items-center justify-content-between mb-3 mt-3"  style="max-width: 55%;">
           <label class="me-3">Servicio:</label>
-          <div class="circle-input-group">
+          <div class="circle-input-group ">
             <input
               type="checkbox"
               id="service1"
@@ -699,7 +776,7 @@
         <div class="separator-line mb-3 w-100"></div>
 
         <!-- Calidad/Precio -->
-        <div class="rating-input d-flex align-items-center mb-3">
+        <div class="rating-input d-flex align-items-center justify-content-between mb-3"  style="max-width: 55%;">
           <label class="me-3">Calidad/Precio:</label>
           <div class="circle-input-group">
             <input
@@ -747,7 +824,7 @@
         <div class="separator-line mb-3 w-100"></div>
 
         <!-- Limpieza -->
-        <div class="rating-input d-flex align-items-center mb-3">
+        <div class="rating-input d-flex align-items-center justify-content-between mb-3"  style="max-width: 55%;">
           <label class="me-3">Limpieza:</label>
           <div class="circle-input-group">
             <input
@@ -793,6 +870,281 @@
         </div>
 
         <div class="separator-line mb-3 w-100"></div>
+
+        <!-- Rapidez -->
+        <div class="rating-input d-flex align-items-center justify-content-between mb-3" style="max-width: 55%;">
+          <label class="me-3">Rapidez:</label>
+          <div class="circle-input-group">
+            <input
+              type="checkbox"
+              id="speed1"
+              [(ngModel)]="ratings.speed[0]"
+              (change)="updateRatings(ratings.speed, 0)"
+            />
+            <label for="speed1" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="speed2"
+              [(ngModel)]="ratings.speed[1]"
+              (change)="updateRatings(ratings.speed, 1)"
+            />
+            <label for="speed2" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="speed3"
+              [(ngModel)]="ratings.speed[2]"
+              (change)="updateRatings(ratings.speed, 2)"
+            />
+            <label for="speed3" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="speed4"
+              [(ngModel)]="ratings.speed[3]"
+              (change)="updateRatings(ratings.speed, 3)"
+            />
+            <label for="speed4" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="speed5"
+              [(ngModel)]="ratings.speed[4]"
+              (change)="updateRatings(ratings.speed, 4)"
+            />
+            <label for="speed5" class="circle-label"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="separator-line mb-3 w-100"></div>
+      <!-- Textarea para comentarios o notas adicionales -->
+      <div class="form-group mt-4 mb-3">
+        <label for="additionalComments" class="form-label ms-3"
+          >Comentarios Adicionales:</label
+        >
+        <textarea
+          maxlength="300"
+          id="additionalComments"
+          class="form-control rounded-3 shadow-sm p-2 mx-auto"
+          rows="3"
+          [(ngModel)]="additionalComments"
+          placeholder="Escribe tus comentarios aquí..."
+          style="resize: none; max-width: 95%"
+        ></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="addReview()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteReviewModalLabel">Eliminar Reseña</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        <p>¿Esta seguro de eliminar esta reseña?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmDeleteReview()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal para modificar reseña-->
+<div
+  class="modal fade"
+  id="modificarValoracionesModal"
+  tabindex="-1"
+  aria-labelledby="modificarValoracionesModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modifcarValoraciones">
+          Modificar tu reseña
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4 mt-4">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="150"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+
+        <!-- Servicio -->
+        <div class="rating-input d-flex align-items-center mb-3 mt-3">
+          <label class="me-3">Servicio:</label>
+          <div class="circle-input-group">
+            <input
+              type="checkbox"
+              id="service1"
+              [(ngModel)]="ratings.service[0]"
+              (change)="updateRatings(ratings.service, 0)"
+            />
+            <label for="service1" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="service2"
+              [(ngModel)]="ratings.service[1]"
+              (change)="updateRatings(ratings.service, 1)"
+            />
+            <label for="service2" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="service3"
+              [(ngModel)]="ratings.service[2]"
+              (change)="updateRatings(ratings.service, 2)"
+            />
+            <label for="service3" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="service4"
+              [(ngModel)]="ratings.service[3]"
+              (change)="updateRatings(ratings.service, 3)"
+            />
+            <label for="service4" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="service5"
+              [(ngModel)]="ratings.service[4]"
+              (change)="updateRatings(ratings.service, 4)"
+            />
+            <label for="service5" class="circle-label"></label>
+          </div>
+        </div>
+
+        <!-- Calidad/Precio -->
+        <div class="rating-input d-flex align-items-center mb-3">
+          <label class="me-3">Calidad/Precio:</label>
+          <div class="circle-input-group">
+            <input
+              type="checkbox"
+              id="quality1"
+              [(ngModel)]="ratings.quality[0]"
+              (change)="updateRatings(ratings.quality, 0)"
+            />
+            <label for="quality1" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="quality2"
+              [(ngModel)]="ratings.quality[1]"
+              (change)="updateRatings(ratings.quality, 1)"
+            />
+            <label for="quality2" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="quality3"
+              [(ngModel)]="ratings.quality[2]"
+              (change)="updateRatings(ratings.quality, 2)"
+            />
+            <label for="quality3" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="quality4"
+              [(ngModel)]="ratings.quality[3]"
+              (change)="updateRatings(ratings.quality, 3)"
+            />
+            <label for="quality4" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="quality5"
+              [(ngModel)]="ratings.quality[4]"
+              (change)="updateRatings(ratings.quality, 4)"
+            />
+            <label for="quality5" class="circle-label"></label>
+          </div>
+        </div>
+
+        <!-- Limpieza -->
+        <div class="rating-input d-flex align-items-center mb-3">
+          <label class="me-3">Limpieza:</label>
+          <div class="circle-input-group">
+            <input
+              type="checkbox"
+              id="cleanliness1"
+              [(ngModel)]="ratings.cleanliness[0]"
+              (change)="updateRatings(ratings.cleanliness, 0)"
+            />
+            <label for="cleanliness1" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="cleanliness2"
+              [(ngModel)]="ratings.cleanliness[1]"
+              (change)="updateRatings(ratings.cleanliness, 1)"
+            />
+            <label for="cleanliness2" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="cleanliness3"
+              [(ngModel)]="ratings.cleanliness[2]"
+              (change)="updateRatings(ratings.cleanliness, 2)"
+            />
+            <label for="cleanliness3" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="cleanliness4"
+              [(ngModel)]="ratings.cleanliness[3]"
+              (change)="updateRatings(ratings.cleanliness, 3)"
+            />
+            <label for="cleanliness4" class="circle-label"></label>
+
+            <input
+              type="checkbox"
+              id="cleanliness5"
+              [(ngModel)]="ratings.cleanliness[4]"
+              (change)="updateRatings(ratings.cleanliness, 4)"
+            />
+            <label for="cleanliness5" class="circle-label"></label>
+          </div>
+        </div>
 
         <!-- Rapidez -->
         <div class="rating-input d-flex align-items-center mb-3">
@@ -848,6 +1200,7 @@
           >Comentarios Adicionales:</label
         >
         <textarea
+          maxlength="300"
           id="additionalComments"
           class="form-control rounded-3 shadow-sm p-2 mx-auto"
           rows="3"
@@ -864,7 +1217,7 @@
           type="button"
           class="btn btn-danger"
           data-bs-dismiss="modal"
-          (click)="addReview()"
+          (click)="updateReview()"
         >
           Guardar
         </button>
@@ -872,3 +1225,4 @@
     </div>
   </div>
 </div>
+

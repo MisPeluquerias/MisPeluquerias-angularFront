@@ -174,8 +174,9 @@ export class UnRegisteredSearchBusinessComponent
                     ? marker.images[0].file_url
                     : marker.image;
 
+                // HTML generado dinámicamente para el popup
                 return `<div style="display: flex; align-items: center; padding: 0; font-family: Arial, sans-serif;">
-                          <img src="${imageUrl || '../../../assets/img/web/sello.jpg'}" alt="${marker.name}" style="width: 90px; height: 90px; object-fit: cover; display: block; margin: 0; border: 2px solid #555; margin-right: 10px;" />
+                          <img id="marker-image-${index}" src="${imageUrl || '../../../assets/img/web/sello.jpg'}" alt="${marker.name}" style="width: 90px; height: 90px; object-fit: cover; display: block; margin: 0; border: 2px solid #555; margin-right: 10px;" />
                           <div style="flex-grow: 1; min-width: 0;">
                             <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
                             <div style="font-size: 12px; color: #777;">${marker.address}</div>
@@ -184,7 +185,17 @@ export class UnRegisteredSearchBusinessComponent
                         </div>`;
               });
 
+            // Manejador de eventos para cuando se abre el popup
             markerInstance.on('popupopen', () => {
+              // Añade manejador onerror para cargar imagen por defecto si falla
+              const imageElement = document.getElementById(`marker-image-${index}`) as HTMLImageElement;
+              if (imageElement) {
+                imageElement.onerror = function () {
+                  this.src = '../../../assets/img/web/sello.jpg';  // Imagen por defecto
+                };
+              }
+
+              // Manejador para el botón de "info"
               const infoLink = document.getElementById(`info-link-${index}`);
               if (infoLink) {
                 infoLink.addEventListener('click', (event) => {
@@ -196,6 +207,7 @@ export class UnRegisteredSearchBusinessComponent
               }
             });
 
+            // Manejador de eventos para click en el marker
             markerInstance.on('click', () => this.onMarkerClick(marker));
             this.visibleMarkers.push(marker);
             this.markersMap.set(marker, markerInstance);
@@ -212,6 +224,10 @@ export class UnRegisteredSearchBusinessComponent
         this.fadeOutLoadingSpinner();
       }
     );
+  }
+
+  onImageError(event: any) {
+    event.target.src = '../../../assets/img/web/sello.jpg';
   }
 
   openLoginModal(): void {

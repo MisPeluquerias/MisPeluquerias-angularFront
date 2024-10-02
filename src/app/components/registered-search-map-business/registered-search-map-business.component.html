@@ -13,7 +13,9 @@
             <div class="card-image position-relative">
               <img *ngIf="marker.images && marker.images.length > 0; else defaultImage" [src]="marker.images[0].file_url" [alt]="marker.name">
               <ng-template #defaultImage>
-                <img [src]="marker.image || '../../../assets/img/web/sello.jpg'" [alt]="marker.name" />
+                <img [src]="marker.image || '../../../assets/img/web/sello.jpg'"
+                      [alt]="marker.name"
+                      (error)="onImageError($event)" />
               </ng-template>
               <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
                <button class="favorite-btn" (click)="addFavorite(marker); $event.stopPropagation()">

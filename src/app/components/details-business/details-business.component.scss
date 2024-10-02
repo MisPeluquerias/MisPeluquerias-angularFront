@@ -76,6 +76,14 @@ app-navbar-fixed {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   }
 
+  .btn-danger{
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-danger:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+
   .circle-input-group {
     display: flex;
     gap: 5px; /* Espacio entre los círculos */
@@ -100,6 +108,8 @@ app-navbar-fixed {
     background-color:#b71622;
     border: 1px solid gray;
   }
+
+  
 
 
 .fixed-image-size {
@@ -222,6 +232,24 @@ app-navbar-fixed {
   transform: scale(1.05);
 }
 
+.btn-preview{
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+ background-color: rgba(0, 0, 0, 0.0);
+}
+
+.btn-next{
+  color:#b71622;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+ background-color: rgba(0, 0, 0, 0.0);
+}
+
 
 @media (max-width: 576px) {
 
@@ -244,4 +272,5 @@ app-navbar-fixed {
   .btn i {
     font-size: 0.875rem;
   }
+
 }
