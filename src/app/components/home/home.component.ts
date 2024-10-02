@@ -187,6 +187,10 @@ export class HomeComponent {
   }
 
 
+  onImageError(event: any) {
+    event.target.src = '../../../assets/img/web/sello.jpg';
+  }
+
   public viewDetails(id: any, salonName: string): void {
     console.log('id recibido',id,'salon recibido',salonName);
     if (id && salonName) {

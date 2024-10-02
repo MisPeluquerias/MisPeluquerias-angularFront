@@ -109,7 +109,7 @@ app-navbar-fixed {
     border: 1px solid gray;
   }
 
-  
+
 
 
 .fixed-image-size {
@@ -250,15 +250,24 @@ app-navbar-fixed {
  background-color: rgba(0, 0, 0, 0.0);
 }
 
+.margin-left-puntuaciones{
+
+  margin-left: 150px !important;
+
+
+}
+
 
 @media (max-width: 576px) {
-
   .fixed-image-size {
     height: auto; /* Deja que la altura de la imagen se ajuste automáticamente */
     height: 200px; /* Limita la altura máxima de la imagen */
     width: 100% !important;
   }
 
+  .margin-left-puntuaciones{
+    margin-left: 0px !important;
+  }
 
 .text-responsive{
   font-size: 0.9rem;

@@ -14,7 +14,7 @@
 
             <div class="d-flex justify-content-end">
               <!-- Mostrar el botón "Verificado" si el negocio está validado -->
-              <ng-container *ngIf="business.state === 'Validado'; else notVerified">
+              <ng-container *ngIf="business.state === 'Reclamado'; else notVerified">
                 <button
                   class="btn btn-lg btn-success rounded-pill btn-custom mt-3"
                   disabled
@@ -224,7 +224,7 @@
               </div>
 
               <!-- Segunda columna -->
-              <div class="col-12 col-md-6 mb-4 d-flex flex-column" style="max-width: 27%;">
+              <div class="col-12 col-md-6 mb-4 d-flex flex-column margin-left-puntuaciones" style="max-width: 27%;">
                 <h5 class="fw-bold">Puntuaciones</h5>
                 <!-- Servicio -->
                 <div class="rating-input d-flex mb-3 mt-5 justify-content-between">
@@ -647,6 +647,10 @@
                 <p class="h6" [innerHTML]="business?.formattedHours"></p>
               </li>
             </ul>
+            <ng-container *ngIf="business.state !== 'Reclamado';" >
+               <p><u><b><strong>¡Atención!</strong></b></u> La información que contiene esta página puede no ser veridica si el negocio
+              no esta verificado.</p>
+              </ng-container>
           </div>
         </div>
       </div>

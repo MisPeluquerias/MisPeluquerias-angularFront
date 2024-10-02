@@ -351,6 +351,7 @@
                     [src]="slide.img"
                     class="card-img-top custom-img-height2"
                     [alt]="slide.title"
+                    (error)="onImageError($event)"
                   />
                   <a
                     class="info-link"
