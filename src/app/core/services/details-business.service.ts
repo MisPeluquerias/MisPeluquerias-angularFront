@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -34,13 +35,16 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
 
 
 
-  loadFaq(id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/loadFaq`, {
+  getFaqs(id_salon: string, page: number , limit: number): Observable<any> {
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getFaqs`, {
       params: {
-        id
+        id_salon,
+        page,
+        limit
       },
     });
   }
+
 
 
   getImagesAdmin(salon_id: string): Observable<any[]> {
@@ -107,16 +111,21 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
     return this.http.post<any[]>(`${this.baseUrl}/details-business/deleteReview`, body);
   }
 
-  saveFaq(id_user:string,id_salon: string, question: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/details-business/saveFaq`, {id_user,id_salon, question });
+  addFaq(data:any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/details-business/addFaq`,data);
   }
 
-  updateFaq(id_faq: string, answer: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/details-business/updateQuestion`, { id_faq, answer });
+  updateFaq(id_faq: string, question: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/details-business/updateQuestion`, { id_faq, question });
   }
 
-  deleteFaq(id_faq: string): Observable<any> {
+  getUsuarioId(token: string): Observable<any> {
+    // Enviar el token en el cuerpo de la solicitud
+    return this.http.post<any>(`${this.baseUrl}/decode-token/`, { token });
+  }
+
+
+  deleteFaq(id_faq: number): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/details-business/deleteQuestion`, { id_faq });
   }
-
 }

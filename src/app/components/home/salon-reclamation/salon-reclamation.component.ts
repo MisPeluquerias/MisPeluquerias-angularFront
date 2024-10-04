@@ -18,7 +18,7 @@ export class SalonReclamationComponent implements OnInit {
   @ViewChild('reclamationForm') reclamationForm!: NgForm;
   provinces: any[] = [];
   cities: any[] = [];
-  isDisabled = false; // Logic to determine if form fields should be disabled
+  isDisabled = false;
   successMessage: string = '';
   errorMessage: string = '';
   province: any = {};
@@ -31,10 +31,12 @@ export class SalonReclamationComponent implements OnInit {
   observation: string = '';
   dnifront_path: string = '';
   dniback_path: string = '';
+  invoice_path: string = '';
   file_path: string = '';
   terms: boolean = false;
   dniFrontFile: File | null = null;
   dniBackFile: File | null = null;
+  invoiceFile: File | null = null;
   otherFile: File | null = null;
   fileError: string = '';
   salons: any[] = [];
@@ -42,6 +44,7 @@ export class SalonReclamationComponent implements OnInit {
   id_salon: string = '';
   salonName: string = '';
   private searchTermsSalon = new Subject<string>();
+
 
   constructor(
     private salonReclamationService: SalonReclamationService,
@@ -141,7 +144,8 @@ export class SalonReclamationComponent implements OnInit {
         this.dniBackFile = file;
       } else if (fileType === 'otherFile') {
         this.otherFile = file;
-      }
+      }else if (fileType === 'invoiceFile') {
+        this.invoiceFile = file;
     } else {
       this.toastr.error('Solo se permiten archivos PNG, JPG, JPEG o PDF.');
       event.target.value = ''; // Resetea el campo de archivo
@@ -155,7 +159,9 @@ export class SalonReclamationComponent implements OnInit {
         this.otherFile = null;
       }
     }
+    }
   }
+
 
   addReclamation(): void {
     const termsValue = this.terms ? 1 : 0;
@@ -166,7 +172,7 @@ export class SalonReclamationComponent implements OnInit {
     formData.append('id_province', this.id_province);
     formData.append('id_city', this.id_city);
     formData.append('observation', this.observation);
-    formData.append('terms', termsValue.toString()); // Convertimos el entero a string para agregarlo al FormData
+    formData.append('terms', termsValue.toString());
 
     if (this.dniFrontFile) {
       formData.append('dni_front', this.dniFrontFile);
@@ -176,6 +182,9 @@ export class SalonReclamationComponent implements OnInit {
     }
     if (this.otherFile) {
       formData.append('file_path', this.otherFile);
+    }
+    if (this.invoiceFile) {  // Agregamos la factura
+      formData.append('invoice_path', this.invoiceFile);
     }
 
     console.log('Datos enviados:', formData);
@@ -187,20 +196,13 @@ export class SalonReclamationComponent implements OnInit {
       },
       (error) => {
         console.error('Error enviando la reclamación', error);
-
-        // Verifica si el error es del tipo que quieres tratar como éxito
         if (error.status === 200 || error.statusText === 'OK') {
-          // Si el servidor devolvió 200 OK pero hubo un problema con el parsing del JSON,
-          // aún se puede considerar exitoso si esta es la lógica deseada.
-          this.successMessage =
-            'Reclamación enviada con éxito (con advertencia)';
-          this.toastr.success(
-            'Reclamación enviada con éxito, nos pondremos en contacto con usted lo antes posible'
-          );
+          this.successMessage = 'Reclamación enviada con éxito (con advertencia)';
+          this.toastr.success('Reclamación enviada con éxito.');
           this.reclamationForm.reset();
           this.router.navigate(['/home']);
         } else {
-          this.toastr.error('Error, revise el formulario de envio');
+          this.toastr.error('Error, revise el formulario de envío.');
           this.errorMessage = 'Hubo un error al enviar la reclamación';
         }
       }

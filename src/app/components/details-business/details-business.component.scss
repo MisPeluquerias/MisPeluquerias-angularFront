@@ -27,6 +27,19 @@
   position: relative;
 }
 
+.faq-item p {
+  word-wrap: break-word; /* Permite romper las palabras largas */
+  overflow-wrap: break-word; /* Rompe palabras largas para que no se salgan del contenedor */
+}
+
+.faq-item {
+  max-width: 100%; /* Asegura que el contenedor no se desborde */
+}
+
+.faq-list {
+  width: 100%; /* Se asegura de que la lista ocupe todo el ancho disponible */
+}
+
 .rating-bars {
   margin-top: 20px;
 }
@@ -251,15 +264,18 @@ app-navbar-fixed {
 }
 
 .margin-left-puntuaciones{
-
   margin-left: 150px !important;
-
-
 }
 
 .text-area-pregunta{
   border: 1px solid black;
   outline: none;
+}
+
+@media (max-width: 1542px) {
+  .margin-left-puntuaciones{
+    margin-left: 0px !important;
+  }
 }
 
 
@@ -289,6 +305,10 @@ app-navbar-fixed {
 
   .text-area-pregunta{
     width: 100% !important;
+  }
+
+  @media (max-width: 1542px) {
+
   }
 
 }

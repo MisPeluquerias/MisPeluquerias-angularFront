@@ -9,6 +9,7 @@ import { AuthService } from '../../core/services/AuthService.service';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 import { ToastrService } from 'ngx-toastr'
+import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
 
 
 
@@ -29,6 +30,7 @@ export class DetailsBusinessComponent implements OnInit {
   reviewText: string = '';
   rating: string = '';
   userId: string | null = null;
+  userioId: string | null = null;
   idSalon: string | undefined;
   editReviewText: string = '';
   editRating: string = '';
@@ -66,7 +68,10 @@ export class DetailsBusinessComponent implements OnInit {
   limit = 2; // Reseñas por página
   hasMorePages = true; // Determina si hay más páginas
  reviewToDeleteId: string | null = null;
-
+ totalPages: any;
+ selectedFaq: any = {};
+ idFaqToDelete: number | null = null;
+ usuarioId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,7 +81,7 @@ export class DetailsBusinessComponent implements OnInit {
     public authService: AuthService,
     private fb: FormBuilder,
     private toastr:ToastrService,
-
+    private favoriteSalonService: FavoriteSalonService,
 
   ) {
     this.currentDay = this.getCurrentDay();
@@ -97,9 +102,6 @@ export class DetailsBusinessComponent implements OnInit {
       this.userType = userType;
     });
 
-
-
-
     this.route.params.subscribe(params => {
       const slug = params['salonSlug'];
       const id = params['id'];
@@ -114,7 +116,7 @@ export class DetailsBusinessComponent implements OnInit {
               console.log(this.business.formattedHours);
               this.getScoreReviewSalon();
               this.getObservationReviewSalon();
-              this.loadFaq(id);
+              this.getFaqs(id);
               this.getImagesAdmin(id);
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
@@ -134,6 +136,19 @@ export class DetailsBusinessComponent implements OnInit {
       }
     });
 
+    const token = localStorage.getItem('usuarioId'); // Obtener el token del localStorage
+    console.log('Token recuperado:', token);
+    if (token) {
+      // Llamar al servicio para decodificar el token
+      this.detailsBusinessService.getUsuarioId(token).subscribe(
+        (response) => {
+          this.userioId = response.usuarioId; // Aquí obtienes el usuarioId decodificado
+        },
+        (error) => {
+          console.error('Error al obtener el usuarioId:', error);
+        }
+      );
+    }
   }
 
 
@@ -148,6 +163,43 @@ export class DetailsBusinessComponent implements OnInit {
   }
 
 
+  setFaqToDelete(id_faq: number) {
+    this.idFaqToDelete = id_faq;
+  }
+
+
+   confirmDeleteFaq() {
+    if (this.idFaqToDelete !== null) {
+      this.detailsBusinessService.deleteFaq(this.idFaqToDelete).subscribe({
+        next: () => {
+          this.toastr.success('Pregunta eliminada con éxito');
+          this.getFaqs(this.idSalon!); // Refrescar la lista de FAQs
+          this.idFaqToDelete = null; // Limpiar el ID después de la eliminación
+        },
+        error: (error) => {
+          console.error('Error al eliminar la pregunta', error);
+          this.toastr.error('No se pudo eliminar la pregunta, inténtelo de nuevo.');
+        }
+      });
+    }
+  }
+
+
+  updateFaq() {
+    const { id_faq, question } = this.selectedFaq;
+    this.detailsBusinessService.updateFaq(id_faq, question).subscribe(
+      (response) => {
+        this.getFaqs(this.idSalon!);
+        this.toastr.success('Pregunta actualizada con éxito');
+        console.log('Pregunta actualizada con éxito', response);
+        // Aquí puedes manejar la respuesta, como cerrar el modal o mostrar un mensaje
+      },
+      (error) => {
+        this.toastr.error('Error al actualizar la pregunta');
+        console.error('Error al actualizar la pregunta', error);
+      }
+    );
+  }
 
 
   generateStars(rating: number): void {
@@ -251,19 +303,38 @@ export class DetailsBusinessComponent implements OnInit {
   }
 
 
-  private loadFaq(id: string): void {
-    //console.log('Cargando preguntas frecuentes para el ID:', id); // Depuración: Verifica cuando se cargan las preguntas frecuentes
-    this.detailsBusinessService.loadFaq(id).subscribe(
-      faqs => {
-        this.faqs = faqs;
-        //console.log('Preguntas frecuentes cargadas:', this.faqs); // Depuración: Verifica las preguntas frecuentes cargadas
+  getFaqs(id: string, page: number = 1, limit: number = 4): void {
+    this.detailsBusinessService.getFaqs(id, page, limit).subscribe(
+      response => {
+        this.faqs = response.faqs;
+        this.currentPage = response.currentPage;
+        this.totalPages = response.totalPages;
+        this.hasMorePages = this.currentPage < this.totalPages;
       },
       error => console.error('Error al cargar preguntas frecuentes para el ID:', id, error)
     );
   }
+
+
+  previousPageFaq(): void {
+    if (this.currentPage > 1) {
+      this.getFaqs(this.idSalon!, this.currentPage - 1);
+    }
+  }
+
+
+  nextPageFaq(): void {
+    if (this.currentPage < this.totalPages) {
+      this.getFaqs(this.idSalon!, this.currentPage + 1);
+    }
+  }
+
+
+
   openServiceModal(service: any): void {
     this.selectedService = service;
   }
+
 
   private getServicesSalon(id_salon: string): void {
     this.detailsBusinessService.getServicesSalon(id_salon).subscribe(
@@ -410,6 +481,7 @@ editReview(observation: any): void {
   this.editReviewText = observation.observacion;
 }
 
+
 setReviewToDelete(reviewId: string): void {
   this.reviewToDeleteId = reviewId;
 }
@@ -433,29 +505,6 @@ confirmDeleteReview(): void {
   }
 }
 
-
-  editQuestion(faq: any): void {
-    this.faqToEdit = faq;
-    this.editQuestionText = faq.question;
-    this.editAnswerText = faq.answer;
-  }
-
-
-
-  deleteQuestion(id_faq: string): void {
-    console.log('Eliminar pregunta con ID:', id_faq);
-    if (this.idSalon) {
-      this.detailsBusinessService.deleteFaq(id_faq).subscribe(
-        response => {
-          //console.log('Pregunta eliminada:', response);
-          this.loadFaq(this.idSalon!);
-        },
-        error => console.error('Error al eliminar la pregunta', error)
-      );
-    } else {
-      console.error('No se encontró el ID del salón.');
-    }
-  }
 
   getScoreReviewSalon() {
     // Verificar si existe el idSalon
@@ -529,6 +578,27 @@ confirmDeleteReview(): void {
     return stars;
   }
 
+  addQuestion(): void {
+    if (this.questionText.trim()) {
+      const data = {
+        id_user: this.userId,
+        id_salon: this.idSalon,
+        question: this.questionText
+      };
+      this.detailsBusinessService.addFaq(data).subscribe({
+        next: (response: any) => {
+          console.log('Pregunta agregada:', response);
+          this.questionText = ''; // Limpiar el texto de la pregunta
+          this.getFaqs(this.idSalon!);
+        },
+        error: (error) => {
+          console.error('Error al agregar la pregunta:', error);
+          this.toastr.error('No se pudo agregar la pregunta, inténtelo de nuevo.');
+        }
+      });
+    }
+  }
+
   getObservationReviewSalon(page: number = 1, limit: number = 2) {
     if (this.idSalon) {
       this.detailsBusinessService.getObservationReviews(this.idSalon, page, limit).subscribe({
@@ -581,6 +651,11 @@ confirmDeleteReview(): void {
     //console.log('Estado de ratings:', this.ratings);
   }
 
+
+  openEditFaqModal(faq: any) {
+    this.selectedFaq = { ...faq }; // Clona el objeto faq para no modificarlo directamente
+  }
+
   // Helper para convertir calificaciones numéricas en checkboxes booleanos
   getCheckboxState(rating: number): boolean[] {
     return [1, 2, 3, 4, 5].map((val) => val <= rating);
@@ -617,6 +692,56 @@ confirmDeleteReview(): void {
         this.toastr.error('No se pudo actualizar la reseña.');
       }
     });
+  }
+
+  shareUrl() {
+    if (navigator.share) {
+      // Si la Web Share API está disponible (por ejemplo, en Chrome)
+      navigator.share({
+        title: document.title,
+        url: window.location.href
+      })
+      .then(() => {
+        //this.toastr.success('Dirección compartida correctamente.');
+      })
+      .catch((error) => {
+        console.error('Error al compartir:', error);
+        this.toastr.error('Error al intentar compartir.');
+      });
+    } else {
+      // Alternativa para navegadores sin soporte (por ejemplo, Firefox)
+      const url = window.location.href;
+
+      // Usa la API Clipboard para copiar la URL al portapapeles
+      navigator.clipboard.writeText(url).then(() => {
+        this.toastr.success('La URL ha sido copiada al portapapeles.');
+      }).catch((err) => {
+        console.error('Error al copiar al portapapeles:', err);
+        this.toastr.error('No se pudo copiar la URL al portapapeles.');
+      });
+    }
+  }
+
+  onFavoriteClick() {
+    if (this.authService.isAuthenticated()) {
+      const data = {
+        id_user: this.userId,
+        id_salon: this.idSalon
+      };
+      this.favoriteSalonService.addFavorite(data).subscribe(
+        (res) => {
+          this.toastr.success('Añadido a favoritos.');
+        },
+        (error) => {
+          // Manejamos el error y mostramos un mensaje
+          this.toastr.error('El salón ya esta en su lista de favoritos');
+          console.error('Error al añadir a favoritos:', error);
+        }
+      );
+    } else {
+      // El usuario no está autenticado, mostrar el modal de login
+      this.openLoginModal();
+    }
   }
 
   // Helper para contar los ratings seleccionados

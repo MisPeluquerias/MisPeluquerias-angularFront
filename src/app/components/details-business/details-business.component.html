@@ -10,6 +10,7 @@
           >
             <h1 class="mb-2 h3">
               <b>{{ business.name }}</b>
+
             </h1>
 
             <div class="d-flex justify-content-end">
@@ -119,7 +120,14 @@
           </ng-template>
 
           <!-- Descripción del negocio -->
-          <h2 class="mt-5 h4 text-center mb-2 fw-bold">Sobre el salón</h2>
+          <div class="position-relative">
+            <h2 class="mt-5 h4 text-center mb-2 fw-bold">Sobre el salón</h2>
+            <div class="position-absolute top-0 end-0">
+              <span (click)="shareUrl()" class="me-2"><i class="fa-regular fa-share-from-square" style="font-size: 1.7rem; color: lightslategray; cursor: pointer;" ></i></span>
+              <i (click)="onFavoriteClick()"class="fa-regular fa-heart me-md-5" style="font-size: 1.7rem; color: lightslategray; cursor: pointer;"></i>
+            </div>
+          </div>
+
           <div class="mt-4">
             <div *ngFor="let description of descriptionSalon">
               <p *ngIf="description.about_us; else defaultMessage">
@@ -427,6 +435,7 @@
               </div>
             </div>
 
+
             <!-- Fila para observaciones (deben estar debajo de las columnas superiores) -->
             <div class="row mt-5 mb-5">
               <div class="col-12 col-md-6" *ngFor="let observation of observations; let i = index">
@@ -449,8 +458,10 @@
                   <p style="font-size: 1.2rem; font-weight: bold;">{{ observation.recommendation }}</p>
                   <p class="mb-5">{{ observation.observacion }}</p>
 
+º
+
                   <!-- Botones de editar y eliminar -->
-                  <div class="d-flex justify-content-end" *ngIf="observation.user_id === userId || userType === 'admin'">
+                  <div class="d-flex justify-content-end" *ngIf="observation.id_user === userioId || userType === 'admin'">
                     <button class="btn btn-secondary btn-sm me-2"  data-bs-toggle="modal"  data-bs-target="#modificarValoracionesModal" (click)="openEditModal(observation)">
                       Editar
                     </button>
@@ -458,9 +469,16 @@
                       Eliminar
                     </button>
                   </div>
+                  <div *ngIf="observation.respuesta">
+                    <div class="ms-4 mt-4 p-3">
+                      <p style="font-weight: bold;">{{ business.name }}, respondió a esta opinión</p>
+                      <span class="text-muted">Opinión escrita el {{ observation.updated_at | date: 'dd MMMM yyyy' }}</span>
+                      <p class="mt-3">{{ observation.respuesta }}</p>
+                    </div>
                 </div>
               </div>
             </div>
+          </div>
           </div>
 
           <div class="d-flex justify-content-center align-items-center mt-5">
@@ -533,7 +551,6 @@
               <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
             </div>
           </ng-template>
-
           <div class="separator-line mt-5 mb-5"></div>
 
           <!-- Preguntas Frecuentes -->
@@ -558,61 +575,70 @@
                   placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
                   maxlength="300"
                   rows="3"
+                  [(ngModel)]="questionText"
                   (click)="verifyUser()"
+                  (keydown)="verifyUser()"
                 ></textarea>
+
+                <!-- El botón solo aparecerá cuando haya texto en el textarea -->
+                <button
+                  *ngIf="questionText.trim() || authService.isAuthenticated()"
+                  class="btn btn-danger mt-2"
+                  (click)="addQuestion()"
+                >
+                  Enviar
+                </button>
               </div>
             </div>
+
+
+
 
             <!-- Listado de Preguntas y Respuestas -->
             <div class="row mt-5">
-              <div class="col-12 col-lg-6">
-                <ul class="list-unstyled faq-list">
-                  <li *ngFor="let faq of faqs" class="faq-item my-4">
-                    <div class="faq-question">
-                      <strong class="d-block">Pregunta</strong>
+              <div class="col-12 ms-4">
+                <ul class="list-unstyled faq-list row ms-5">
+                  <li *ngFor="let faq of faqs" class="faq-item col-12 col-md-6 my-4">
+                    <div>
+                      <h6 class="fw-bold h5" style="color: #000; font-weight: bold;"><b>Pregunta</b></h6>
                       <p>{{ faq.question }}</p>
-                    </div>
-                    <div class="faq-answer">
-                      <strong class="text-muted">Respuesta</strong>
-                      <p>{{ faq.answer }}</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
 
-              <div class="col-12 col-lg-6">
-                <ul class="list-unstyled faq-list">
-                  <li *ngFor="let faq of faqs" class="faq-item my-4">
-                    <div class="faq-question">
-                      <strong class="d-block">Pregunta</strong>
-                      <p>{{ faq.question }}</p>
+                      <div class="d-flex justify-content-end" *ngIf="faq.id_user  === userioId || this.userType === 'admin'">
+                        <button class="btn btn-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modificarFaqModal" (click)="openEditFaqModal(faq)">
+                          Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm" style="box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;" data-bs-toggle="modal" data-bs-target="#deleteFaqModal" (click)="setFaqToDelete(faq.id_faq)">
+                          Eliminar
+                        </button>
+                      </div>
                     </div>
-                    <div class="faq-answer">
-                      <strong class="text-muted">Respuesta</strong>
-                      <p>{{ faq.answer }}</p>
+                    <div *ngIf="faq.answer">
+                      <h6 class="fw-bold h5"><b>Respuesta</b></h6>
+                      <p><i class="fa-solid fa-arrow-right"></i> {{ faq.answer }}</p>
                     </div>
                   </li>
                 </ul>
               </div>
             </div>
+          </div>
 
-            <!-- Paginación -->
             <div class="d-flex justify-content-center align-items-center mt-5">
               <button
                 class="btn btn-preview me-2"
                 [disabled]="currentPage === 1"
+                (click)="previousPageFaq()"
               >
                 &lt; ANTERIOR
               </button>
               <button
                 class="btn-next"
-                [disabled]="!hasMorePages"
+                [disabled]="currentPage === totalPages"
+                (click)="nextPageFaq()"
               >
                 SIGUIENTE &gt;
               </button>
             </div>
           </div>
-        </div>
 
         <!-- Columna de información secundaria -->
         <div class="col-lg-4 col-md-5 p-3 rounded">
@@ -631,7 +657,7 @@
               Cómo llegar
             </button>
           </div>
-          <p class="mb-3">{{ business.address }}</p>
+          <p class="mb-3"><i class="fa-solid fa-location-dot me-3" style="color: lightslategray;"></i>{{ business.address }}</p>
           <div class="d-flex align-items-center mb-3">
             <span><i class="las la-phone"></i> {{ business.phone }}</span>
             <a
@@ -958,7 +984,7 @@
 </div>
 
 
-<!-- Modal -->
+<!-- Modal eliminar reseña -->
 <div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -983,6 +1009,37 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal eliminar pregunta -->
+<div class="modal fade" id="deleteFaqModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteFaqModalLabel">Eliminar Pregunta</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        <p>¿Esta seguro de eliminar esta pregunta?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmDeleteFaq()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
 <!--Modal para modificar reseña-->
 <div
@@ -1227,6 +1284,35 @@
         >
           Guardar
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar la pregunta y respuesta -->
+<div class="modal fade" id="modificarFaqModal" tabindex="-1" aria-labelledby="modificarFaqModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modificarFaqModalLabel">Modificar Pregunta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="question" class="form-label">Pregunta</label>
+          <textarea maxlength="300" id="question" class="form-control" [(ngModel)]="selectedFaq.question"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="updateFaq()">Guardar</button>
       </div>
     </div>
   </div>

@@ -267,17 +267,22 @@
 
 
             <div class="col-md-12">
-              <label for="d">Facturas</label>
+              <label for="invoice_path">Facturas</label>
+              <input type="file" class="form-control file" id="invoice_path" name="invoice_path" (change)="onFileSelected($event, 'invoiceFile')" required>
+              <div *ngIf="reclamationForm.submitted && !invoiceFile" class="text-danger">
+                Es obligatorio adjuntar la factura de algún suministro de tu negocio (Luz,Agua,Teléfono...)
+              </div>
+              <div *ngIf="reclamationForm.submitted && !invoiceFile" class="text-danger">
+                La factura es obligatoria.
+              </div>
               <p class="mt-1 small">
                 Adjunta la factura de algún suministro de tu negocio (Luz,Agua,Teléfono...)
               </p>
               <p class="mt-1 small text-danger">
                 <strong>Archivos Permitidos: png | jpg | jpeg | pdf</strong>
               </p>
+              </div>
             </div>
-
-
-
 
 
 
@@ -308,12 +313,11 @@
             <button
               type="submit"
               class="btn btn-sm btn-danger rounded-pill px-5"
-              [disabled]="!terms || !dniFrontFile || !dniBackFile|| !otherFile"
+              [disabled]="!terms || !dniFrontFile || !dniBackFile|| !otherFile || !invoiceFile"
             >
               Enviar
             </button>
           </div>
-        </div>
         </div>
       </form>
     </div>
