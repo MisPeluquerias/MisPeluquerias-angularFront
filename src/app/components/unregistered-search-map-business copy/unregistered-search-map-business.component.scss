@@ -247,7 +247,7 @@ app-footer {
 }
 
 .favorite-btn i {
-  color: red;
+  color: #eeeeee;;
   font-size: 1.5rem;
 }
 
@@ -255,6 +255,7 @@ app-footer {
   background-color: rgba(255, 0, 0, 0.8);
   transform: scale(1.1);
 }
+
 
 .favorite-btn:focus {
   outline: none; /* Elimina el contorno al hacer clic */

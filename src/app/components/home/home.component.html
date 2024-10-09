@@ -325,7 +325,7 @@
             [numVisible]="4"
             [numScroll]="1"
             [circular]="true"
-            [autoplayInterval]="0"
+            [autoplayInterval]="3500"
             [responsiveOptions]="[
               {
                 breakpoint: '1024px',
@@ -346,7 +346,7 @@
           >
             <ng-template pTemplate="item" let-slide >
               <div class="slide">
-                <div class="card ustom-card-height">
+                <div class="card custom-card-height">
                   <img
                     [src]="slide.img"
                     class="card-img-top custom-img-height2"

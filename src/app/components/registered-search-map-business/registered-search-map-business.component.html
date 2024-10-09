@@ -4,6 +4,9 @@
   <div class="content container-fluid">
     <div class="row">
       <div id="results" class="col-md-6 d-flex flex-column">
+        <div *ngIf="isLoadingPosition" class="loading-indicator">
+          <p>Obteniendo su posición, por favor espera...</p>
+        </div>
         <h5>Resultados de Búsqueda</h5>
         <div *ngIf="paginatedMarkers.length === 0">
           <p>No hay resultados en esta área.</p>

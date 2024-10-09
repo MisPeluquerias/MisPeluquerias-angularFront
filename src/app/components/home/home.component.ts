@@ -43,6 +43,8 @@ export class HomeComponent {
   selectedCategory: string = '';
   citiesModal: any[] = [];
   isDropdownOpen: boolean = false;
+
+
   @ViewChild('dropdownMenuButton') dropdownMenuButton!: ElementRef;
 
 
@@ -88,7 +90,6 @@ export class HomeComponent {
           title: salon.name,    // Cambia 'name' por la propiedad correcta en tus datos
           desc: salon.address,
           id:salon.id_salon
-
         }));
         console.log(this.slides)
       },
