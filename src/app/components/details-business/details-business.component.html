@@ -133,7 +133,7 @@
               <p *ngIf="description.about_us; else defaultMessage">
                 {{ description.about_us }}
               </p>
-              <div class="separator-line mt-4 mb-3"></div>
+              <div class="separator-line w-100 mt-4 mb-3"></div>
             </div>
           </div>
 
@@ -146,7 +146,7 @@
           </ng-template>
 
           <!-- Servicios -->
-          <div class="row d-flex mt-3">
+          <div class="row d-flex mt-5">
             <div class="col">
               <h3 class="mb-4 mt-2 h4 text-center fw-bold">
                 Nuestros servicios
@@ -169,11 +169,60 @@
                   </button>
                 </div>
               </div>
-              <div class="separator-line mt-4 mb-3"></div>
+              <div class="separator-line w-100 mt-4 mb-3"></div>
             </div>
             <div *ngIf="services.length === 0">
               <p>No hay servicios disponibles.</p>
-              <div class="separator-line mt-5"></div>
+              <div class="separator-line w-100 mt-5"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-12 mb-4 d-flex flex-column text-center">
+              <h2 class="mt-5 h4 mb-2 fw-bold">Marcas del salón</h2>
+              <div *ngIf="slides && slides.length > 0" class="container mt-5 zoom-element">
+                <p-carousel
+                  [value]="slides"
+                  [numVisible]="1"
+                  [numScroll]="1"
+                  [circular]="true"
+                  [autoplayInterval]="3500"
+                  [responsiveOptions]="[
+                    {
+                      breakpoint: '1024px',
+                      numVisible: 3,
+                      numScroll: 1
+                    },
+                    {
+                      breakpoint: '768px',
+                      numVisible: 2,
+                      numScroll: 1
+                    },
+                    {
+                      breakpoint: '560px',
+                      numVisible: 1,
+                      numScroll: 1
+                    }
+                  ]"
+                >
+                  <ng-template pTemplate="item" let-slide>
+                    <div class="slide">
+                      <img
+                        [src]="slide.img"
+                        class="card-img-top custom-img-height2"
+                        [alt]="slide.title"
+                        (error)="onImageError($event)"
+                      />
+                      <!--
+                      <h5 class="card-title" style="font-size: 1.2rem">
+                        {{ slide.title }}
+                      </h5>
+                      -->
+                    </div>
+                  </ng-template>
+                </p-carousel>
+              </div>
+              <div class="separator-line w-100 mt-2"></div>
             </div>
           </div>
 
@@ -458,7 +507,6 @@
                   <p style="font-size: 1.2rem; font-weight: bold;">{{ observation.recommendation }}</p>
                   <p class="mb-5">{{ observation.observacion }}</p>
 
-º
 
                   <!-- Botones de editar y eliminar -->
                   <div class="d-flex justify-content-end" *ngIf="observation.id_user === userioId || userType === 'admin'">
@@ -551,7 +599,7 @@
               <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
             </div>
           </ng-template>
-          <div class="separator-line mt-5 mb-5"></div>
+          <div class="separator-line w-100 mt-5 mb-5"></div>
 
           <!-- Preguntas Frecuentes -->
           <div class="container mt-5">
@@ -596,8 +644,8 @@
 
             <!-- Listado de Preguntas y Respuestas -->
             <div class="row mt-5">
-              <div class="col-12 ms-4">
-                <ul class="list-unstyled faq-list row ms-5">
+              <div class="col-12 ms-md-4">
+                <ul class="list-unstyled faq-list row ms-md-5">
                   <li *ngFor="let faq of faqs" class="faq-item col-12 col-md-6 my-4">
                     <div>
                       <h6 class="fw-bold h5" style="color: #000; font-weight: bold;"><b>Pregunta</b></h6>
@@ -659,7 +707,7 @@
           </div>
           <p class="mb-3"><i class="fa-solid fa-location-dot me-3" style="color: lightslategray;"></i>{{ business.address }}</p>
           <div class="d-flex align-items-center mb-3">
-            <span><i class="las la-phone"></i> {{ business.phone }}</span>
+            <span><i class="las la-phone" style="margin-right: 12px;"></i> {{ business.phone }}</span>
             <a
               href="tel:{{ business.phone }}"
               class="btn btn-outline-secondary ms-auto"
@@ -668,6 +716,10 @@
           </div>
 
           <div class="horarios mb-5">
+            <h3 class="h5 mb-3 d-flex align-items-center">
+              <span [ngClass]="currentStatus === 'Abierto ahora' ? 'dot open' : 'dot closed'"></span>
+              {{currentStatus}}
+          </h3>
             <h4 class="h4">Horario</h4>
             <ul class="list-unstyled">
               <li>
@@ -716,7 +768,10 @@
           >
             <span>{{ subservice.subservice }}</span>
             <span class="text-success">{{ subservice.time }} min.</span>
-            <!-- Puedes añadir el precio aquí -->
+            <span class="text-success">
+              {{ +subservice.price !== 0 ? subservice.price + ' €' : 'No definido' }}
+            </span>
+
           </li>
         </ul>
         <p
@@ -805,7 +860,7 @@
             <label for="service5" class="circle-label"></label>
           </div>
         </div>
-        <div class="separator-line mb-3 w-100"></div>
+        <div class="separator-line w-100 mb-3 w-100"></div>
 
         <!-- Calidad/Precio -->
         <div class="rating-input d-flex align-items-center justify-content-between mb-3"  style="max-width: 55%;">

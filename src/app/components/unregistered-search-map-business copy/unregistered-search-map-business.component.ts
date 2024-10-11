@@ -36,6 +36,7 @@ export class UnRegisteredSearchBusinessComponent
   private markersMap: Map<any, L.Marker> = new Map();
   private readonly minZoomToLoadMarkers: number = 14;
   private currentIdCity: string | null = null;
+  private currentService: string | null = null;
   isAuthenticated: boolean = false;
 
   constructor(
@@ -55,45 +56,61 @@ export class UnRegisteredSearchBusinessComponent
 
   ngAfterViewInit(): void {
     this.customIcon = L.icon({
-      iconUrl: '../../../assets/img/web/icon-map-finder.png',
-      iconSize: [38, 38],
-      iconAnchor: [19, 30],
-      popupAnchor: [0, -45],
+        iconUrl: '../../../assets/img/web/icon-map-finder.png',
+        iconSize: [38, 38],
+        iconAnchor: [19, 30],
+        popupAnchor: [0, -45],
     });
 
     this.route.queryParams.subscribe((params) => {
-      const id_city = params['id_city'];
-      const name = params['name'];
-      const salonName = params['salonName'];
-      const categoria = params['categoria'];
+        const id_city = params['id_city'];
+        const name = params['name'];
+        const salonName = params['salonName'];
+        const categoria = params['categoria'];
+        const service = params['service'];
 
-      if (id_city && id_city !== this.currentIdCity) {
-        this.currentIdCity = id_city;
-        if (this.map) {
-          this.loadMarkers({ id_city, name, salonName, categoria });
+        if (this.currentIdCity !== id_city || this.currentService !== service) {
+            this.currentIdCity = id_city;
+            this.currentService = service;
+            this.updateMap({ id_city, name, salonName, categoria, service });
         } else {
-          this.initMap({ id_city, name, salonName, categoria });
+            // Fuerza la recarga de marcadores si la ciudad es la misma
+            this.updateMap({ id_city, name, salonName, categoria, service }, true);
         }
-      } else if (name || salonName) {
-        if (this.map) {
-          this.loadMarkers({ id_city, name, salonName, categoria });
-        } else {
-          this.initMap({ id_city, name, salonName, categoria });
-        }
-      }
     });
+
     this.cdr.detectChanges();
     setTimeout(() => {
-      window.scrollTo(0, 0);
+        window.scrollTo(0, 0);
     }, 2000);
+}
+private updateMap(params: {
+  id_city?: string;
+  name?: string;
+  salonName?: string;
+  categoria?: string;
+  service?: string;
+}, forceReload: boolean = false): void {
+  if (this.map) {
+      if (forceReload) {
+          // Borrar los marcadores actuales y recargar
+          this.markerLayer?.clearLayers();
+      }
+      this.loadMarkers(params);
+  } else {
+      this.initMap(params);
   }
+}
+
 
   private initMap(params: {
     id_city?: string;
     name?: string;
     salonName?: string;
     categoria?: string;
+    service?: string;
   }): void {
+
     this.map = L.map('unregistered-map', {
       center: [0, 0],
       zoom: 19,
@@ -115,27 +132,44 @@ export class UnRegisteredSearchBusinessComponent
     name?: string;
     salonName?: string;
     categoria?: string;
+    service?: string;
   }): void {
-    //console.log('loadMarkers fue llamado con parámetros:', params);
+    // Imprime los parámetros que llegan a la función
+    console.log('loadMarkers fue llamado con parámetros:', params);
+
     if (!this.map || !this.markerLayer) return;
 
     this.isLoading = true;
 
     let markerObservable: Observable<{ salons: any[] }>;
 
-    if (params.id_city && params.categoria) {
+    if (params.id_city && params.service) {
+      console.log('Buscando por ciudad y servicio:', params.id_city, params.service);
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByService(params.id_city, params.service)
+        .pipe(map((salons: any[]) => ({ salons })));
+
+    }
+
+    else if (params.id_city && params.categoria) {
+      console.log('Buscando por ciudad y categoría:', params.id_city, params.categoria);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCityAndCategory(params.id_city, params.categoria)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city) {
+      console.log('Buscando por ciudad:', params.id_city);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCity(params.id_city)
         .pipe(map((salons: any[]) => ({ salons })));
+
     } else if (params.name) {
+      console.log('Buscando por nombre de la ciudad:', params.name);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCityName(params.name)
         .pipe(map((response) => ({ salons: response.salons })));
+
     } else if (params.salonName) {
+      console.log('Buscando por nombre del salón:', params.salonName);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByName(params.salonName)
         .pipe(map((salons: any[]) => ({ salons })));
@@ -225,6 +259,7 @@ export class UnRegisteredSearchBusinessComponent
       }
     );
   }
+
 
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';

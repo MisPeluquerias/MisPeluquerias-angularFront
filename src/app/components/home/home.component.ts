@@ -43,6 +43,8 @@ export class HomeComponent {
   selectedCategory: string = '';
   citiesModal: any[] = [];
   isDropdownOpen: boolean = false;
+
+
   @ViewChild('dropdownMenuButton') dropdownMenuButton!: ElementRef;
 
 
@@ -88,7 +90,6 @@ export class HomeComponent {
           title: salon.name,    // Cambia 'name' por la propiedad correcta en tus datos
           desc: salon.address,
           id:salon.id_salon
-
         }));
         console.log(this.slides)
       },
@@ -341,7 +342,6 @@ export class HomeComponent {
         this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
         return;
       }
-
       const salonSlug = this.salonName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
 
       this.unRegisteredSearchBusinessService.viewDetailsBusiness(this.id_salon).subscribe({
@@ -350,6 +350,7 @@ export class HomeComponent {
             this.toastr.warning('No se encontraron resultados para el salón especificado.');
           } else {
             this.router.navigate([`/centro/${salonSlug}/${this.id_salon}`]);  // Cambiar a usar '/' en lugar de '-'
+            
           }
         },
         error: (error) => {

@@ -72,6 +72,11 @@ export class DetailsBusinessComponent implements OnInit {
  selectedFaq: any = {};
  idFaqToDelete: number | null = null;
  usuarioId: string | null = null;
+ getBrandsSalon:any;
+ slides: any[] = [];
+ currentStatus: string="";
+
+
 
   constructor(
     private route: ActivatedRoute,
@@ -94,6 +99,7 @@ export class DetailsBusinessComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.userId = localStorage.getItem('usuarioId');
 
     this.isUserAuthenticated=this.authService.isAuthenticated();
@@ -118,8 +124,21 @@ export class DetailsBusinessComponent implements OnInit {
               this.getObservationReviewSalon();
               this.getFaqs(id);
               this.getImagesAdmin(id);
+
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
+              this.detailsBusinessService.getBrandByIdSalon(this.idSalon).subscribe({
+                next: (brand) => {
+                  this.slides = brand.map(brand => ({
+                    img: brand.imagePath,
+                    title: brand.name,
+                    id:brand.id_brand
+                  }));
+                },
+                error: (error) => {
+                  console.error('Error al obtener las brandes del salón:', error);
+                }
+              });
               setTimeout(() => {
                 this.initMap();
               }, 0);
@@ -149,6 +168,8 @@ export class DetailsBusinessComponent implements OnInit {
         }
       );
     }
+
+
   }
 
 
@@ -231,10 +252,11 @@ export class DetailsBusinessComponent implements OnInit {
   }
 
 
- private formatHours(hoursOld: string): string {
+  private formatHours(hoursOld: string): string {
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
     const todayIndex = new Date().getDay();
     const currentDay = daysOfWeek[(todayIndex + 6) % 7];
+    const currentTime = new Date();
     const days = hoursOld.split(';').map(day => day.trim()).filter(day => day.length > 0);
     const dayMap = new Map<string, string>();
 
@@ -245,14 +267,39 @@ export class DetailsBusinessComponent implements OnInit {
         }
     });
 
+    // Establece el estado actual del negocio (abierto/cerrado)
+    this.currentStatus = 'Cerrado';
+    if (dayMap.has(currentDay)) {
+        const hours = dayMap.get(currentDay);
+        if (hours && hours !== 'Cerrado') {
+            const timeRanges = hours.split(',').map(range => range.trim());
+            for (const range of timeRanges) {
+                const [aperturaStr, cierreStr] = range.split('-').map(time => time.trim());
+                const [aperturaHora, aperturaMin] = aperturaStr.split(':').map(Number);
+                const [cierreHora, cierreMin] = cierreStr.split(':').map(Number);
+
+                const apertura = new Date();
+                apertura.setHours(aperturaHora, aperturaMin, 0);
+
+                const cierre = new Date();
+                cierre.setHours(cierreHora, cierreMin, 0);
+
+                if (currentTime >= apertura && currentTime <= cierre) {
+                    this.currentStatus = 'Abierto ahora';
+                    break;
+                }
+            }
+        }
+    }
+
     // Crear el HTML formateado con flexbox
     const formattedHours = daysOfWeek.map(dayName => {
         const hours = dayMap.get(dayName) || 'Cerrado';
         const formattedDay = `
-          <div class="d-flex justify-content-between">
-             <span>\u2022 ${dayName}:</span>
-            <span class="ms-auto">${hours}</span>
-          </div>`;
+            <div class="d-flex justify-content-between">
+               <span>\u2022 ${dayName}:</span>
+              <span class="ms-auto">${hours}</span>
+            </div>`;
 
         if (dayName === currentDay) {
             return `<b>${formattedDay}</b>`;
@@ -262,6 +309,8 @@ export class DetailsBusinessComponent implements OnInit {
 
     return formattedHours;
 }
+
+
 
 
   // Función para abrir la página de Google Maps con las coordenadas del salón
@@ -339,19 +388,16 @@ export class DetailsBusinessComponent implements OnInit {
   private getServicesSalon(id_salon: string): void {
     this.detailsBusinessService.getServicesSalon(id_salon).subscribe(
       (response: any) => {
-        // Verifica si la respuesta es un objeto y no un array
         if (response && typeof response === 'object' && !Array.isArray(response)) {
-          // Convierte el objeto en un array de servicios
           this.services = Object.entries(response).map(([serviceName, subservices]) => {
-            // Verificar si subservices es realmente un array
             const validSubservices = Array.isArray(subservices) ? subservices : [];
             return {
-              serviceName,  // Nombre del servicio
-              subservices: validSubservices   // Array de subservicios
+              serviceName,
+              subservices: validSubservices
             };
           });
 
-          //console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
+          console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
         } else {
           console.error('La propiedad `services` no es un array para el ID:', id_salon, response); // Depuración: Verifica si hay un error en la respuesta
           this.services = [];
@@ -626,6 +672,8 @@ confirmDeleteReview(): void {
       });
     }
   }
+
+
 
 
 

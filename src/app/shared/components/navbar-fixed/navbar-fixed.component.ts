@@ -46,7 +46,6 @@ export class NavbarFixedComponent implements OnInit {
 
 
   ngOnInit(): void {
-
     this.isAuthenticated = this.authService.isAuthenticated();
     this.searchTermsCity
     .pipe(
@@ -171,6 +170,7 @@ export class NavbarFixedComponent implements OnInit {
     this.zone = `${city.name} - ${city.zip_code}`;
     this.id_city = city.id_city;
     this.cities = [];
+
   }
 
 
@@ -199,7 +199,6 @@ export class NavbarFixedComponent implements OnInit {
 
 
   onSearch() {
-
     if (this.id_salon && String(this.id_salon).trim() !== '') {
       // Verificar que no haya otros campos seleccionados
       if (this.id_city || this.service) {

@@ -69,7 +69,7 @@ app-navbar-fixed {
 .separator-line {
     width: 50%; /* Ajusta el ancho según lo necesites */
     height: 2px; /* Ajusta el grosor de la línea */
-    background-color: #ccc; /* Cambia el color de la línea */
+    background-color: #eee; /* Cambia el color de la línea */
     margin: 0 auto; /* Centra la línea horizontalmente */
     display: block;
   }
@@ -272,6 +272,44 @@ app-navbar-fixed {
   outline: none;
 }
 
+.custom-img-height2 {
+  height: 100px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.custom-img-height2:hover {
+  transform: scale(1.05);
+
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+
+}
+
+.open {
+  background-color: green;
+}
+
+.closed {
+  background-color: red;
+}
+
+button.custom-indicator.active {
+  background-color: #b71622 !important;
+}
+button.p-link {
+  background-color: #b71622 !important;
+}
+
+
+
+
 @media (max-width: 1542px) {
   .margin-left-puntuaciones{
     margin-left: 0px !important;
@@ -306,6 +344,8 @@ app-navbar-fixed {
   .text-area-pregunta{
     width: 100% !important;
   }
+
+  
 
   @media (max-width: 1542px) {
 

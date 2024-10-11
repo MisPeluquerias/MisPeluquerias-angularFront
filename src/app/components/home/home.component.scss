@@ -18,6 +18,7 @@
 }
 
 .custom-card-height {
+
   height: 250px;
 
 }
@@ -59,6 +60,7 @@
 
 
 .custom-img-height {
+
   height: 250px;
   object-fit: cover;
   cursor: pointer;
@@ -215,6 +217,7 @@ app-search-bar {
 responsive-text{
   font-size: 0.5rem;
 }
+
 .info-link {
   position: absolute;
   bottom: 10px; /* Posiciona el enlace en la parte inferior de la imagen */
@@ -259,7 +262,7 @@ responsive-text{
     background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
     background-size: 22px; /* Tamaño del icono */
   }
- 
+
 
   .input-salon-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
@@ -319,7 +322,7 @@ li,a{
   .sticky {
     margin: 0;
     padding: 0;
-    top: -125px; /* Ajuste para que el elemento sticky funcione correctamente */
+    top: -147px; /* Ajuste para que el elemento sticky funcione correctamente */
     margin-top: 0px;
 
   }
@@ -331,8 +334,6 @@ li,a{
   p{
     font-size: 0.5rem;
   }
-
-
 
   .h1{
     margin-top: -20px;
@@ -371,20 +372,20 @@ li,a{
   }
 
   .custom-card-height {
+    width: 103% !important;
     height: 150px; /* Reduce la altura de las tarjetas en pantallas pequeñas */
   }
+
 
   .custom-img-height {
     height: 150px; /* Reduce la altura de las imágenes en pantallas pequeñas */
     object-fit: cover; /* Asegura que la imagen se ajuste al contenedor */
   }
-
+  
   h2{
     font-size: 1rem;
   }
 }
-
-
 
 /* Margen superior para pantallas entre 576px y 1400px */
 @media (min-width: 576px) and (max-width: 1400px) {

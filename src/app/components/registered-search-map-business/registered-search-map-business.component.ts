@@ -15,6 +15,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private map: L.Map | undefined;
   private customIcon: L.Icon | undefined;
   public isLoading: boolean = false;
+  public isLoadingPosition: boolean = false;
   public isMapLoading: boolean = false;
   private markerLayer: L.LayerGroup | undefined;
   public visibleMarkers: any[] = [];
@@ -25,6 +26,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private markersMap: Map<any, L.Marker> = new Map();
   private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
+
 
   constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
     private favoriteSalonService:FavoriteSalonService,
@@ -72,26 +74,33 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   }
 
 
+
   private async initMap(): Promise<void> {
+    this.isLoadingPosition = true;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           this.initializeMap([lat, lon]);
+          this.isLoadingPosition = false;
         },
         () => {
           this.initializeMap([36.8381, -2.4597]);
+          this.isLoadingPosition = false;
         }
       );
     } else {
       this.initializeMap([36.8381, -2.4597]);
+      this.isLoadingPosition = false;
     }
   }
 
+
+
   private initializeMap(center: [number, number]): void {
      if (this.map) {
-      this.map.remove(); // Eliminar el mapa existente si ya ha sido inicializado
+      this.map.remove();
     }
     this.map = L.map('registered-map', {
       center,
@@ -199,7 +208,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
           this.getImagesAdmin(marker.id_salon);
         }
       });
-      
+
       this.currentPage = 1; // Volver a la primera página
       this.paginateMarkers();
       this.fadeOutLoadingSpinner();
@@ -208,6 +217,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       this.fadeOutLoadingSpinner();
     });
   }
+
 
   private onMarkerClick(marker: any): void {
     this.disableMapEvents();

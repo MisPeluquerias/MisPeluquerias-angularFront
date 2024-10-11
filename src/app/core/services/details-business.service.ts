@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -127,5 +127,10 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
 
   deleteFaq(id_faq: number): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/details-business/deleteQuestion`, { id_faq });
+  }
+
+  getBrandByIdSalon(id_salon: any) {
+    const params = new HttpParams().set('id_salon', id_salon.toString());
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getBrandsBySalon`, { params });
   }
 }

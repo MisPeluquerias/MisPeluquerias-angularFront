@@ -22,6 +22,7 @@ export class SearchBarService {
       },
     });
   }
+
   searchService(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchBar/searchService`, {
       params: {
@@ -29,6 +30,7 @@ export class SearchBarService {
       },
     });
   }
+
   searchSalon(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchBar/searchSalon`, {
       params: {
