@@ -91,7 +91,7 @@ export class HomeComponent {
           desc: salon.address,
           id:salon.id_salon
         }));
-        console.log(this.slides)
+        //console.log(this.slides)
       },
       error: (error) => {
         console.error('Error al obtener salones validados:', error);
@@ -350,7 +350,7 @@ export class HomeComponent {
             this.toastr.warning('No se encontraron resultados para el salón especificado.');
           } else {
             this.router.navigate([`/centro/${salonSlug}/${this.id_salon}`]);  // Cambiar a usar '/' en lugar de '-'
-            
+
           }
         },
         error: (error) => {
