@@ -21,7 +21,7 @@ app-navbar-fixed {
   width: 100%;
   top: 0;
   height: 70px; /* Ajusta esta altura según la altura de tu navbar */
-  z-index: 0; /* Asegúrate de que el z-index esté correcto */
+  z-index: 1; /* Asegúrate de que el z-index esté correcto */
 }
 
 .container-fluid{
