@@ -25,6 +25,10 @@ const routes: Routes = [
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
 
+  { path: 'reclamation/:id_salon', component: SalonReclamationComponent ,
+    title: 'Mis Peluquerias | Encuentra tu salón perfecto',
+  },
+  
   {
     path: 'terminos-y-condiciones',
     component: TermsComponent,

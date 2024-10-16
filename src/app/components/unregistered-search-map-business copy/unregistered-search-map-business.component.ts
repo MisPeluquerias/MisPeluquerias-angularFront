@@ -135,7 +135,7 @@ private updateMap(params: {
     service?: string;
   }): void {
     // Imprime los parámetros que llegan a la función
-    console.log('loadMarkers fue llamado con parámetros:', params);
+    //console.log('loadMarkers fue llamado con parámetros:', params);
 
     if (!this.map || !this.markerLayer) return;
 
@@ -144,7 +144,7 @@ private updateMap(params: {
     let markerObservable: Observable<{ salons: any[] }>;
 
     if (params.id_city && params.service) {
-      console.log('Buscando por ciudad y servicio:', params.id_city, params.service);
+      //console.log('Buscando por ciudad y servicio:', params.id_city, params.service);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByService(params.id_city, params.service)
         .pipe(map((salons: any[]) => ({ salons })));
@@ -157,13 +157,13 @@ private updateMap(params: {
         .searchByCityAndCategory(params.id_city, params.categoria)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city) {
-      console.log('Buscando por ciudad:', params.id_city);
+      //console.log('Buscando por ciudad:', params.id_city);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCity(params.id_city)
         .pipe(map((salons: any[]) => ({ salons })));
 
     } else if (params.name) {
-      console.log('Buscando por nombre de la ciudad:', params.name);
+      //console.log('Buscando por nombre de la ciudad:', params.name);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCityName(params.name)
         .pipe(map((response) => ({ salons: response.salons })));

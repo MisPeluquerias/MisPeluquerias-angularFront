@@ -33,6 +33,16 @@ export class DetailsBusinesstService {  // Asegúrate de que el nombre de la cla
     });
   }
 
+  searchFaqs(id_salon: string, searchFaqText: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/details-business/searchFaqs`, {
+      params: {
+        id_salon: id_salon,
+        searchText: searchFaqText
+      }
+    });
+  }
+
+
 
 
   getFaqs(id_salon: string, page: number , limit: number): Observable<any> {

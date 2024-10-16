@@ -13,6 +13,7 @@ import { FavoriteSalonService } from '../../core/services/favorite-salon.service
 
 
 
+
 @Component({
   selector: 'app-details-business',
   templateUrl: './details-business.component.html',
@@ -75,6 +76,8 @@ export class DetailsBusinessComponent implements OnInit {
  getBrandsSalon:any;
  slides: any[] = [];
  currentStatus: string="";
+ salonData:any=[]
+ searchFaqText = '';
 
 
 
@@ -96,8 +99,6 @@ export class DetailsBusinessComponent implements OnInit {
     });
   }
 
-
-
   ngOnInit(): void {
 
     this.userId = localStorage.getItem('usuarioId');
@@ -117,6 +118,8 @@ export class DetailsBusinessComponent implements OnInit {
           data => {
             if (data.length > 0) {
               this.business = data[0];
+
+              console.log('Datos recibidos del salón:',this.business);
               // Formatear los horarios para mostrarlos como en Google
               this.business.formattedHours = this.formatHours(this.business.hours_old);
               console.log(this.business.formattedHours);
@@ -176,6 +179,26 @@ export class DetailsBusinessComponent implements OnInit {
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
   }
+
+
+  onSearch(): void {
+    if (this.searchFaqText.trim().length >= 2) {
+      // Si hay texto en la búsqueda, filtra las FAQs
+      this.detailsBusinessService.searchFaqs(this.idSalon!, this.searchFaqText).subscribe(
+        response => {
+          this.faqs = response.faqs;
+          this.currentPage = response.currentPage;
+          this.totalPages = response.totalPages;
+          this.hasMorePages = this.currentPage < this.totalPages;
+        },
+        error => console.error('Error al buscar FAQs:', error)
+      );
+    } else {
+      // Si no hay texto de búsqueda, cargar las FAQs normalmente
+      this.getFaqs(this.idSalon!, this.currentPage);
+    }
+  }
+
 
   verifyUser(){
     if(!this.authService.isAuthenticated()){

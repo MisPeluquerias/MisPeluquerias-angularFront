@@ -10,12 +10,12 @@
           >
             <h1 class="mb-2 h3">
               <b>{{ business.name }}</b>
-
             </h1>
-
             <div class="d-flex justify-content-end">
               <!-- Mostrar el botón "Verificado" si el negocio está validado -->
-              <ng-container *ngIf="business.state === 'Reclamado'; else notVerified">
+              <ng-container
+                *ngIf="business.state === 'Reclamado'; else notVerified"
+              >
                 <button
                   class="btn btn-lg btn-success rounded-pill btn-custom mt-3"
                   disabled
@@ -26,10 +26,12 @@
 
               <!-- Si no está validado, mostrar el botón "Reclamalo ahora" -->
               <ng-template #notVerified>
-                <ng-container *ngIf="authService.isAuthenticated(); else loginToClaim">
+                <ng-container
+                  *ngIf="authService.isAuthenticated(); else loginToClaim"
+                >
                   <a
                     class="btn btn-lg btn-danger rounded-pill btn-custom mt-3"
-                    routerLink="/reclamation"
+                    [routerLink]="['/reclamation', idSalon]"
                   >
                     <i class="las la-hand-paper"></i> Reclamalo ahora
                   </a>
@@ -123,8 +125,25 @@
           <div class="position-relative">
             <h2 class="mt-5 h4 text-center mb-2 fw-bold">Sobre el salón</h2>
             <div class="position-absolute top-0 end-0">
-              <span (click)="shareUrl()" class="me-2"><i class="fa-regular fa-share-from-square" style="font-size: 1.7rem; color: lightslategray; cursor: pointer;" ></i></span>
-              <i (click)="onFavoriteClick()"class="fa-regular fa-heart me-md-5" style="font-size: 1.7rem; color: lightslategray; cursor: pointer;"></i>
+              <span (click)="shareUrl()" class="me-2"
+                ><i
+                  class="fa-regular fa-share-from-square"
+                  style="
+                    font-size: 1.7rem;
+                    color: lightslategray;
+                    cursor: pointer;
+                  "
+                ></i
+              ></span>
+              <i
+                (click)="onFavoriteClick()"
+                class="fa-regular fa-heart me-md-5"
+                style="
+                  font-size: 1.7rem;
+                  color: lightslategray;
+                  cursor: pointer;
+                "
+              ></i>
             </div>
           </div>
 
@@ -180,7 +199,10 @@
           <div class="row">
             <div class="col-12 col-md-12 mb-4 d-flex flex-column text-center">
               <h2 class="mt-5 h4 mb-2 fw-bold">Marcas del salón</h2>
-              <div *ngIf="slides && slides.length > 0" class="container mt-5 zoom-element">
+              <div
+                *ngIf="slides && slides.length > 0"
+                class="container mt-5 zoom-element"
+              >
                 <p-carousel
                   [value]="slides"
                   [numVisible]="1"
@@ -235,22 +257,43 @@
 
           <!-- Contenedor de dos columnas -->
 
-          <div class="d-flex justify-content-center flex-column mt-5" style="margin: 0 auto !important;">
+          <div
+            class="d-flex justify-content-center flex-column mt-5"
+            style="margin: 0 auto !important"
+          >
             <div class="row">
               <!-- Primera columna -->
               <div class="col-12 col-md-6 mb-4 d-flex flex-column">
                 <div class="d-flex mb-3">
                   <!-- Mostrar el promedio de calificación -->
-                  <h6 class="h4" style="color: #b71622; margin-right: 10px" *ngIf="averageRatings.promedio_qualification !== undefined">
-                    {{ averageRatings.promedio_qualification.toFixed(1).replace('.', ',') }}
+                  <h6
+                    class="h4"
+                    style="color: #b71622; margin-right: 10px"
+                    *ngIf="averageRatings.promedio_qualification !== undefined"
+                  >
+                    {{
+                      averageRatings.promedio_qualification
+                        .toFixed(1)
+                        .replace(".", ",")
+                    }}
                   </h6>
-                  <h6 *ngIf="averageRatings.promedio_qualification === undefined">
+                  <h6
+                    *ngIf="averageRatings.promedio_qualification === undefined"
+                  >
                     N/A
                   </h6>
                   <!-- Estrellas de calificación -->
                   <span class="d-flex align-items-center">
                     <ng-container *ngFor="let star of stars">
-                      <i class="fa" [ngClass]="star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                      <i
+                        class="fa"
+                        [ngClass]="star"
+                        style="
+                          color: #b71622;
+                          font-size: 1.5rem;
+                          margin-right: 3px;
+                        "
+                      ></i>
                     </ng-container>
                   </span>
 
@@ -281,10 +324,15 @@
               </div>
 
               <!-- Segunda columna -->
-              <div class="col-12 col-md-6 mb-4 d-flex flex-column margin-left-puntuaciones" style="max-width: 27%;">
+              <div
+                class="col-12 col-md-6 mb-4 d-flex flex-column margin-left-puntuaciones"
+                style="max-width: 27%"
+              >
                 <h5 class="fw-bold">Puntuaciones</h5>
                 <!-- Servicio -->
-                <div class="rating-input d-flex mb-3 mt-5 justify-content-between">
+                <div
+                  class="rating-input d-flex mb-3 mt-5 justify-content-between"
+                >
                   <label class="me-3">Servicio:</label>
                   <div class="circle-input-group">
                     <input
@@ -484,49 +532,89 @@
               </div>
             </div>
 
-
             <!-- Fila para observaciones (deben estar debajo de las columnas superiores) -->
             <div class="row mt-5 mb-5">
-              <div class="col-12 col-md-6" *ngFor="let observation of observations; let i = index">
+              <div
+                class="col-12 col-md-6"
+                *ngFor="let observation of observations; let i = index"
+              >
                 <div class="stars-text text-wrap text-break">
                   <!-- Estrellas -->
                   <div class="d-flex align-items-center mb-2">
                     <span class="d-flex align-items-center">
-                        <div>
-                          <!-- Recorre las estrellas y muestra los iconos -->
-                          <i style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"  *ngFor="let starClass of observation.starsObservation" [ngClass]="starClass"></i>
-                        </div>
+                      <div>
+                        <!-- Recorre las estrellas y muestra los iconos -->
+                        <i
+                          style="
+                            color: #b71622;
+                            font-size: 1.5rem;
+                            margin-right: 3px;
+                          "
+                          *ngFor="let starClass of observation.starsObservation"
+                          [ngClass]="starClass"
+                        ></i>
+                      </div>
                     </span>
                     <!-- Fecha -->
-                    <span class="ms-3" style="color: #8c8c8c; font-size: 0.8rem;">
-                      Opinión escrita el {{ observation.created_at | date : "dd MMMM yyyy" }}
+                    <span
+                      class="ms-3"
+                      style="color: #8c8c8c; font-size: 0.8rem"
+                    >
+                      Opinión escrita el
+                      {{ observation.created_at | date : "dd MMMM yyyy" }}
                     </span>
                   </div>
 
                   <!-- Observación -->
-                  <p style="font-size: 1.2rem; font-weight: bold;">{{ observation.recommendation }}</p>
+                  <p style="font-size: 1.2rem; font-weight: bold">
+                    {{ observation.recommendation }}
+                  </p>
                   <p class="mb-5">{{ observation.observacion }}</p>
 
-
                   <!-- Botones de editar y eliminar -->
-                  <div class="d-flex justify-content-end" *ngIf="observation.id_user === userioId || userType === 'admin'">
-                    <button class="btn btn-secondary btn-sm me-2"  data-bs-toggle="modal"  data-bs-target="#modificarValoracionesModal" (click)="openEditModal(observation)">
+                  <div
+                    class="d-flex justify-content-end"
+                    *ngIf="
+                      observation.id_user === userioId || userType === 'admin'
+                    "
+                  >
+                    <button
+                      class="btn btn-secondary btn-sm me-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modificarValoracionesModal"
+                      (click)="openEditModal(observation)"
+                    >
                       Editar
                     </button>
-                    <button class="btn btn-danger btn-sm" style="box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;" data-bs-toggle="modal" data-bs-target="#deleteReviewModal" (click)="setReviewToDelete(observation.id_review)">
+                    <button
+                      class="btn btn-danger btn-sm"
+                      style="
+                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+                      "
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteReviewModal"
+                      (click)="setReviewToDelete(observation.id_review)"
+                    >
                       Eliminar
                     </button>
                   </div>
                   <div *ngIf="observation.respuesta">
                     <div class="ms-4 mt-4 p-3">
-                      <p style="font-weight: bold;">{{ business.name }}, respondió a esta opinión</p>
-                      <span class="text-muted">Opinión escrita el {{ observation.updated_at | date: 'dd MMMM yyyy' }}</span>
+                      <p style="font-weight: bold">
+                        {{ business.name }}, respondió a esta opinión
+                      </p>
+                      <span class="text-muted"
+                        >Opinión escrita el
+                        {{
+                          observation.updated_at | date : "dd MMMM yyyy"
+                        }}</span
+                      >
                       <p class="mt-3">{{ observation.respuesta }}</p>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
           <div class="d-flex justify-content-center align-items-center mt-5">
@@ -546,9 +634,13 @@
             </button>
           </div>
 
-          <ng-container *ngIf="isUserAuthenticated === true; else modalToReview">
+          <ng-container
+            *ngIf="isUserAuthenticated === true; else modalToReview"
+          >
             <!-- Verificar si el negocio está validado antes de permitir hacer la reseña -->
-            <ng-container *ngIf="business.state === 'Validado'; else cannotReview">
+            <ng-container
+              *ngIf="business.state === 'Validado'; else cannotReview"
+            >
               <!-- Si el usuario está autenticado y el negocio está validado, abrir el modal de valoraciones -->
               <h2
                 style="cursor: pointer"
@@ -559,25 +651,56 @@
                 Para dejar valoración pulsa aquí
               </h2>
               <div class="d-flex justify-content-center">
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
               </div>
             </ng-container>
 
             <!-- Mensaje si el negocio no está validado -->
             <ng-template #cannotReview>
               <h2 class="mt-5 h5 text-center mb-3 fw-bold">
-                No se pueden dejar valoraciones ya que el negocio no está validado.
+                No se pueden dejar valoraciones ya que el negocio no está
+                validado.
               </h2>
               <div class="d-flex justify-content-center">
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-                <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
+                <i
+                  class="fas fa-star"
+                  style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+                ></i>
               </div>
             </ng-template>
           </ng-container>
@@ -592,11 +715,26 @@
               Para dejar valoración pulsa aquí
             </h2>
             <div class="d-flex justify-content-center">
-              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
-              <i class="fas fa-star" style="color: #b71622; font-size: 1.5rem; margin-right: 3px;"></i>
+              <i
+                class="fas fa-star"
+                style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+              ></i>
+              <i
+                class="fas fa-star"
+                style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+              ></i>
+              <i
+                class="fas fa-star"
+                style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+              ></i>
+              <i
+                class="fas fa-star"
+                style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+              ></i>
+              <i
+                class="fas fa-star"
+                style="color: #b71622; font-size: 1.5rem; margin-right: 3px"
+              ></i>
             </div>
           </ng-template>
           <div class="separator-line w-100 mt-5 mb-5"></div>
@@ -615,9 +753,10 @@
               <div class="col-12">
                 <h2 class="fw-bold h6">¿TIENES ALGUNA PREGUNTA?</h2>
                 <p class="text-muted">
-                  Encuentra respuestas en los detalles de la peluquería, en preguntas y
-                  respuestas y en las valoraciones de los clientes.
+                  Encuentra respuestas en los detalles de la peluquería, en
+                  preguntas y respuestas y en las valoraciones de los clientes.
                 </p>
+                <div class="d-flex justify-content-between">
                 <textarea
                   class="form-control w-50 rounded-3 shadow-sm p-2 text-area-pregunta"
                   placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
@@ -627,6 +766,16 @@
                   (click)="verifyUser()"
                   (keydown)="verifyUser()"
                 ></textarea>
+                <div class=" w-25 me-2">
+                  <input
+                    type="text"
+                    [(ngModel)]="searchFaqText"
+                    class="form-control search-faq-input"
+                    placeholder="Buscar..."
+                    (input)="onSearch()"
+                  />
+                </div>
+              </div>
 
                 <!-- El botón solo aparecerá cuando haya texto en el textarea -->
                 <button
@@ -639,30 +788,55 @@
               </div>
             </div>
 
-
-
-
             <!-- Listado de Preguntas y Respuestas -->
             <div class="row mt-5">
               <div class="col-12 ms-md-4">
                 <ul class="list-unstyled faq-list row ms-md-5">
-                  <li *ngFor="let faq of faqs" class="faq-item col-12 col-md-6 my-4">
+                  <li
+                    *ngFor="let faq of faqs"
+                    class="faq-item col-12 col-md-6 my-4"
+                  >
                     <div>
-                      <h6 class="fw-bold h5" style="color: #000; font-weight: bold;"><b>Pregunta</b></h6>
+                      <h6
+                        class="fw-bold h5"
+                        style="color: #000; font-weight: bold"
+                      >
+                        <b>Pregunta</b>
+                      </h6>
                       <p>{{ faq.question }}</p>
 
-                      <div class="d-flex justify-content-end" *ngIf="faq.id_user  === userioId || this.userType === 'admin'">
-                        <button class="btn btn-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modificarFaqModal" (click)="openEditFaqModal(faq)">
+                      <div
+                        class="d-flex justify-content-end"
+                        *ngIf="
+                          faq.id_user === userioId || this.userType === 'admin'
+                        "
+                      >
+                        <button
+                          class="btn btn-secondary btn-sm me-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modificarFaqModal"
+                          (click)="openEditFaqModal(faq)"
+                        >
                           Editar
                         </button>
-                        <button class="btn btn-danger btn-sm" style="box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;" data-bs-toggle="modal" data-bs-target="#deleteFaqModal" (click)="setFaqToDelete(faq.id_faq)">
+                        <button
+                          class="btn btn-danger btn-sm"
+                          style="
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+                          "
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteFaqModal"
+                          (click)="setFaqToDelete(faq.id_faq)"
+                        >
                           Eliminar
                         </button>
                       </div>
                     </div>
                     <div *ngIf="faq.answer">
                       <h6 class="fw-bold h5"><b>Respuesta</b></h6>
-                      <p><i class="fa-solid fa-arrow-right"></i> {{ faq.answer }}</p>
+                      <p>
+                        <i class="fa-solid fa-arrow-right"></i> {{ faq.answer }}
+                      </p>
                     </div>
                   </li>
                 </ul>
@@ -670,23 +844,23 @@
             </div>
           </div>
 
-            <div class="d-flex justify-content-center align-items-center mt-5">
-              <button
-                class="btn btn-preview me-2"
-                [disabled]="currentPage === 1"
-                (click)="previousPageFaq()"
-              >
-                &lt; ANTERIOR
-              </button>
-              <button
-                class="btn-next"
-                [disabled]="currentPage === totalPages"
-                (click)="nextPageFaq()"
-              >
-                SIGUIENTE &gt;
-              </button>
-            </div>
+          <div class="d-flex justify-content-center align-items-center mt-5">
+            <button
+              class="btn btn-preview me-2"
+              [disabled]="currentPage === 1"
+              (click)="previousPageFaq()"
+            >
+              &lt; ANTERIOR
+            </button>
+            <button
+              class="btn-next"
+              [disabled]="currentPage === totalPages"
+              (click)="nextPageFaq()"
+            >
+              SIGUIENTE &gt;
+            </button>
           </div>
+        </div>
 
         <!-- Columna de información secundaria -->
         <div class="col-lg-4 col-md-5 p-3 rounded">
@@ -705,9 +879,19 @@
               Cómo llegar
             </button>
           </div>
-          <p class="mb-3"><i class="fa-solid fa-location-dot me-3" style="color: lightslategray;"></i>{{ business.address }}</p>
+          <h3 class="h4 mt-2">Información</h3>
+          <p class="mb-3">
+            <i
+              class="fa-solid fa-location-dot me-3"
+              style="color: lightslategray"
+            ></i
+            >{{ business.address }}
+          </p>
           <div class="d-flex align-items-center mb-3">
-            <span><i class="las la-phone" style="margin-right: 12px;"></i> {{ business.phone }}</span>
+            <span
+              ><i class="las la-phone" style="margin-right: 12px"></i>
+              {{ business.phone }}</span
+            >
             <a
               href="tel:{{ business.phone }}"
               class="btn btn-outline-secondary ms-auto"
@@ -715,11 +899,77 @@
             >
           </div>
 
-          <div class="horarios mb-5">
+          <div *ngIf="business?.email?.length > 0">
+            <div class="d-flex align-items-center mb-3">
+              <span
+                ><i class="las la-envelope" style="margin-right: 12px"></i
+                >{{ business.email }}</span
+              >
+              <a
+                href="mailto:{{ business.email }}"
+                class="btn btn-outline-secondary ms-auto"
+                >Enviar correo</a
+              >
+            </div>
+          </div>
+
+          <div *ngIf="business?.url?.length > 0">
+            <div class="d-flex align-items-center mb-3">
+              <span
+                ><i class="las la-globe" style="margin-right: 12px"></i
+                >{{ business.url }}</span
+              >
+              <a
+                href="{{ business.url }}"
+                class="btn btn-outline-secondary ms-auto"
+                >Visitar sitio</a
+              >
+            </div>
+          </div>
+          <div class="separator-line w-100 mb-3 w-100"></div>
+          <div class="mt-4 fw-bold">
+            <div *ngIf="business.facebook_url || business.instagram_url || business.tiktok_url || business.youtube_url">
+
+          </div>
+          </div>
+
+          <div class="mb-5 mt-4 fw-bold d-flex justify-content-between">
+
+          <div *ngIf="business.facebook_url">
+            <a class="colorRed" href="{{ business.facebook_url }}"
+              ><img src="../../../../assets/img/web/icons8-facebook-48.png"
+            /></a>
+          </div>
+
+            <div *ngIf="business.instagram_url">
+            <a class="colorRed" href="{{ business.instagram_url }}"
+              ><img src="../../../../assets/img/web/icons8-instagram-48.png"
+            /></a>
+          </div>
+
+          <div *ngIf="business.tiktok_url">
+            <a class="colorRed" href="{{ business.tiktok_url }}"
+              ><img src="../../../../assets/img/web/icons8-tik-tok-48.png"
+            /></a>
+
+          </div>
+
+          <div *ngIf="business.youtube_url">
+            <a class="colorRed" href="{{ business.youtube_url }}"
+              ><img src="../../../../assets/img/web/icons8-youtube-48.png"
+            /></a>
+          </div>
+
+          </div>
+          <div class="horarios mb-5 mt-4">
             <h3 class="h5 mb-3 d-flex align-items-center">
-              <span [ngClass]="currentStatus === 'Abierto ahora' ? 'dot open' : 'dot closed'"></span>
-              {{currentStatus}}
-          </h3>
+              <span
+                [ngClass]="
+                  currentStatus === 'Abierto ahora' ? 'dot open' : 'dot closed'
+                "
+              ></span>
+              {{ currentStatus }}
+            </h3>
             <h4 class="h4">Horario</h4>
             <ul class="list-unstyled">
               <li>
@@ -727,10 +977,15 @@
                 <p class="h6" [innerHTML]="business?.formattedHours"></p>
               </li>
             </ul>
-            <ng-container *ngIf="business.state !== 'Reclamado';" >
-               <p><u><b><strong>¡Atención!</strong></b></u> La información que contiene esta página puede no ser correcta por que el negocio
-              no está verificado.</p>
-              </ng-container>
+            <ng-container *ngIf="business.state !== 'Reclamado'">
+              <p>
+                <u
+                  ><b><strong>¡Atención!</strong></b></u
+                >
+                La información que contiene esta página puede no ser correcta
+                por que el negocio no está verificado.
+              </p>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -769,9 +1024,12 @@
             <span>{{ subservice.subservice }}</span>
             <span class="text-success">{{ subservice.time }} min.</span>
             <span class="text-success">
-              {{ +subservice.price !== 0 ? subservice.price + ' €' : 'No definido' }}
+              {{
+                +subservice.price !== 0
+                  ? subservice.price + " €"
+                  : "No definido"
+              }}
             </span>
-
           </li>
         </ul>
         <p
@@ -816,9 +1074,12 @@
         </div>
 
         <!-- Servicio -->
-        <div class="rating-input d-flex align-items-center justify-content-between mb-3 mt-3"  style="max-width: 55%;">
+        <div
+          class="rating-input d-flex align-items-center justify-content-between mb-3 mt-3"
+          style="max-width: 55%"
+        >
           <label class="me-3">Servicio:</label>
-          <div class="circle-input-group ">
+          <div class="circle-input-group">
             <input
               type="checkbox"
               id="service1"
@@ -863,7 +1124,10 @@
         <div class="separator-line w-100 mb-3 w-100"></div>
 
         <!-- Calidad/Precio -->
-        <div class="rating-input d-flex align-items-center justify-content-between mb-3"  style="max-width: 55%;">
+        <div
+          class="rating-input d-flex align-items-center justify-content-between mb-3"
+          style="max-width: 55%"
+        >
           <label class="me-3">Calidad/Precio:</label>
           <div class="circle-input-group">
             <input
@@ -911,7 +1175,10 @@
         <div class="separator-line mb-3 w-100"></div>
 
         <!-- Limpieza -->
-        <div class="rating-input d-flex align-items-center justify-content-between mb-3"  style="max-width: 55%;">
+        <div
+          class="rating-input d-flex align-items-center justify-content-between mb-3"
+          style="max-width: 55%"
+        >
           <label class="me-3">Limpieza:</label>
           <div class="circle-input-group">
             <input
@@ -959,7 +1226,10 @@
         <div class="separator-line mb-3 w-100"></div>
 
         <!-- Rapidez -->
-        <div class="rating-input d-flex align-items-center justify-content-between mb-3" style="max-width: 55%;">
+        <div
+          class="rating-input d-flex align-items-center justify-content-between mb-3"
+          style="max-width: 55%"
+        >
           <label class="me-3">Rapidez:</label>
           <div class="circle-input-group">
             <input
@@ -1038,14 +1308,26 @@
   </div>
 </div>
 
-
 <!-- Modal eliminar reseña -->
-<div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="deleteReviewModal"
+  tabindex="-1"
+  aria-labelledby="deleteReviewModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="deleteReviewModalLabel">Eliminar Reseña</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="deleteReviewModalLabel">
+          Eliminar Reseña
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="text-center mb-3">
@@ -1058,21 +1340,42 @@
         <p>¿Esta seguro de eliminar esta reseña?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmDeleteReview()">Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="confirmDeleteReview()"
+        >
+          Eliminar
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-
 <!-- Modal eliminar pregunta -->
-<div class="modal fade" id="deleteFaqModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="deleteFaqModal"
+  tabindex="-1"
+  aria-labelledby="deleteReviewModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="deleteFaqModalLabel">Eliminar Pregunta</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="deleteFaqModalLabel">
+          Eliminar Pregunta
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="text-center mb-3">
@@ -1085,16 +1388,21 @@
         <p>¿Esta seguro de eliminar esta pregunta?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmDeleteFaq()">Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="confirmDeleteFaq()"
+        >
+          Eliminar
+        </button>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
 
 <!--Modal para modificar reseña-->
 <div
@@ -1345,12 +1653,25 @@
 </div>
 
 <!-- Modal para editar la pregunta y respuesta -->
-<div class="modal fade" id="modificarFaqModal" tabindex="-1" aria-labelledby="modificarFaqModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="modificarFaqModal"
+  tabindex="-1"
+  aria-labelledby="modificarFaqModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modificarFaqModalLabel">Modificar Pregunta</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="modificarFaqModalLabel">
+          Modificar Pregunta
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="text-center mb-3">
@@ -1362,14 +1683,27 @@
         </div>
         <div class="mb-3">
           <label for="question" class="form-label">Pregunta</label>
-          <textarea maxlength="300" id="question" class="form-control" [(ngModel)]="selectedFaq.question"></textarea>
+          <textarea
+            maxlength="300"
+            id="question"
+            class="form-control"
+            [(ngModel)]="selectedFaq.question"
+          ></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="updateFaq()">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="updateFaq()"
+        >
+          Guardar
+        </button>
       </div>
     </div>
   </div>
 </div>
-

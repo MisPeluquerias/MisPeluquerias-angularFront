@@ -27,14 +27,16 @@
         <div class="row">
           <div class="col-md-12">
             <div class="input-container" style="position: relative;">
+              <label for="salon_name" class="form-label mt-3">Nombre del negocio</label>
               <input
                 type="text"
                 id="salonInput"
                 class="form-control form-control-lg border-bottom-only"
-                placeholder="Buscar salones"
+                placeholder="Buscar salones..."
                 (input)="onInputSalon($event)"
                 name="salon_name"
                 [(ngModel)]="salon_name"
+                [readOnly]="isReadOnly"
                 autocomplete="off"
               />
               <div *ngIf="salons.length > 0" class="results-list">
@@ -63,6 +65,7 @@
                 name="id_province"
                 [(ngModel)]="id_province"
                 (change)="onProvinceChange($any($event.target).value)"
+                [disabled]="isReadOnly"
                 required
               >
                 <option value="">Seleccione una provincia...</option>
@@ -89,6 +92,7 @@
                 id="id_city"
                 name="id_city"
                 [(ngModel)]="id_city"
+                [disabled]="isReadOnly"
                 required
               >
                 <option value="">Seleccione una ciudad...</option>
@@ -107,12 +111,14 @@
 
           <div class="col-md-12">
             <div class="form-group py-3">
-              <label for="address" class="label small fw-light text-danger">Dirección Completa</label>
+              <label for="address">Dirección Completa</label>
               <input
                 type="text"
                 class="form-control form-control-lg rounded-0"
                 id="address"
+                [(ngModel)]="address"
                 name="address"
+                [readOnly]="isDisabled"
                 readonly
               />
             </div>

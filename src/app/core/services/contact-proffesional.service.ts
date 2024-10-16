@@ -15,5 +15,14 @@ export class ContactProffesionalService {
   addContact(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/contact-proffesional/newContactProffesional`, data);
   }
-  
+
+  getCitiesByProvince(id_province: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/contact-proffesional/getCitiesByProvince`, {
+      params: { id_province: id_province.toString() }
+    });
+  }
+
+  getProvinces(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/contact-proffesional/getProvinces`);
+  }
 }

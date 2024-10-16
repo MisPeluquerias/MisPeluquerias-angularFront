@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 
 
 @Component({
@@ -26,7 +28,7 @@ export class SalonReclamationComponent implements OnInit {
   userData: any = {};
   id_user: string = '';
   salon_name: string = '';
-  id_province: string = '';
+  id_province: any = '';
   id_city: string = '';
   observation: string = '';
   dnifront_path: string = '';
@@ -41,22 +43,31 @@ export class SalonReclamationComponent implements OnInit {
   fileError: string = '';
   salons: any[] = [];
   salon: string = '';
-  id_salon: string = '';
+  id_salon: string | null = '';
   salonName: string = '';
+  address:string="";
   private searchTermsSalon = new Subject<string>();
+  isReadOnly:boolean=false;
 
 
   constructor(
     private salonReclamationService: SalonReclamationService,
     private toastr: ToastrService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private activateRouter:ActivatedRoute
   ) {}
 
 
 
   ngOnInit(): void {
+
+    this.id_salon = this.activateRouter.snapshot.paramMap.get('id_salon');
     this.loadProvinces();
+    if (this.id_salon) {
+      this.getSalonById(this.id_salon);
+    }
+
     this.id_user = localStorage.getItem('usuarioId') || '';
     if (this.id_user) {
       this.salonReclamationService.getUserData(this.id_user).subscribe(
@@ -159,6 +170,50 @@ export class SalonReclamationComponent implements OnInit {
         this.otherFile = null;
       }
     }
+    }
+  }
+
+
+
+  getSalonById(id_salon: any) {
+    this.salonReclamationService.getSalonById(id_salon).subscribe(
+      (response: any) => {
+        // Asegúrate de que response sea un array y accede al primer elemento
+        if (Array.isArray(response) && response.length > 0) {
+          this.salonData = response[0]; // Accede al primer objeto del array
+          console.log('Datos del salón recibidos:', this.salonData);
+          this.loadSalonData();
+        } else {
+          console.log('No se encontró información para este salón');
+        }
+      },
+      (error) => {
+        console.log('Error al obtener información del salón', error);
+      }
+    );
+  }
+
+  loadSalonData(): void {
+    if (this.salonData) {
+      this.salon_name = this.salonData.name;
+      this.id_province = this.salonData.id_province;
+      this.address = this.salonData.address;
+
+      // Cargar las ciudades basadas en la provincia seleccionada
+      this.salonReclamationService.getCitiesByProvince(this.id_province).subscribe(
+        (response: any) => {
+          this.cities = response.data;
+
+          // Una vez que las ciudades estén cargadas, asignar el id_city
+          this.id_city = this.salonData.id_city;
+
+          this.isReadOnly=true;
+          this.cdr.detectChanges(); // Actualizar la vista
+        },
+        (error) => {
+          console.error('Error al obtener las ciudades:', error);
+        }
+      );
     }
   }
 

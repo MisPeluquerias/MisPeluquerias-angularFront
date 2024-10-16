@@ -18,11 +18,8 @@
 }
 
 .custom-card-height {
-
   height: 250px;
-
 }
-
 
 .h1 {
   font-family: "Merriweather", system-ui;
@@ -39,39 +36,38 @@
   /* Aumenta ligeramente el tamaño para resaltar */
 }
 
-
 .input-service-icon {
   padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
-  background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>')
+    no-repeat 10px center;
   background-size: 22px; /* Tamaño del icono */
 }
 
 .input-salon-icon {
   padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
-  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>')
+    no-repeat 10px center;
   background-size: 22px; /* Tamaño del icono */
 }
 
 .input-location-icon {
   padding-left: 40px; /* Ajusta el espacio para que no se solape con el icono */
-  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+  background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>')
+    no-repeat 10px center;
   background-size: 24px; /* Tamaño del icono */
 }
 
-
 .custom-img-height {
-
   height: 250px;
   object-fit: cover;
   cursor: pointer;
   border-radius: 12px;
-  box-shadow: 0px 0px 20px  rgb(99, 99, 99);
+  box-shadow: 0px 0px 20px rgb(99, 99, 99);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .custom-img-height:hover {
   transform: scale(1.05);
-
 }
 
 .custom-img-height2 {
@@ -79,16 +75,16 @@
   object-fit: cover;
   cursor: pointer;
   border-radius: 12px;
-  box-shadow: 0px 0px 10px  rgb(99, 99, 99);
+  box-shadow: 0px 0px 10px rgb(99, 99, 99);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .custom-img-height2:hover {
   transform: scale(1.05);
-
 }
 
-li, a {
+li,
+a {
   text-decoration: none;
   text-align: left;
   cursor: pointer;
@@ -96,13 +92,15 @@ li, a {
 }
 
 /* Efecto de zoom al pasar el ratón */
-li:hover, a:hover {
+li:hover,
+a:hover {
   transform: scale(1.3); /* Aumenta el tamaño al pasar el cursor */
   /* Cambia el color al pasar el ratón, ajusta según tu preferencia */
 }
-.noTransform{
-  li:hover, a:hover {
-  transform: scale(1) !important;
+.noTransform {
+  li:hover,
+  a:hover {
+    transform: scale(1) !important;
   }
 }
 
@@ -126,7 +124,8 @@ li:hover, a:hover {
   width: 100%;
 }
 
-.carousel-control-prev, .carousel-control-next {
+.carousel-control-prev,
+.carousel-control-next {
   width: 5%;
 }
 
@@ -161,8 +160,6 @@ app-search-bar {
   right: 0;
 }
 
-
-
 .results-list {
   position: absolute;
   top: 100%;
@@ -188,7 +185,6 @@ app-search-bar {
   cursor: pointer;
 }
 
-
 .results-list li:hover {
   background-color: #e0e0e0; /* Color de fondo al pasar el mouse */
 }
@@ -196,9 +192,9 @@ app-search-bar {
 .results-list li svg {
   margin-right: 8px; /* Espacio entre el icono y el texto */
 }
-.sticky{
+.sticky {
   position: sticky;
-  top:-200px;
+  top: -200px;
   z-index: 10;
   margin-top: 0px;
 }
@@ -214,7 +210,7 @@ app-search-bar {
   box-shadow: none;
 }
 
-responsive-text{
+responsive-text {
   font-size: 0.5rem;
 }
 
@@ -222,7 +218,12 @@ responsive-text{
   position: absolute;
   bottom: 10px; /* Posiciona el enlace en la parte inferior de la imagen */
   right: 10px; /* Separación del borde derecho */
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para mejor legibilidad */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Fondo semi-transparente para mejor legibilidad */
   color: white; /* Color del texto */
   padding: 5px 10px; /* Padding alrededor del texto */
   border-radius: 5px; /* Bordes redondeados */
@@ -236,8 +237,71 @@ responsive-text{
   background-color: rgba(0, 0, 0, 0.7); /* Fondo más oscuro en hover */
 }
 
-.hover-list-red:hover{
+.hover-list-red:hover {
   background-color: red !important;
+}
+
+@media (max-width: 2400px) {
+  #logo-mis-peluquerias {
+    margin-left: -400px !important;
+  }
+}
+
+@media (max-width: 2200px) {
+  #logo-mis-peluquerias {
+    margin-left: -350px !important;
+  }
+}
+
+@media (max-width: 2000px) {
+  #logo-mis-peluquerias {
+    margin-left: -250px !important;
+  }
+}
+
+@media (max-width: 1800px) {
+  #logo-mis-peluquerias {
+    margin-left: -200px !important;
+  }
+}
+
+@media (max-width: 1680px) {
+  #logo-mis-peluquerias {
+    margin-left: -100px !important;
+  }
+}
+
+@media (max-width: 1500px) {
+  #logo-mis-peluquerias {
+    margin-left: -50px !important;
+  }
+}
+
+@media (max-width: 1210px) {
+  #logo-mis-peluquerias {
+    margin-left: -30px !important;
+  }
+}
+
+@media (max-width: 1040px) {
+  #logo-mis-peluquerias {
+    margin-left: -20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #logo-mis-peluquerias {
+    margin-left: 12px !important;
+    width: 350px;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  #logo-mis-peluquerias {
+    margin-left: 12px !important;
+    width: 350px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -245,7 +309,11 @@ responsive-text{
     flex-direction: row !important;
   }
 
-  .h1PhoneTop{
+  #logo-mis-peluquerias {
+    margin-left: 0px !important;
+  }
+
+  .h1PhoneTop {
     margin-top: 20px !important ;
   }
 
@@ -254,62 +322,66 @@ responsive-text{
   }
 
   .in-view {
-    transform: scale(1.05) !important; /* Ajusta el valor de scale según la ampliación deseada */
+    transform: scale(
+      1.05
+    ) !important; /* Ajusta el valor de scale según la ampliación deseada */
   }
 
   .input-service-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>')
+      no-repeat 10px center;
     background-size: 22px; /* Tamaño del icono */
   }
 
-
   .input-salon-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>')
+      no-repeat 10px center;
     background-size: 22px; /* Tamaño del icono */
   }
 
   .input-location-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>')
+      no-repeat 10px center;
     background-size: 24px; /* Tamaño del icono */
   }
 
-  .loginMT{
+  .loginMT {
     margin-top: 1.5rem !important;
   }
 
+  .video-background {
+    height: 370px !important;
+  }
 
-.video-background{
-  height: 370px !important;
-}
-
-  .btnLogin{
+  .btnLogin {
     padding: 0.25rem 0.5rem !important;
     font-size: 0.75rem !important;
   }
   .d-flex img {
-    width: auto ;
+    width: auto;
     margin-top: 12px;
     max-width: 200px; /* Ajustar el tamaño del logo */
   }
-  h4{
+  h4 {
     font-size: 1rem;
   }
-  p{
+  p {
     font-size: 1rem;
   }
 
-li,a{
-  font-size: 1rem;
-}
+  li,
+  a {
+    font-size: 1rem;
+  }
 
-.btn-small {
-  font-size: 0.75rem !important; /* Tamaño de fuente más pequeño */
-  padding: 0.25rem 0.5rem !important; /* Reducir el padding */
-  line-height: 1.2 !important; /* Ajustar la altura de línea */
-}
+  .btn-small {
+    font-size: 0.75rem !important; /* Tamaño de fuente más pequeño */
+    padding: 0.25rem 0.5rem !important; /* Reducir el padding */
+    line-height: 1.2 !important; /* Ajustar la altura de línea */
+  }
 
   .btnLogin i {
     font-size: 0.75rem;
@@ -324,18 +396,19 @@ li,a{
     padding: 0;
     top: -147px; /* Ajuste para que el elemento sticky funcione correctamente */
     margin-top: 0px;
-
   }
 
-  nav,section,h1{
+  nav,
+  section,
+  h1 {
     font-size: 1.4rem;
   }
 
-  p{
+  p {
     font-size: 0.5rem;
   }
 
-  .h1{
+  .h1 {
     margin-top: -20px;
     font-size: 1.5rem;
     font-weight: bold;
@@ -367,7 +440,7 @@ li,a{
     padding: 0.25rem 1rem; /* Ajusta el padding interno */
   }
 
-  .tResponsive{
+  .tResponsive {
     visibility: hidden;
   }
 
@@ -376,13 +449,12 @@ li,a{
     height: 150px; /* Reduce la altura de las tarjetas en pantallas pequeñas */
   }
 
-
   .custom-img-height {
     height: 150px; /* Reduce la altura de las imágenes en pantallas pequeñas */
     object-fit: cover; /* Asegura que la imagen se ajuste al contenedor */
   }
-  
-  h2{
+
+  h2 {
     font-size: 1rem;
   }
 }
@@ -393,24 +465,24 @@ li,a{
     margin-top: 0rem;
   }
 
-
-
   .input-service-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.742 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>')
+      no-repeat 10px center;
     background-size: 22px; /* Tamaño del icono */
   }
 
   .input-salon-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1 L 1 25 L 4 25 L 4 49 L 20 49 L 20 34 L 30 34 L 30 49 L 46 49 L 46 25 L 49 25 Z M 20 20 A 5 5 0 0 1 30 20 L 30 14 L 20 14 Z"></path></svg>')
+      no-repeat 10px center;
     background-size: 22px; /* Tamaño del icono */
   }
 
   .input-location-icon {
     padding-left: 40px !important; /* Ajusta el espacio para que no se solape con el icono */
-    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>') no-repeat 10px center;
+    background: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>')
+      no-repeat 10px center;
     background-size: 24px; /* Tamaño del icono */
   }
-
 }

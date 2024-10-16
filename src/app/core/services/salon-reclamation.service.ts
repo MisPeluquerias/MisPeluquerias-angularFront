@@ -39,4 +39,11 @@ export class SalonReclamationService {
       },
     });
   }
+  getSalonById(id_salon:any):Observable<any[]>{
+    return this.http.get<any[]>(`${this.baseUrl}/salon-reclamation/getSalonById`, {
+      params: {
+        id_salon
+      },
+    });
+  }
 }

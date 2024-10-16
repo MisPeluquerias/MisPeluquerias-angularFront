@@ -307,15 +307,20 @@ button.p-link {
   background-color: #b71622 !important;
 }
 
-
-
+.search-faq-input{
+  border: 1px solid black !important;
+}
+.search-faq-input:focus{
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
 
 @media (max-width: 1542px) {
   .margin-left-puntuaciones{
     margin-left: 0px !important;
   }
 }
-
 
 @media (max-width: 576px) {
   .fixed-image-size {
@@ -345,7 +350,7 @@ button.p-link {
     width: 100% !important;
   }
 
-  
+
 
   @media (max-width: 1542px) {
 
