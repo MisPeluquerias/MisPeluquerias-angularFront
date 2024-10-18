@@ -590,11 +590,11 @@ confirmDeleteReview(): void {
           this.generateStars(this.averageRatings.promedio_qualification);
 
           this.ratingPorcent = [
-            { label: 'EXCELENTE', percentage: response.porcentajes.excelente },
-            { label: 'MUY BUENO', percentage: response.porcentajes.muy_bueno },
-            { label: 'NORMAL', percentage: response.porcentajes.normal },
-            { label: 'MALO', percentage: response.porcentajes.malo },
-            { label: 'PÉSIMO', percentage: response.porcentajes.pesimo }
+            { label: 'Excelente', percentage: response.porcentajes.excelente },
+            { label: 'Muy bueno', percentage: response.porcentajes.muy_bueno },
+            { label: 'Normal', percentage: response.porcentajes.normal },
+            { label: 'Malo', percentage: response.porcentajes.malo },
+            { label: 'Pésimo', percentage: response.porcentajes.pesimo }
           ];
           console.log('Datos de la reseña recibidos:', this.ratingPorcent);
 
@@ -611,11 +611,11 @@ confirmDeleteReview(): void {
               total_reviews: 0
             };
             this.ratingPorcent = [
-              { label: 'EXCELENTE', percentage: 0 },
-              { label: 'MUY BUENO', percentage: 0 },
-              { label: 'NORMAL', percentage: 0 },
-              { label: 'MALO', percentage: 0 },
-              { label: 'PÉSIMO', percentage: 0 }
+              { label: 'Excelente', percentage: 0 },
+              { label: 'Muy bueno', percentage: 0 },
+              { label: 'Normal', percentage: 0 },
+              { label: 'Malo', percentage: 0 },
+              { label: 'Pésimo', percentage: 0 }
             ];
             console.log('No hay reseñas para este salón.');
           } else {
