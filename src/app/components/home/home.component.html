@@ -10,7 +10,7 @@
           class="img-fluid mb-1 mb-md-0"
           alt="Log mis Peluquerias"
           id="logo-mis-peluquerias"
-          style="margin-left: -550px;"
+          style="margin-left: -550px"
         />
         <div class="btn-group ms-auto">
           <button
@@ -95,7 +95,6 @@
           español
         </p>
       </section>
-
       <section id="card-search-section" class="d-flex justify-content-center">
         <div class="card card-search shadow zoom-element w-100 w-md-75 w-lg-50">
           <div class="card-body">
@@ -203,9 +202,14 @@
     </div>
 
     <p class="tResponsive">
-      ¿Eres una peluquería y te gustaría aparecer aquí?
-      <a routerLink="/contacto" class="text-white">Contacta con nosotros</a> y
-      daremos de alta tu salón gratis
+      ¿Eres una peluquería y te gustaría aparecer
+      <a
+        routerLink="/profesionales"
+        style="text-decoration: underline"
+        class="text-white"
+        >aquí?</a
+      >
+      Contacta con nosotros y daremos de alta tu salón GRATIS
     </p>
   </div>
 </nav>
@@ -315,7 +319,7 @@
       <!-- Salones destacados -->
       <div class="row g-0 text-center">
         <div class="col-12">
-          <p class="h1 mt-5 ">Salones destacados</p>
+          <p class="h1 mt-5">Salones destacados</p>
           <small
             >Descubre nuestra selección de salones de peluquería y
             belleza.</small
@@ -346,7 +350,7 @@
               }
             ]"
           >
-            <ng-template pTemplate="item" let-slide >
+            <ng-template pTemplate="item" let-slide>
               <div class="slide">
                 <div class="card">
                   <img
