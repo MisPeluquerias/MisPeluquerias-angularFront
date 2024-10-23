@@ -77,9 +77,6 @@ import { FavoriteSalonComponent } from './components/favorite-salon/favorite-sal
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    AuthGuard,
-    provideClientHydration(),
-    provideHttpClient(withFetch()),
   ],
   bootstrap: [AppComponent]
 })

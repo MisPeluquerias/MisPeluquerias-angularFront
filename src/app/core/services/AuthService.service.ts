@@ -15,6 +15,11 @@ export class AuthService {
   baseUrl: string = environment.baseUrl;
 
 
+
+  getToken(): string | null {
+    return localStorage.getItem('Token');
+  }
+
   isAuthenticated(): boolean {
     if (this.isLocalStorageAvailable()) {
       const token = localStorage.getItem('Token');

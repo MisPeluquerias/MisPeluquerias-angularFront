@@ -899,7 +899,7 @@
             >
           </div>
 
-          <div *ngIf="business?.email?.length > 0">
+          <div *ngIf="business?.email && business.email.includes('@')">
             <div class="d-flex align-items-center mb-3">
               <span
                 ><i class="las la-envelope" style="margin-right: 12px"></i
@@ -920,7 +920,7 @@
                 >{{ business.url }}</span
               >
               <a
-                href="{{ business.url }}"
+                href="{{ business.url }}" target="_blank"
                 class="btn btn-outline-secondary ms-auto"
                 >Visitar sitio</a
               >
@@ -962,7 +962,7 @@
 
           </div>
           <div class="horarios mb-5 mt-4">
-            <h3 class="h5 mb-3 d-flex align-items-center">
+            <h3 class="h5 mb-3 d-flex align-items-center justify-content-end">
               <span
                 [ngClass]="
                   currentStatus === 'Abierto ahora' ? 'dot open' : 'dot closed'

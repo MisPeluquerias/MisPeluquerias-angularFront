@@ -61,6 +61,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
+   
     this.searchTermsCity
       .pipe(
         debounceTime(300),
