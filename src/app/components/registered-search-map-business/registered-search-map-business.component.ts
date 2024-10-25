@@ -127,7 +127,6 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   }
 
   private loadMarkers(): void {
-    
     const id_user = localStorage.getItem('usuarioId');
 
     if (!this.map || !this.markerLayer) return;
