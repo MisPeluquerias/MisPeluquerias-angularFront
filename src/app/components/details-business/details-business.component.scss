@@ -333,9 +333,35 @@ button.p-link {
     margin-left: 0px !important;
   }
 
+  .btn-lgn {
+    font-size: 0.9rem !important; /* Aumenta el tamaño de la fuente para pantallas pequeñas */
+}
+
 .text-responsive{
   font-size: 0.9rem;
 }
+.circle-input-group{
+  right: 20px !important;
+  position: absolute;
+
+}
+
+ .input-group-container {
+    flex-direction: column;
+    align-items: stretch; /* Asegura que los elementos se estiren a lo largo del contenedor */
+  }
+  .search-container {
+    margin-bottom: 10px; /* Agrega un espacio entre la búsqueda y el textarea */
+    width: 50% !important; /* Hacer que el input de búsqueda ocupe todo el ancho */
+    order: 1;
+  }
+  .text-area-pregunta {
+    width: 100%;
+    order: 2; /* Hacer que el textarea ocupe todo el ancho */
+  }
+  .custom-img-height2{
+    width: 70% !important;
+  }
 
   .btn {
     padding: 0.2rem 0.5rem;

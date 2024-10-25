@@ -85,6 +85,5 @@ export class LoginComponent implements OnInit {
     event.preventDefault();
     this.modalService.dismissAll();
     this.modalService.open(RegisterComponent, { size: 'xl' });
-
   }
 }

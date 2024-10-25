@@ -26,6 +26,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private markersMap: Map<any, L.Marker> = new Map();
   private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
+  private markerToDelete: any;
 
 
   constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
@@ -35,7 +36,8 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     private toasrt : ToastrService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+  }
 
   ngAfterViewInit(): void {
     // Configura el ícono personalizado
@@ -125,6 +127,8 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   }
 
   private loadMarkers(): void {
+    const id_user = localStorage.getItem('usuarioId');
+
     if (!this.map || !this.markerLayer) return;
 
     const currentZoom = this.map.getZoom();
@@ -151,7 +155,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       southWestLng: sw.lng,
     };
 
-    this.registeredSearchBusinessService.chargeMarkersAndCars(boundsParams).subscribe((markers: any[]) => {
+    this.registeredSearchBusinessService.chargeMarkersAndCards(id_user,boundsParams).subscribe((markers: any[]) => {
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();
@@ -382,6 +386,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
                 marker.id_user_favorite = response.id_user_favorite;
                 //console.log('Favorite added successfully');
                 this.toasrt.success('El salón se añadio a su lista de favoritos');
+                this.loadMarkers();
             } else {
                 console.error('Unexpected response format:', response);
                 this.toasrt.success('Error,intentelo de nuevo mas tarde');
@@ -394,4 +399,38 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
         }
     );
 }
+
+deleteFavorite(marker: any): void {
+  this.markerToDelete = marker;
+  const id_user_favorite = this.markerToDelete.id_user_favourite;
+
+      if (!id_user_favorite) {
+          console.error('Cannot remove favorite: id_user_favorite is not defined');
+          return;
+      }
+
+      this.registeredSearchBusinessService.removeFavorite(id_user_favorite).subscribe(
+        () => {
+          this.markerToDelete.isFavorite = false;
+          this.markerToDelete.id_user_favorite = null;
+          this.markerToDelete = null;
+          this.loadMarkers();
+          this.toasrt.success('El salón se elimino de su lista de favoritos');
+          //console.log('Favorite removed successfully');
+        },
+        error => {
+          console.error('Error removing favorite', error);
+        }
+      );
+    }
+
+    toggleFavorite(marker: any) {
+      if (marker.is_favorite) {
+        // Eliminar de favoritos
+        this.deleteFavorite(marker);
+      } else {
+        // Añadir a favoritos
+        this.addFavorite(marker);
+      }
+    }
 }

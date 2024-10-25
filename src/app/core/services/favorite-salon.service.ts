@@ -21,6 +21,8 @@ export class FavoriteSalonService {
   removeFavorite(id_user_favorite: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/favorites/delete/${id_user_favorite}`);
   }
+
+  
   getFavorites(id_user: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/favorites/get`, { params: { id_user } });
   }

@@ -24,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        if (error.status === 401 && !req.url.includes('/login')) {
           console.log('Error 401 detectado, cerrando sesión');
           this.router.navigate(['/home']);
           this.authService.logout(); // Llamamos al método de logout de AuthService

@@ -21,8 +21,8 @@
                       (error)="onImageError($event)" />
               </ng-template>
               <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
-               <button class="favorite-btn" (click)="addFavorite(marker); $event.stopPropagation()">
-                <i class="las la-heart"></i>
+              <button class="favorite-btn" (click)="toggleFavorite(marker); $event.stopPropagation()">
+                <i class="las la-heart" [ngClass]="{'favorite': marker.is_favorite}"></i>
               </button>
             </div>
             <div class="card-body">

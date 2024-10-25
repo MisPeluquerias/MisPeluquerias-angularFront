@@ -756,27 +756,26 @@
                   Encuentra respuestas en los detalles de la peluquería, en
                   preguntas y respuestas y en las valoraciones de los clientes.
                 </p>
-                <div class="d-flex justify-content-between">
-                <textarea
-                  class="form-control w-50 rounded-3 shadow-sm p-2 text-area-pregunta"
-                  placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
-                  maxlength="300"
-                  rows="3"
-                  [(ngModel)]="questionText"
-                  (click)="verifyUser()"
-                  (keydown)="verifyUser()"
-                ></textarea>
-                <div class=" w-25 me-2">
-                  <input
-                    type="text"
-                    [(ngModel)]="searchFaqText"
-                    class="form-control search-faq-input"
-                    placeholder="Buscar..."
-                    (input)="onSearch()"
-                  />
+                <div class="d-flex justify-content-between input-group-container">
+                  <textarea
+                    class="form-control w-50 rounded-3 shadow-sm p-2 text-area-pregunta"
+                    placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
+                    maxlength="300"
+                    rows="3"
+                    [(ngModel)]="questionText"
+                    (click)="verifyUser()"
+                    (keydown)="verifyUser()"
+                  ></textarea>
+                  <div class="w-25 me-2 search-container">
+                    <input
+                      type="text"
+                      [(ngModel)]="searchFaqText"
+                      class="form-control search-faq-input"
+                      placeholder="Buscar..."
+                      (input)="onSearch()"
+                    />
+                  </div>
                 </div>
-              </div>
-
                 <!-- El botón solo aparecerá cuando haya texto en el textarea -->
                 <button
                   *ngIf="questionText.trim() || authService.isAuthenticated()"

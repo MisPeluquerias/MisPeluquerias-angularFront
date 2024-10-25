@@ -39,9 +39,9 @@ html {
 .favorite-btn:focus {
   outline: none; /* Elimina el contorno al hacer clic */
 }
-
-
-
+.favorite-btn i.favorite {
+  color: red; /* Color rojo para salones favoritos */
+}
 .wrapper {
   display: flex;
   flex-direction: column;
