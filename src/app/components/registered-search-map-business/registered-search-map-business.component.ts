@@ -48,7 +48,9 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       popupAnchor: [0, -45]
     });
     this.cdr.detectChanges();
-    this.initMap();
+    setTimeout(() => {
+      this.initMap();
+    });
   }
 
   onImageError(event: any) {
@@ -156,6 +158,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     };
 
     this.registeredSearchBusinessService.chargeMarkersAndCards(id_user,boundsParams).subscribe((markers: any[]) => {
+      console.log('Datos recibidos del servidor:', markers);
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
       this.markersMap.clear();

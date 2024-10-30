@@ -171,8 +171,6 @@ export class DetailsBusinessComponent implements OnInit {
         }
       );
     }
-
-
   }
 
 

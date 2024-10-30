@@ -6,6 +6,51 @@
   font-style: italic;
 }
 
+
+.info-open {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  z-index: 10;
+  display: inline-flex; /* Alinea el contenido en línea con el pseudo-elemento */
+  align-items: center; /* Centra verticalmente el texto con el punto */
+}
+
+
+
+
+
+.info-open::before {
+  content: '';
+  width: 10px; /* Ajusta el tamaño del punto */
+  height: 10px; /* Ajusta el tamaño del punto */
+  background-color: red; /* Color del punto */
+  border-radius: 50%; /* Hace que el punto sea circular */
+  margin-right: 5px; /* Espacio entre el punto y el texto */
+}
+
+
+
+
+.info-open:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.info-open.open::before {
+  background-color: green;
+}
+
+.info-open.closed::before {
+  background-color: red;
+}
+
+
 .search-bar {
   position: sticky;
   top: -78px;

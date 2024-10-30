@@ -367,6 +367,9 @@
                     "
                     >+info</a
                   >
+                  <span class="text-center info-open" [ngClass]="{'open': slide.is_open, 'closed': !slide.is_open}">
+                    {{ slide.is_open ? 'Abierto' : 'Cerrado' }}
+                  </span>
                 </div>
                 <h5 class="card-title" style="font-size: 1.2rem">
                   {{ slide.title }}
@@ -783,6 +786,7 @@
               placeholder="¿Dónde? Ciudad o C.P."
               (input)="onInputCityModal($event)"
               [(ngModel)]="zoneModal"
+              autocomplete="off"
             />
             <div
               *ngIf="citiesModal.length > 0"

@@ -21,6 +21,9 @@
                       (error)="onImageError($event)" />
               </ng-template>
               <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
+              <span class="text-center info-open" [ngClass]="{'open': marker.is_open, 'closed': !marker.is_open}">
+                {{ marker.is_open ? 'Abierto' : 'Cerrado' }}
+              </span>
               <button class="favorite-btn" (click)="toggleFavorite(marker); $event.stopPropagation()">
                 <i class="las la-heart" [ngClass]="{'favorite': marker.is_favorite}"></i>
               </button>
@@ -28,7 +31,6 @@
             <div class="card-body">
               <h5 class="text-center">{{marker.name}}</h5>
               <p class="card-text text-center">{{marker.address}}</p>
-              <p class="card-status text-center" [class.closed]="marker.status === 'Cerrado'">{{marker.status}}</p>
             </div>
           </div>
         </div>

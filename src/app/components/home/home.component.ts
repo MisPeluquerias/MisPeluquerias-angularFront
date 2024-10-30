@@ -61,7 +61,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
-   
+
     this.searchTermsCity
       .pipe(
         debounceTime(300),
@@ -90,7 +90,8 @@ export class HomeComponent {
           img: salon.image,  // Asegúrate de que esta propiedad coincida con tu estructura de datos
           title: salon.name,    // Cambia 'name' por la propiedad correcta en tus datos
           desc: salon.address,
-          id:salon.id_salon
+          id:salon.id_salon,
+          is_open:salon.is_open
         }));
         //console.log(this.slides)
       },
@@ -267,6 +268,8 @@ export class HomeComponent {
     );
   }
 
+
+
   onInputCity(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const value = inputElement.value.trim();
@@ -338,6 +341,8 @@ export class HomeComponent {
   }
 
   onSearch() {
+
+    //Busqueda por nombre del salón
     if (this.id_salon && String(this.id_salon).trim() !== '') {
       if (this.id_city || this.service) {
         this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
@@ -362,6 +367,8 @@ export class HomeComponent {
       return;
     }
 
+
+    //Busqueda por servio y ciudad
     if (this.service && (!this.id_city || String(this.id_city).trim() === '')) {
       this.toastr.error('Por favor seleccione una ciudad para buscar un servicio.');
       return;
@@ -386,6 +393,7 @@ export class HomeComponent {
       return;
     }
 
+    //Busqueda por ciudad
     if (this.id_city && !this.service) {
       this.unRegisteredSearchBusinessService.searchByCity(this.id_city).subscribe({
         next: (response) => {
@@ -405,6 +413,7 @@ export class HomeComponent {
       return;
     }
 
+    //Busquda por nombre del salon
     if (this.id_salon && String(this.id_salon).trim() !== '') {
       if (this.id_city || this.service) {
         this.toastr.error('Para buscar por nombre de salón, solo debe estar seleccionado el campo de nombre.');
