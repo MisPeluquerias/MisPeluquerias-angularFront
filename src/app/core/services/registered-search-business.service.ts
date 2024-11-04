@@ -11,12 +11,14 @@ export class RegisteredSearchBuusinessService {
 
   constructor(private http: HttpClient) {}
 
-  chargeMarkersAndCards(id_user: any, bounds: any): Observable<any[]> {
+  chargeMarkersAndCards(id_user: any, bounds: any,status:string,statusCategory:string): Observable<any[]> {
     const params = new HttpParams()
         .set('northEastLat', bounds.northEastLat)
         .set('northEastLng', bounds.northEastLng)
         .set('southWestLat', bounds.southWestLat)
         .set('southWestLng', bounds.southWestLng)
+        .set('status', status)
+        .set('statusCategory',statusCategory)
         .set('id_user', id_user);
 
     return this.http.get<any[]>(`${this.baseUrl}/business/chargeMarkersAndCard`, { params });
@@ -39,5 +41,9 @@ export class RegisteredSearchBuusinessService {
   }
   removeFavorite(id_user_favorite: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/business/delete-favorite/${id_user_favorite}`);
+  }
+
+  getFilterCategories(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/business/getFilterCategories`);
   }
 }

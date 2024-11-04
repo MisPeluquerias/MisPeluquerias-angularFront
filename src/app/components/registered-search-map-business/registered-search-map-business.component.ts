@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit,ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit,ChangeDetectorRef, } from '@angular/core';
 import { RegisteredSearchBuusinessService } from '../../core/services/registered-search-business.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
@@ -27,6 +27,10 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   private leaflet: any;
   private readonly minZoomToLoadMarkers: number = 14;
   private markerToDelete: any;
+  selectedStatusOpen: string = '';
+  selectedStatusCategory: string= '';
+  getFilterForCategories: any[] = [];
+
 
 
   constructor(private registeredSearchBusinessService: RegisteredSearchBuusinessService,
@@ -37,6 +41,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   ) { }
 
   ngOnInit(): void {
+    this.getFilterCategories();
   }
 
   ngAfterViewInit(): void {
@@ -55,6 +60,18 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
 
   onImageError(event: any) {
   event.target.src = '../../../assets/img/web/sello.jpg';
+}
+
+getFilterCategories(){
+  this.registeredSearchBusinessService.getFilterCategories().subscribe(
+    categories => {
+      this.getFilterForCategories = categories;
+      //console.log('Filtros para categorías:', this.getFilterForCategories);
+    },
+    error => {
+      console.error('Error al obtener las categorías para los filtros:', error);
+    }
+  )
 }
 
 
@@ -128,7 +145,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     this.enableMapEvents();
   }
 
-  private loadMarkers(): void {
+  public loadMarkers(): void {
     const id_user = localStorage.getItem('usuarioId');
 
     if (!this.map || !this.markerLayer) return;
@@ -155,9 +172,15 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       northEastLng: ne.lng,
       southWestLat: sw.lat,
       southWestLng: sw.lng,
+      status: this.selectedStatusOpen,
+      statusCategory: this.selectedStatusCategory,
+      id_user: id_user,
+
     };
 
-    this.registeredSearchBusinessService.chargeMarkersAndCards(id_user,boundsParams).subscribe((markers: any[]) => {
+    console.log('Categoría seleccionada:',this.selectedStatusCategory)
+
+    this.registeredSearchBusinessService.chargeMarkersAndCards(id_user,boundsParams,this.selectedStatusOpen,this.selectedStatusCategory).subscribe((markers: any[]) => {
       console.log('Datos recibidos del servidor:', markers);
       this.markerLayer!.clearLayers();
       this.visibleMarkers = [];
@@ -329,6 +352,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
     }
   }
 
+
   public goToNextPage(): void {
     if (this.currentPage < this.totalPages.length) {
       this.currentPage++;
@@ -339,6 +363,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
   public get totalPages(): number[] {
     return Array(Math.ceil(this.visibleMarkers.length / this.itemsPerPage)).fill(0).map((_, i) => i + 1);
   }
+
 
   public onCardClick(marker: any): void {
     this.disableMapEvents();
@@ -352,6 +377,7 @@ export class RegisteredSearchBusinessComponent implements OnInit, AfterViewInit 
       this.enableMapEvents();
     }, 2000);
   }
+
   public viewDetails(id: any, salonName: string): void {
     if (id && salonName) {
         // Generar el slug del salón a partir del nombre
@@ -434,6 +460,32 @@ deleteFavorite(marker: any): void {
       } else {
         // Añadir a favoritos
         this.addFavorite(marker);
+      }
+    }
+
+
+
+    openDropdown(event: Event) {
+      event.stopPropagation(); // Evita que el clic se propague al documento
+      const dropdownMenu = document.querySelector('.dropdown-menu');
+      if (dropdownMenu) {
+        // Alterna el estado del menú
+        const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+
+        // Si está abierto, ciérralo
+        if (isCurrentlyOpen) {
+          dropdownMenu.classList.remove('show');
+        } else {
+          // Si está cerrado, ábrelo y agrega el listener para cerrar al hacer clic fuera
+          dropdownMenu.classList.add('show');
+
+          // Agregar un listener temporal para cerrar el dropdown al hacer clic fuera
+          document.addEventListener('click', (outsideEvent) => {
+            if (!dropdownMenu.contains(outsideEvent.target as Node)) {
+              dropdownMenu.classList.remove('show');
+            }
+          }, { once: true }); // `{ once: true }` asegura que el listener se elimine después de ejecutarse
+        }
       }
     }
 }

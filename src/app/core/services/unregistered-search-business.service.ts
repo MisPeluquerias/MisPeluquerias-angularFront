@@ -30,7 +30,11 @@ export class UnRegisteredSearchBuusinessService {
       },
     });;
   }
-  
+
+  getFilterCategories(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/searchUnRegistered/getFilterCategories`);
+  }
+
 
   searchByName(name: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByName`, {
@@ -40,11 +44,20 @@ export class UnRegisteredSearchBuusinessService {
     });;
   }
 
-  searchByCityName(name: string): Observable<{ totalSalons: number, salons: any[] }> {
+  searchByCityName(name: string, categoria?: string): Observable<{ totalSalons: number, salons: any[] }> {
+    // Crear un objeto con los parámetros de la solicitud
+    const params: any = { name };
+
+    // Agregar `categoria` solo si está definido
+    if (categoria) {
+      params.categoria = categoria;
+    }
+
     return this.http.get<{ totalSalons: number, salons: any[] }>(`${this.baseUrl}/searchUnRegistered/searchByCityName`, {
-      params: { name },
+      params
     }).pipe(
       tap(response => {
+        // Aquí puedes realizar cualquier acción con la respuesta, como depuración
         //console.log('Número de salones recibidos del backend:', response.totalSalons);
         //console.log('Array de salones:', response.salons);
       })

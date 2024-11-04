@@ -37,7 +37,14 @@ export class UnRegisteredSearchBusinessComponent
   private readonly minZoomToLoadMarkers: number = 14;
   private currentIdCity: string | null = null;
   private currentService: string | null = null;
+  cityName: string | null = null;
   isAuthenticated: boolean = false;
+  getFilterForCategories: any[] = [];
+  horarioFilter: string = '';
+  categoriaFilter: string = '';
+  allMarkers: any[] = []; // Todos los marcadores
+  filteredMarkers: any[] = [];
+  is_open: string = '';
 
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
@@ -51,57 +58,107 @@ export class UnRegisteredSearchBusinessComponent
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.cityName = params.get('name');
+    });
+
     this.isAuthenticated = this.authService.isAuthenticated();
+    this.getFilterCategories();
   }
 
   ngAfterViewInit(): void {
     this.customIcon = L.icon({
-        iconUrl: '../../../assets/img/web/icon-map-finder.png',
-        iconSize: [38, 38],
-        iconAnchor: [19, 30],
-        popupAnchor: [0, -45],
+      iconUrl: '../../../assets/img/web/icon-map-finder.png',
+      iconSize: [38, 38],
+      iconAnchor: [19, 30],
+      popupAnchor: [0, -45],
     });
 
     this.route.queryParams.subscribe((params) => {
-        const id_city = params['id_city'];
-        const name = params['name'];
-        const salonName = params['salonName'];
-        const categoria = params['categoria'];
-        const service = params['service'];
+      const id_city = params['id_city'];
+      const name = params['name'];
+      const salonName = params['salonName'];
+      const categoria = params['categoria'];
+      const service = params['service'];
 
-        if (this.currentIdCity !== id_city || this.currentService !== service) {
-            this.currentIdCity = id_city;
-            this.currentService = service;
-            this.updateMap({ id_city, name, salonName, categoria, service });
-        } else {
-            // Fuerza la recarga de marcadores si la ciudad es la misma
-            this.updateMap({ id_city, name, salonName, categoria, service }, true);
-        }
+      if (this.currentIdCity !== id_city || this.currentService !== service) {
+        this.currentIdCity = id_city;
+        this.currentService = service;
+        this.updateMap({ id_city, name, salonName, categoria, service });
+      } else {
+        // Fuerza la recarga de marcadores si la ciudad es la misma
+        this.updateMap({ id_city, name, salonName, categoria, service }, true);
+      }
     });
 
     this.cdr.detectChanges();
     setTimeout(() => {
-        window.scrollTo(0, 0);
+      window.scrollTo(0, 0);
     }, 2000);
-}
-private updateMap(params: {
-  id_city?: string;
-  name?: string;
-  salonName?: string;
-  categoria?: string;
-  service?: string;
-}, forceReload: boolean = false): void {
-  if (this.map) {
+  }
+  private updateMap(
+    params: {
+      id_city?: string;
+      name?: string;
+      salonName?: string;
+      categoria?: string;
+      service?: string;
+    },
+    forceReload: boolean = false
+  ): void {
+    if (this.map) {
       if (forceReload) {
-          // Borrar los marcadores actuales y recargar
-          this.markerLayer?.clearLayers();
+        // Borrar los marcadores actuales y recargar
+        this.markerLayer?.clearLayers();
       }
       this.loadMarkers(params);
-  } else {
+    } else {
       this.initMap(params);
+    }
   }
-}
 
+  getFilterCategories() {
+    this.unRegisteredSearchBusinessService.getFilterCategories().subscribe(
+      (categories) => {
+        this.getFilterForCategories = categories;
+        //console.log('Filtros para categorías:', this.getFilterForCategories);
+      },
+      (error) => {
+        console.error(
+          'Error al obtener las categorías para los filtros:',
+          error
+        );
+      }
+    );
+  }
+
+  openDropdown(event: Event) {
+    event.stopPropagation(); // Evita que el clic se propague al documento
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    if (dropdownMenu) {
+      // Alterna el estado del menú
+      const isCurrentlyOpen = dropdownMenu.classList.contains('show');
+
+      // Si está abierto, ciérralo
+      if (isCurrentlyOpen) {
+        dropdownMenu.classList.remove('show');
+      } else {
+        // Si está cerrado, ábrelo y agrega el listener para cerrar al hacer clic fuera
+        dropdownMenu.classList.add('show');
+
+        // Agregar un listener temporal para cerrar el dropdown al hacer clic fuera
+        document.addEventListener(
+          'click',
+          (outsideEvent) => {
+            if (!dropdownMenu.contains(outsideEvent.target as Node)) {
+              dropdownMenu.classList.remove('show');
+            }
+          },
+          { once: true }
+        ); // `{ once: true }` asegura que el listener se elimine después de ejecutarse
+      }
+    }
+  }
 
   private initMap(params: {
     id_city?: string;
@@ -110,7 +167,6 @@ private updateMap(params: {
     categoria?: string;
     service?: string;
   }): void {
-
     this.map = L.map('unregistered-map', {
       center: [0, 0],
       zoom: 19,
@@ -127,6 +183,16 @@ private updateMap(params: {
     this.enableMapEvents();
   }
 
+  applyFilters(): void {
+    this.loadMarkers({
+      id_city: this.currentIdCity || undefined,
+      service: this.currentService || undefined,
+      name: this.cityName || undefined,
+      categoria: this.categoriaFilter || undefined,
+    });
+  }
+
+
   private loadMarkers(params: {
     id_city?: string;
     name?: string;
@@ -134,57 +200,60 @@ private updateMap(params: {
     categoria?: string;
     service?: string;
   }): void {
-    // Imprime los parámetros que llegan a la función
-    //console.log('loadMarkers fue llamado con parámetros:', params);
 
-    if (!this.map || !this.markerLayer) return;
+    //console.log('Aplicando filtros: ', {
+      //horarioFilter: this.horarioFilter,
+      //categoriaFilter: this.categoriaFilter,
+    //});
+    //console.log('Parámetros de entrada:', params);
 
     this.isLoading = true;
-
     let markerObservable: Observable<{ salons: any[] }>;
 
     if (params.id_city && params.service) {
-      //console.log('Buscando por ciudad y servicio:', params.id_city, params.service);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByService(params.id_city, params.service)
         .pipe(map((salons: any[]) => ({ salons })));
-
-    }
-
-    else if (params.id_city && params.categoria) {
-      console.log('Buscando por ciudad y categoría:', params.id_city, params.categoria);
+    } else if (params.id_city && params.categoria) {
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCityAndCategory(params.id_city, params.categoria)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city) {
-      //console.log('Buscando por ciudad:', params.id_city);
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByCity(params.id_city)
         .pipe(map((salons: any[]) => ({ salons })));
-
     } else if (params.name) {
-      //console.log('Buscando por nombre de la ciudad:', params.name);
       markerObservable = this.unRegisteredSearchBusinessService
-        .searchByCityName(params.name)
-        .pipe(map((response) => ({ salons: response.salons })));
-
-    } else if (params.salonName) {
-      console.log('Buscando por nombre del salón:', params.salonName);
-      markerObservable = this.unRegisteredSearchBusinessService
-        .searchByName(params.salonName)
-        .pipe(map((salons: any[]) => ({ salons })));
-    } else {
-      console.error(
-        'Neither id_city, name, nor salonName provided for marker loading.'
-      );
+      .searchByCityName(params.name, params.categoria)
+      .pipe(map((response) => ({ salons: response.salons })));
+  } else if (params.salonName) {
+    markerObservable = this.unRegisteredSearchBusinessService
+      .searchByName(params.salonName)
+      .pipe(map((salons: any[]) => ({ salons })));
+  } else {
       this.fadeOutLoadingSpinner();
       return;
     }
 
+    // Suscribirse al observable y aplicar filtros
     markerObservable.subscribe(
       (response) => {
-        //console.log('Salones recibidos:', response.salons);
-        const markers = response.salons;
+        let markers = response.salons;
+        //console.log('Array de salones:', markers);
+        // Aplicar filtro de horario (abierto o cerrado)
+        if (this.horarioFilter === 'true') {
+          markers = markers.filter((marker) => marker.is_open === true);
+        } else if (this.horarioFilter === 'false') {
+          markers = markers.filter((marker) => marker.is_open === false);
+        }
+
+        // Aplicar filtro de categoría si está seleccionado
+
+
+
+        //console.log('Marcadores después de aplicar filtros:', markers);
+
+        // Continuar con la lógica de carga de marcadores...
         this.markerLayer!.clearLayers();
         this.visibleMarkers = [];
         this.markersMap.clear();
@@ -208,41 +277,36 @@ private updateMap(params: {
                     ? marker.images[0].file_url
                     : marker.image;
 
-                // HTML generado dinámicamente para el popup
                 return `<div style="display: flex; align-items: center; padding: 0; font-family: Arial, sans-serif;">
-                          <img id="marker-image-${index}" src="${imageUrl || '../../../assets/img/web/sello.jpg'}" alt="${marker.name}" style="width: 90px; height: 90px; object-fit: cover; display: block; margin: 0; border: 2px solid #555; margin-right: 10px;" />
-                          <div style="flex-grow: 1; min-width: 0;">
-                            <div style="font-weight: bold; font-size: 14px; color: #333;">${marker.name}</div>
-                            <div style="font-size: 12px; color: #777;">${marker.address}</div>
-                             <button class="info-link" id="info-link-${index}" data-id="${marker.id_salon}" data-name="${marker.name}" style="background: gray; border: none; color:white; font-size:14px; border-radius:3px; cursor: pointer;">+info</button>
-                          </div>
-                        </div>`;
+                    <img src="${
+                      imageUrl || '../../../assets/img/web/sello.jpg'
+                    }"
+                         alt="${marker.name}"
+                         style="width: 90px; height: 90px; object-fit: cover; margin-right: 10px;"
+                         onerror="this.src='../../../assets/img/web/sello.jpg';" />
+                    <div style="flex-grow: 1;">
+                      <div style="font-weight: bold;">${marker.name}</div>
+                      <div>${marker.address}</div>
+                      <button id="info-link-${index}" data-id="${
+                  marker.id_salon
+                }"
+                              style="background: gray; border: none; color: white; cursor: pointer;">
+                        +info
+                      </button>
+                    </div>
+                  </div>`;
               });
 
-            // Manejador de eventos para cuando se abre el popup
             markerInstance.on('popupopen', () => {
-              // Añade manejador onerror para cargar imagen por defecto si falla
-              const imageElement = document.getElementById(`marker-image-${index}`) as HTMLImageElement;
-              if (imageElement) {
-                imageElement.onerror = function () {
-                  this.src = '../../../assets/img/web/sello.jpg';  // Imagen por defecto
-                };
-              }
-
-              // Manejador para el botón de "info"
               const infoLink = document.getElementById(`info-link-${index}`);
               if (infoLink) {
                 infoLink.addEventListener('click', (event) => {
-                  event.preventDefault(); // Evita la recarga de la página al hacer clic en el enlace
-                  const salonId = infoLink.getAttribute('data-id') ?? '';
-                  const salonName = infoLink.getAttribute('data-name') ?? '';
-                  this.viewDetails(salonId, salonName);
+                  event.preventDefault();
+                  this.viewDetails(marker.id_salon, marker.name);
                 });
               }
             });
 
-            // Manejador de eventos para click en el marker
-            markerInstance.on('click', () => this.onMarkerClick(marker));
             this.visibleMarkers.push(marker);
             this.markersMap.set(marker, markerInstance);
             this.getImagesAdmin(marker.id_salon);
@@ -259,7 +323,6 @@ private updateMap(params: {
       }
     );
   }
-
 
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
@@ -405,7 +468,6 @@ private updateMap(params: {
 
   public onCardClick(marker: any): void {
     this.disableMapEvents();
-
     if (marker.latitud && marker.longitud) {
       const markerInstance = this.markersMap.get(marker);
       if (markerInstance) {

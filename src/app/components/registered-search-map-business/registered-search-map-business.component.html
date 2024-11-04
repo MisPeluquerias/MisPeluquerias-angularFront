@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <app-navbar-fixed></app-navbar-fixed>
+  <app-navbar-fixed style="z-index: 3"></app-navbar-fixed>
 
   <div class="content container-fluid">
     <div class="row">
@@ -7,48 +7,141 @@
         <div *ngIf="isLoadingPosition" class="loading-indicator">
           <p>Obteniendo su posición, por favor espera...</p>
         </div>
-        <h5>Resultados de Búsqueda</h5>
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Resultados de Búsqueda</h5>
+          <div class="btn-group">
+            <button
+              style="margin-top: -12px"
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              (click)="openDropdown($event)"
+            >
+              <i class="las la-filter"></i>
+              Filtros
+            </button>
+            <ul
+              class="dropdown-menu p-3"
+              style="margin-top: 24px; z-index: 2; right: 0; left: auto"
+            >
+              <li class="mb-2">
+                <label for="largeSelect" class="form-label">Horario</label>
+                <select
+                  class="form-select"
+                  id="largeSelect"
+                  [(ngModel)]="selectedStatusOpen"
+                  (change)="loadMarkers()"
+                >
+                  <option value="">Todos</option>
+                  <option value="true">Abierto</option>
+                  <option value="false">Cerrado</option>
+                </select>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li class="mb-2">
+                <label for="largeSelect" class="form-label">Categoría</label>
+                <select
+                  class="form-select"
+                  id="largeSelect"
+                  [(ngModel)]="selectedStatusCategory"
+                  (change)="loadMarkers()"
+                >
+                  <option value="">Todas</option>
+                  <option
+                    *ngFor="let category of getFilterForCategories"
+                    [value]="category.categories"
+                  >
+                    {{ category.categories }}
+                  </option>
+                </select>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div *ngIf="paginatedMarkers.length === 0">
           <p>No hay resultados en esta área.</p>
         </div>
         <div class="card-container" *ngIf="paginatedMarkers.length > 0">
-          <div class="card" *ngFor="let marker of paginatedMarkers; let i = index" (click)="onCardClick(marker)" [class.selected]="selectedMarker === marker">
+          <div
+            class="card"
+            style="z-index: 1"
+            *ngFor="let marker of paginatedMarkers; let i = index"
+            (click)="onCardClick(marker)"
+            [class.selected]="selectedMarker === marker"
+          >
             <div class="card-image position-relative">
-              <img *ngIf="marker.images && marker.images.length > 0; else defaultImage" [src]="marker.images[0].file_url" [alt]="marker.name">
+              <img
+                *ngIf="
+                  marker.images && marker.images.length > 0;
+                  else defaultImage
+                "
+                [src]="marker.images[0].file_url"
+                [alt]="marker.name"
+              />
               <ng-template #defaultImage>
-                <img [src]="marker.image || '../../../assets/img/web/sello.jpg'"
-                      [alt]="marker.name"
-                      (error)="onImageError($event)" />
+                <img
+                  [src]="marker.image || '../../../assets/img/web/sello.jpg'"
+                  [alt]="marker.name"
+                  (error)="onImageError($event)"
+                />
               </ng-template>
-              <a class="info-link" (click)="viewDetails(marker.id_salon,marker.name); $event.stopPropagation()">+info</a>
-              <span class="text-center info-open" [ngClass]="{'open': marker.is_open, 'closed': !marker.is_open}">
-                {{ marker.is_open ? 'Abierto' : 'Cerrado' }}
+              <a
+                class="info-link"
+                (click)="
+                  viewDetails(marker.id_salon, marker.name);
+                  $event.stopPropagation()
+                "
+                >+info</a
+              >
+              <span
+                class="text-center info-open"
+                [ngClass]="{ open: marker.is_open, closed: !marker.is_open }"
+              >
+                {{ marker.is_open ? "Abierto" : "Cerrado" }}
               </span>
-              <button class="favorite-btn" (click)="toggleFavorite(marker); $event.stopPropagation()">
-                <i class="las la-heart" [ngClass]="{'favorite': marker.is_favorite}"></i>
+              <button
+                class="favorite-btn"
+                (click)="toggleFavorite(marker); $event.stopPropagation()"
+              >
+                <i
+                  class="las la-heart"
+                  [ngClass]="{ favorite: marker.is_favorite }"
+                ></i>
               </button>
             </div>
             <div class="card-body">
-              <h5 class="text-center">{{marker.name}}</h5>
-              <p class="card-text text-center">{{marker.address}}</p>
+              <h5 class="text-center">{{ marker.name }}</h5>
+              <p class="card-text text-center">{{ marker.address }}</p>
             </div>
           </div>
         </div>
         <div class="pagination-wrapper">
           <div class="pagination" *ngIf="totalPages.length > 1">
-            <button (click)="goToPreviousPage()" [disabled]="currentPage === 1"><</button>
+            <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+              <
+            </button>
             <div class="pagination-info mt-2">
               Página {{ currentPage }} de {{ totalPages.length }}
             </div>
-            <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">></button>
+            <button
+              (click)="goToNextPage()"
+              [disabled]="currentPage === totalPages.length"
+            >
+              >
+            </button>
           </div>
-          <h6 class="text-center mt-3" *ngIf="totalCards > 0">Hemos encontrado {{ totalCards }} resultados para ti.</h6>
+          <h6 class="text-center mt-3" *ngIf="totalCards > 0">
+            Hemos encontrado {{ totalCards }} resultados para ti.
+          </h6>
         </div>
       </div>
       <div class="col-md-6 d-flex flex-column">
         <div class="map-frame flex-grow-1 position-relative">
           <div id="registered-map" class="map-content"></div>
-          <div id="loading-spinner" class="loading-spinner" *ngIf="isLoading"></div>
+          <div
+            id="loading-spinner"
+            class="loading-spinner"
+            *ngIf="isLoading"
+          ></div>
           <div id="map-cover" class="map-cover" *ngIf="isMapLoading"></div>
         </div>
       </div>
