@@ -1,4 +1,4 @@
 export const environment = {
   production:true,
-  baseUrl: 'https://apibeta.mispeluquerias.com'
+  baseUrl: 'https://api.mispeluquerias.com'
 };

@@ -283,8 +283,24 @@ app-footer {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
+.favorite-btn {
+  position: absolute;
+  top: 10px; /* Ajusta según lo necesario */
+  right: 10px; /* Ajusta según lo necesario */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+  border: none;
+  width: 40px; /* Asegúrate de que el ancho y alto sean iguales */
+  height: 40px; /* Asegúrate de que el ancho y alto sean iguales */
+  padding: 0;
+  border-radius: 50%; /* Esto hace que sea un círculo perfecto */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
 .favorite-btn i {
-  color: #eeeeee;;
+  color: #eeeeee;
   font-size: 1.5rem;
 }
 
@@ -293,9 +309,11 @@ app-footer {
   transform: scale(1.1);
 }
 
-
 .favorite-btn:focus {
   outline: none; /* Elimina el contorno al hacer clic */
+}
+.favorite-btn i.favorite {
+  color: red; /* Color rojo para salones favoritos */
 }
 
 @media (max-width: 576px) {

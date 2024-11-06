@@ -13,13 +13,18 @@ export class UnRegisteredSearchBuusinessService {
 
   constructor(private http: HttpClient) {}
 
-  searchByCity(id_city: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityById`, {
-      params: {
-        id_city
-      },
-    });;
+  searchByCity(id_city: string, id_user?: string): Observable<any[]> {
+    let params = new HttpParams().set('id_city', id_city);
+
+    // Solo añadir `id_user` si tiene un valor
+    if (id_user) {
+      params = params.set('id_user', id_user);
+    }
+    console.log(id_user);
+
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityById`, { params });
   }
+
 
 
   searchByService(id_city:string,name:string):Observable<any[]>{
@@ -64,6 +69,10 @@ export class UnRegisteredSearchBuusinessService {
     );
   }
 
+  removeFavorite(id_user_favorite: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/searchUnRegistered/delete-favorite/${id_user_favorite}`);
+  }
+
 
   viewDetailsBusiness(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {
@@ -72,6 +81,8 @@ export class UnRegisteredSearchBuusinessService {
       },
     });;
   }
+
+
   getImagesAdmin(salon_id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/details-business/getImagesAdmin`, {
       params: {
@@ -80,13 +91,14 @@ export class UnRegisteredSearchBuusinessService {
     });
   }
 
-  searchByCityAndCategory(id_city: string, categoria: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityAndCategory`, {
-      params: {
-        id_city,
-        categoria
-      },
-    });
+  searchByCityAndCategory(id_city: string, categoria: string,id_user?: string): Observable<any[]> {
+    let params = new HttpParams()
+      .set('id_city', id_city)
+      .set('categoria', categoria);
+    if (id_user) {
+      params = params.set('id_user', id_user);
+    }
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchByCityAndCategory`, { params });
   }
 }
 

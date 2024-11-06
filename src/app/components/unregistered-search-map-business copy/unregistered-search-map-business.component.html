@@ -92,14 +92,14 @@
                 {{ marker.is_open ? "Abierto" : "Cerrado" }}
               </span>
               <button
-                class="favorite-btn"
-                (click)="
-                  isAuthenticated ? addFavorite(marker) : openLoginModal();
-                  $event.stopPropagation()
-                "
-              >
-                <i class="las la-heart"></i>
-              </button>
+              class="favorite-btn"
+              (click)="toggleFavorite(marker); $event.stopPropagation()"
+            >
+              <i
+                class="las la-heart"
+                [ngClass]="{ favorite: marker.is_favorite }"
+              ></i>
+            </button>
             </div>
             <div class="card-body">
               <h5 class="text-center">{{ marker.name }}</h5>

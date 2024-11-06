@@ -45,6 +45,9 @@ export class UnRegisteredSearchBusinessComponent
   allMarkers: any[] = []; // Todos los marcadores
   filteredMarkers: any[] = [];
   is_open: string = '';
+  private markerToDelete: any;
+  id_user: string | null = null;
+
 
   constructor(
     private unRegisteredSearchBusinessService: UnRegisteredSearchBuusinessService,
@@ -63,7 +66,9 @@ export class UnRegisteredSearchBusinessComponent
     });
 
     this.isAuthenticated = this.authService.isAuthenticated();
+    this.id_user = this.isAuthenticated ? localStorage.getItem('usuarioId'): null;
     this.getFilterCategories();
+
   }
 
   ngAfterViewInit(): void {
@@ -199,6 +204,7 @@ export class UnRegisteredSearchBusinessComponent
     salonName?: string;
     categoria?: string;
     service?: string;
+    id_user?: string;
   }): void {
 
     //console.log('Aplicando filtros: ', {
@@ -210,17 +216,21 @@ export class UnRegisteredSearchBusinessComponent
     this.isLoading = true;
     let markerObservable: Observable<{ salons: any[] }>;
 
+    this.id_user= localStorage.getItem('usuarioId');
+
+    const queryParams = { ...params, id_user: this.id_user || undefined };
+
     if (params.id_city && params.service) {
       markerObservable = this.unRegisteredSearchBusinessService
         .searchByService(params.id_city, params.service)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city && params.categoria) {
       markerObservable = this.unRegisteredSearchBusinessService
-        .searchByCityAndCategory(params.id_city, params.categoria)
+        .searchByCityAndCategory(params.id_city, params.categoria,queryParams.id_user)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city) {
       markerObservable = this.unRegisteredSearchBusinessService
-        .searchByCity(params.id_city)
+        .searchByCity(params.id_city,queryParams.id_user)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.name) {
       markerObservable = this.unRegisteredSearchBusinessService
@@ -387,7 +397,7 @@ export class UnRegisteredSearchBusinessComponent
       });
 
       this.map.on('click', (e: L.LeafletMouseEvent) => {
-        console.log('Map clicked at', e.latlng);
+        //console.log('Map clicked at', e.latlng);
 
         if (!this.selectedMarker) {
           this.applyBlurEffect(false);
@@ -492,7 +502,7 @@ export class UnRegisteredSearchBusinessComponent
         .replace(/ /g, '-')
         .replace(/[^a-z0-9-]/g, '');
 
-      console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
+      //console.log('Navigating to details with ID:', id, 'and Slug:', salonSlug);
 
       // Navegar a la URL con el slug y el ID
       this.router.navigate([`/centro/${salonSlug}/${id}`]);
@@ -509,13 +519,15 @@ export class UnRegisteredSearchBusinessComponent
       return; // Termina la ejecución si no hay un ID de usuario disponible
     }
 
+
+
     const favorite = { id_user: userId, id_salon: marker.id_salon };
 
-    console.log('Attempting to add favorite:', favorite); // Depuración
+    //console.log('Attempting to add favorite:', favorite); // Depuración
 
     this.favoriteSalonService.addFavorite(favorite).subscribe(
       (response: any) => {
-        console.log('Add favorite response:', response); // Depuración
+        //console.log('Add favorite response:', response); // Depuración
 
         if (response && response.id_user_favorite) {
           marker.isFavorite = true;
@@ -533,4 +545,43 @@ export class UnRegisteredSearchBusinessComponent
       }
     );
   }
+  toggleFavorite(marker: any) {
+
+     if (!this.isAuthenticated) {
+    // Abre el modal de inicio de sesión
+    this.openLoginModal();
+    return; // Sale de la función si no está autenticado
+  }
+
+    if (marker.is_favorite) {
+      // Eliminar de favoritos
+      this.deleteFavorite(marker);
+    } else {
+      // Añadir a favoritos
+      this.addFavorite(marker);
+    }
+  }
+  deleteFavorite(marker: any): void {
+    this.markerToDelete = marker;
+    const id_user_favorite = this.markerToDelete.id_user_favourite;
+
+        if (!id_user_favorite) {
+            console.error('Cannot remove favorite: id_user_favorite is not defined');
+            return;
+        }
+
+        this.unRegisteredSearchBusinessService.removeFavorite(id_user_favorite).subscribe(
+          () => {
+            this.markerToDelete.isFavorite = false;
+            this.markerToDelete.id_user_favorite = null;
+            this.markerToDelete = null;
+            location.reload();
+            this.toasrt.success('El salón se elimino de su lista de favoritos');
+            //console.log('Favorite removed successfully');
+          },
+          error => {
+            console.error('Error removing favorite', error);
+          }
+        );
+      }
 }
