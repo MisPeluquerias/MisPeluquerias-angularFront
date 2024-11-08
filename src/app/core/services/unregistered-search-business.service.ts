@@ -27,14 +27,16 @@ export class UnRegisteredSearchBuusinessService {
 
 
 
-  searchByService(id_city:string,name:string):Observable<any[]>{
-    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchSalonByService`, {
-      params: {
-        id_city,
-        name
-      },
-    });;
+  searchByService(id_city: string, name: string, id_user?: string): Observable<any[]> {
+    const params: any = { id_city, name };
+
+    if (id_user) {
+      params.id_user = id_user;
+    }
+
+    return this.http.get<any[]>(`${this.baseUrl}/searchUnRegistered/searchSalonByService`, { params });
   }
+
 
   getFilterCategories(): Observable<any> {
     return this.http.get(`${this.baseUrl}/searchUnRegistered/getFilterCategories`);
@@ -49,7 +51,7 @@ export class UnRegisteredSearchBuusinessService {
     });;
   }
 
-  searchByCityName(name: string, categoria?: string): Observable<{ totalSalons: number, salons: any[] }> {
+  searchByCityName(name: string, categoria?: string, id_user?: string): Observable<{ totalSalons: number, salons: any[] }> {
     // Crear un objeto con los parámetros de la solicitud
     const params: any = { name };
 
@@ -58,28 +60,36 @@ export class UnRegisteredSearchBuusinessService {
       params.categoria = categoria;
     }
 
+    // Agregar `id_user` solo si está definido
+    if (id_user) {
+      params.id_user = id_user;
+    }
+
     return this.http.get<{ totalSalons: number, salons: any[] }>(`${this.baseUrl}/searchUnRegistered/searchByCityName`, {
       params
     }).pipe(
       tap(response => {
         // Aquí puedes realizar cualquier acción con la respuesta, como depuración
-        //console.log('Número de salones recibidos del backend:', response.totalSalons);
-        //console.log('Array de salones:', response.salons);
+        // console.log('Número de salones recibidos del backend:', response.totalSalons);
+        // console.log('Array de salones:', response.salons);
       })
     );
   }
+
 
   removeFavorite(id_user_favorite: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/searchUnRegistered/delete-favorite/${id_user_favorite}`);
   }
 
 
-  viewDetailsBusiness(id: string): Observable<any[]> {
+  viewDetailsBusiness(id: string, id_user?: string): Observable<any[]> {
+    const params: { [key: string]: string } = { id };
+    if (id_user) {
+      params['id_user'] = id_user;
+    }
     return this.http.get<any[]>(`${this.baseUrl}/details-business/`, {
-      params: {
-        id
-      },
-    });;
+      params,
+    });
   }
 
 
@@ -90,6 +100,8 @@ export class UnRegisteredSearchBuusinessService {
       }
     });
   }
+
+
 
   searchByCityAndCategory(id_city: string, categoria: string,id_user?: string): Observable<any[]> {
     let params = new HttpParams()

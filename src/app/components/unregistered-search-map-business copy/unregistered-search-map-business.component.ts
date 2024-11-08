@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import {
   Component,
   OnInit,
@@ -47,6 +48,8 @@ export class UnRegisteredSearchBusinessComponent
   is_open: string = '';
   private markerToDelete: any;
   id_user: string | null = null;
+  public currentCategory: string | undefined;
+
 
 
   constructor(
@@ -65,11 +68,20 @@ export class UnRegisteredSearchBusinessComponent
       this.cityName = params.get('name');
     });
 
+
+    this.route.queryParamMap.subscribe((params) => {
+      this.currentCategory = params.get('categoria') || undefined;
+      //console.log('Categoría actual desde URL:', this.currentCategory);
+
+      // Puedes usar `this.currentCategory` para cargar los favoritos o filtros iniciales
+    });
+
     this.isAuthenticated = this.authService.isAuthenticated();
     this.id_user = this.isAuthenticated ? localStorage.getItem('usuarioId'): null;
     this.getFilterCategories();
-
   }
+
+
 
   ngAfterViewInit(): void {
     this.customIcon = L.icon({
@@ -222,7 +234,7 @@ export class UnRegisteredSearchBusinessComponent
 
     if (params.id_city && params.service) {
       markerObservable = this.unRegisteredSearchBusinessService
-        .searchByService(params.id_city, params.service)
+        .searchByService(params.id_city, params.service,queryParams.id_user)
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.id_city && params.categoria) {
       markerObservable = this.unRegisteredSearchBusinessService
@@ -234,7 +246,7 @@ export class UnRegisteredSearchBusinessComponent
         .pipe(map((salons: any[]) => ({ salons })));
     } else if (params.name) {
       markerObservable = this.unRegisteredSearchBusinessService
-      .searchByCityName(params.name, params.categoria)
+      .searchByCityName(params.name, params.categoria,queryParams.id_user)
       .pipe(map((response) => ({ salons: response.salons })));
   } else if (params.salonName) {
     markerObservable = this.unRegisteredSearchBusinessService
@@ -258,8 +270,6 @@ export class UnRegisteredSearchBusinessComponent
         }
 
         // Aplicar filtro de categoría si está seleccionado
-
-
 
         //console.log('Marcadores después de aplicar filtros:', markers);
 
@@ -322,8 +332,7 @@ export class UnRegisteredSearchBusinessComponent
             this.getImagesAdmin(marker.id_salon);
           }
         });
-
-        this.currentPage = 1;
+          this.currentPage = 1;
         this.paginateMarkers();
         this.fadeOutLoadingSpinner();
       },
@@ -334,6 +343,128 @@ export class UnRegisteredSearchBusinessComponent
     );
   }
 
+  private loadMarkersForFauvorite(params: {
+    id_city?: string;
+    name?: string;
+    salonName?: string;
+    categoria?: string;
+    service?: string;
+    id_user?: string;
+  }): void {
+
+    // Guardar el zoom y centro actuales del mapa
+    const currentZoom = this.map?.getZoom();
+    const currentCenter = this.map?.getCenter();
+    //this.isLoading = true;
+    let markerObservable: Observable<{ salons: any[] }>;
+
+    this.id_user = localStorage.getItem('usuarioId');
+    const queryParams = { ...params, id_user: this.id_user || undefined };
+
+    if (params.id_city && params.service) {
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByService(params.id_city, params.service, queryParams.id_user)
+        .pipe(map((salons: any[]) => ({ salons })));
+    } else if (params.id_city && params.categoria) {
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCityAndCategory(params.id_city, params.categoria, queryParams.id_user)
+        .pipe(map((salons: any[]) => ({ salons })));
+    } else if (params.id_city) {
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCity(params.id_city, queryParams.id_user)
+        .pipe(map((salons: any[]) => ({ salons })));
+    } else if (params.name) {
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByCityName(params.name, params.categoria, queryParams.id_user)
+        .pipe(map((response) => ({ salons: response.salons })));
+    } else if (params.salonName) {
+      markerObservable = this.unRegisteredSearchBusinessService
+        .searchByName(params.salonName)
+        .pipe(map((salons: any[]) => ({ salons })));
+    } else {
+      this.fadeOutLoadingSpinner();
+      return;
+    }
+
+    // Suscribirse al observable y aplicar filtros
+    markerObservable.subscribe(
+      (response) => {
+        let markers = response.salons;
+        // Aplicar filtro de horario
+        if (this.horarioFilter === 'true') {
+          markers = markers.filter((marker) => marker.is_open === true);
+        } else if (this.horarioFilter === 'false') {
+          markers = markers.filter((marker) => marker.is_open === false);
+        }
+
+        this.markerLayer!.clearLayers();
+        this.visibleMarkers = [];
+        this.markersMap.clear();
+
+        markers.forEach((marker, index) => {
+          if (this.customIcon && marker.latitud && marker.longitud) {
+            const markerInstance = L.marker([marker.latitud, marker.longitud], {
+              icon: this.customIcon,
+            })
+              .addTo(this.markerLayer!)
+              .bindPopup(() => {
+                const imageUrl =
+                  marker.images && marker.images.length > 0
+                    ? marker.images[0].file_url
+                    : marker.image;
+
+                return `<div style="display: flex; align-items: center; padding: 0; font-family: Arial, sans-serif;">
+                    <img src="${
+                      imageUrl || '../../../assets/img/web/sello.jpg'
+                    }"
+                         alt="${marker.name}"
+                         style="width: 90px; height: 90px; object-fit: cover; margin-right: 10px;"
+                         onerror="this.src='../../../assets/img/web/sello.jpg';" />
+                    <div style="flex-grow: 1;">
+                      <div style="font-weight: bold;">${marker.name}</div>
+                      <div>${marker.address}</div>
+                      <button id="info-link-${index}" data-id="${
+                  marker.id_salon
+                }"
+                              style="background: gray; border: none; color: white; cursor: pointer;">
+                        +info
+                      </button>
+                    </div>
+                  </div>`;
+              });
+
+            markerInstance.on('popupopen', () => {
+              const infoLink = document.getElementById(`info-link-${index}`);
+              if (infoLink) {
+                infoLink.addEventListener('click', (event) => {
+                  event.preventDefault();
+                  this.viewDetails(marker.id_salon, marker.name);
+                });
+              }
+            });
+
+            this.visibleMarkers.push(marker);
+            this.markersMap.set(marker, markerInstance);
+            this.getImagesAdmin(marker.id_salon);
+          }
+        });
+
+        // Restaurar el zoom y el centro del mapa
+        if (currentCenter && currentZoom !== undefined) {
+          this.map?.setView(currentCenter, currentZoom);
+        }
+
+        this.paginateMarkers();
+        this.fadeOutLoadingSpinner();
+      },
+      (error) => {
+        console.error('Error loading markers:', error);
+        this.fadeOutLoadingSpinner();
+      }
+    );
+  }
+
+
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
   }
@@ -343,6 +474,7 @@ export class UnRegisteredSearchBusinessComponent
     modalRef.componentInstance.redirectUrl = '/business';
   }
 
+  
   private getImagesAdmin(id: string): void {
     this.unRegisteredSearchBusinessService.getImagesAdmin(id).subscribe(
       (images) => {
@@ -511,40 +643,36 @@ export class UnRegisteredSearchBusinessComponent
     }
   }
 
+
+
+
   addFavorite(marker: any): void {
     const userId = localStorage.getItem('usuarioId');
 
     if (!userId) {
       console.error('User ID is not available.');
-      return; // Termina la ejecución si no hay un ID de usuario disponible
+      return;
     }
-
-
 
     const favorite = { id_user: userId, id_salon: marker.id_salon };
 
-    //console.log('Attempting to add favorite:', favorite); // Depuración
-
     this.favoriteSalonService.addFavorite(favorite).subscribe(
       (response: any) => {
-        //console.log('Add favorite response:', response); // Depuración
-
-        if (response && response.id_user_favorite) {
-          marker.isFavorite = true;
-          marker.id_user_favorite = response.id_user_favorite;
-          //console.log('Favorite added successfully');
-          this.toasrt.success('El salón se añadio a su lista de favoritos');
-        } else {
-          console.error('Unexpected response format:', response);
-          this.toasrt.success('Error,intentelo de nuevo mas tarde');
-        }
+        //console.log('Respuesta del servidor:', response); // Verifica la respuesta
+        this.toasrt.success('Salón añadido a su lista de favoritos.');
+        this.loadMarkersForFauvorite(
+          { id_city: this.currentIdCity || undefined, name: this.cityName || undefined, categoria: this.currentCategory || undefined, service: this.currentService || undefined}
+        );
       },
       (error) => {
-        this.toasrt.success('El salón ya esta en su lista de favoritos');
-        console.error('Error adding favorite', error);
+        this.toasrt.error('El salón ya está en su lista de favoritos');
+        console.error('Error al agregar favorito', error);
       }
     );
   }
+
+
+
   toggleFavorite(marker: any) {
 
      if (!this.isAuthenticated) {
@@ -561,27 +689,28 @@ export class UnRegisteredSearchBusinessComponent
       this.addFavorite(marker);
     }
   }
+
   deleteFavorite(marker: any): void {
-    this.markerToDelete = marker;
-    const id_user_favorite = this.markerToDelete.id_user_favourite;
+    const id_user_favorite = marker.id_user_favourite;
 
-        if (!id_user_favorite) {
-            console.error('Cannot remove favorite: id_user_favorite is not defined');
-            return;
-        }
+    if (!id_user_favorite) {
+      console.error('Cannot remove favorite: id_user_favorite is not defined');
+      return;
+    }
 
-        this.unRegisteredSearchBusinessService.removeFavorite(id_user_favorite).subscribe(
-          () => {
-            this.markerToDelete.isFavorite = false;
-            this.markerToDelete.id_user_favorite = null;
-            this.markerToDelete = null;
-            location.reload();
-            this.toasrt.success('El salón se elimino de su lista de favoritos');
-            //console.log('Favorite removed successfully');
-          },
-          error => {
-            console.error('Error removing favorite', error);
-          }
+    this.unRegisteredSearchBusinessService.removeFavorite(id_user_favorite).subscribe(
+      () => {
+        this.loadMarkersForFauvorite(
+          { id_city: this.currentIdCity || undefined, name: this.cityName || undefined, categoria: this.currentCategory || undefined, service: this.currentService || undefined}
         );
+        marker.id_user_favorite = null;
+        this.toasrt.success('El salón se eliminó de su lista de favoritos');
+      },
+      (error) => {
+        console.error('Error removing favorite', error);
       }
+    );
+  }
+
+
 }

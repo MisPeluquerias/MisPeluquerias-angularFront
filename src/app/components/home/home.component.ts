@@ -226,8 +226,7 @@ export class HomeComponent {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-
-
+  
   openModal(category: string) {
     this.selectedCategory = category;
     this.modalInstance.show();
@@ -243,9 +242,12 @@ export class HomeComponent {
   }
 
   openLoginModalToBusiness(): void {
-    const modalRef = this.modalService.open(LoginComponent);
+    const modalRef = this.modalService.open(LoginComponent,{
+      centered: true,
+    });
     modalRef.componentInstance.redirectUrl = '/centros';
   }
+
 
   closeModal() {
     this.modalInstance.hide();

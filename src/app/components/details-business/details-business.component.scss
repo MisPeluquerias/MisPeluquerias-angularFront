@@ -122,7 +122,13 @@ app-navbar-fixed {
     border: 1px solid gray;
   }
 
+  .favorite {
+    color: red; /* Rojo para favoritos */
+  }
 
+  .not-favorite {
+    color: gray; /* Gris para no favoritos */
+  }
 
 
 .fixed-image-size {

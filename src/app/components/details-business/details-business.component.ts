@@ -1,7 +1,7 @@
+import { UnRegisteredSearchBuusinessService } from './../../core/services/unregistered-search-business.service';
 import { Observable } from 'rxjs';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
-import { UnRegisteredSearchBuusinessService } from '../../core/services/unregistered-search-business.service';
 import * as L from 'leaflet';
 import { DetailsBusinesstService } from '../../core/services/details-business.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 import { ToastrService } from 'ngx-toastr'
 import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
+
 
 
 
@@ -91,6 +92,7 @@ export class DetailsBusinessComponent implements OnInit {
     private toastr:ToastrService,
     private favoriteSalonService: FavoriteSalonService,
 
+
   ) {
     this.currentDay = this.getCurrentDay();
     this.loginForm = this.fb.group({
@@ -114,7 +116,7 @@ export class DetailsBusinessComponent implements OnInit {
       const id = params['id'];
       this.idSalon = id;
       if (id) {
-        this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id).subscribe(
+        this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id,this.userId || '').subscribe(
           data => {
             if (data.length > 0) {
               this.business = data[0];
@@ -179,6 +181,40 @@ export class DetailsBusinessComponent implements OnInit {
   }
 
 
+  toggleFavorite(business: any) {
+
+
+
+   if (business.is_favorite) {
+     // Eliminar de favoritos
+     this.deleteFavorite(business);
+   } else {
+     // Añadir a favoritos
+     this.onFavoriteClick();
+   }
+ }
+
+
+ deleteFavorite(marker: any): void {
+  const id_user_favorite = marker.id_user_favourite;
+
+  if (!id_user_favorite) {
+    console.error('Cannot remove favorite: id_user_favorite is not defined');
+    return;
+  }
+
+  this.unRegisteredSearchBuusinessService.removeFavorite(id_user_favorite).subscribe(
+    () => {
+
+      this.reloadBusinessDetails();
+      this.toastr.success('El salón se eliminó de su lista de favoritos');
+    },
+    (error) => {
+      console.error('Error removing favorite', error);
+    }
+  );
+}
+
   onSearch(): void {
     if (this.searchFaqText.trim().length >= 2) {
       // Si hay texto en la búsqueda, filtra las FAQs
@@ -197,6 +233,30 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
+
+  reloadBusinessDetails(): void {
+    if (this.idSalon) {
+      this.unRegisteredSearchBuusinessService.viewDetailsBusiness(this.idSalon, this.userId || '').subscribe(
+        (data) => {
+          if (data.length > 0) {
+            this.business = data[0];
+            this.business.formattedHours = this.formatHours(this.business.hours_old);
+
+            // Recargar otros datos relacionados si es necesario
+            this.getScoreReviewSalon();
+            this.getObservationReviewSalon();
+            this.getFaqs(this.idSalon!);
+            this.getImagesAdmin(this.idSalon!);
+            this.getServicesSalon(this.idSalon!);
+            this.getDescriptionSalon(this.idSalon!);
+          }
+        },
+        (error) => {
+          console.error('Error al recargar los detalles del negocio:', error);
+        }
+      );
+    }
+  }
 
   verifyUser(){
     if(!this.authService.isAuthenticated()){
@@ -790,6 +850,7 @@ confirmDeleteReview(): void {
       });
     }
   }
+  
 
   onFavoriteClick() {
     if (this.authService.isAuthenticated()) {
@@ -799,7 +860,8 @@ confirmDeleteReview(): void {
       };
       this.favoriteSalonService.addFavorite(data).subscribe(
         (res) => {
-          this.toastr.success('Añadido a favoritos.');
+          this.toastr.success('El Salón se añadió a su lista de favoritos.');
+          this.reloadBusinessDetails();
         },
         (error) => {
           // Manejamos el error y mostramos un mensaje

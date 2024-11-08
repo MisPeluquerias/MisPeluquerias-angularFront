@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { RegisterComponent } from '../register/register.component';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -19,7 +20,6 @@ export class LoginComponent implements OnInit {
   baseUrl: string = environment.baseUrl;
   showPassword = false;
 
-
   @Input() redirectUrl: string | null = null;
 
   constructor(
@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private router: Router
   ) {
+    
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -84,6 +85,8 @@ export class LoginComponent implements OnInit {
   openRegisterModal(event: Event) {
     event.preventDefault();
     this.modalService.dismissAll();
-    this.modalService.open(RegisterComponent, { size: 'xl' });
+    this.modalService.open(RegisterComponent, { size: 'xl',
+      centered: true,
+     });
   }
 }

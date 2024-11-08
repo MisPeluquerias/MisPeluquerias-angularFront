@@ -136,13 +136,15 @@
                 ></i
               ></span>
               <i
-                (click)="onFavoriteClick()"
-                class="fa-regular fa-heart me-md-5"
-                style="
-                  font-size: 1.7rem;
-                  color: lightslategray;
-                  cursor: pointer;
-                "
+                (click)="toggleFavorite(business)"
+                class="fa-heart me-md-5"
+                [ngClass]="{
+                  'fa-solid': business.is_favorite,
+                  'fa-regular': !business.is_favorite,
+                  favorite: business.is_favorite,
+                  'not-favorite': !business.is_favorite
+                }"
+                style="font-size: 1.7rem; cursor: pointer"
               ></i>
             </div>
           </div>
@@ -756,7 +758,9 @@
                   Encuentra respuestas en los detalles de la peluquería, en
                   preguntas y respuestas y en las valoraciones de los clientes.
                 </p>
-                <div class="d-flex justify-content-between input-group-container">
+                <div
+                  class="d-flex justify-content-between input-group-container"
+                >
                   <textarea
                     class="form-control w-50 rounded-3 shadow-sm p-2 text-area-pregunta"
                     placeholder="Si no encuentras la respuesta, haz aquí tu pregunta."
@@ -919,7 +923,8 @@
                 >{{ business.url }}</span
               >
               <a
-                href="{{ business.url }}" target="_blank"
+                href="{{ business.url }}"
+                target="_blank"
                 class="btn btn-outline-secondary ms-auto"
                 >Visitar sitio</a
               >
@@ -927,38 +932,40 @@
           </div>
           <div class="separator-line w-100 mb-3 w-100"></div>
           <div class="mt-4 fw-bold">
-            <div *ngIf="business.facebook_url || business.instagram_url || business.tiktok_url || business.youtube_url">
-
-          </div>
+            <div
+              *ngIf="
+                business.facebook_url ||
+                business.instagram_url ||
+                business.tiktok_url ||
+                business.youtube_url
+              "
+            ></div>
           </div>
 
           <div class="mb-5 mt-4 fw-bold d-flex justify-content-between">
-
-          <div *ngIf="business.facebook_url">
-            <a class="colorRed" href="{{ business.facebook_url }}"
-              ><img src="../../../../assets/img/web/icons8-facebook-48.png"
-            /></a>
-          </div>
+            <div *ngIf="business.facebook_url">
+              <a class="colorRed" href="{{ business.facebook_url }}"
+                ><img src="../../../../assets/img/web/icons8-facebook-48.png"
+              /></a>
+            </div>
 
             <div *ngIf="business.instagram_url">
-            <a class="colorRed" href="{{ business.instagram_url }}"
-              ><img src="../../../../assets/img/web/icons8-instagram-48.png"
-            /></a>
-          </div>
+              <a class="colorRed" href="{{ business.instagram_url }}"
+                ><img src="../../../../assets/img/web/icons8-instagram-48.png"
+              /></a>
+            </div>
 
-          <div *ngIf="business.tiktok_url">
-            <a class="colorRed" href="{{ business.tiktok_url }}"
-              ><img src="../../../../assets/img/web/icons8-tik-tok-48.png"
-            /></a>
+            <div *ngIf="business.tiktok_url">
+              <a class="colorRed" href="{{ business.tiktok_url }}"
+                ><img src="../../../../assets/img/web/icons8-tik-tok-48.png"
+              /></a>
+            </div>
 
-          </div>
-
-          <div *ngIf="business.youtube_url">
-            <a class="colorRed" href="{{ business.youtube_url }}"
-              ><img src="../../../../assets/img/web/icons8-youtube-48.png"
-            /></a>
-          </div>
-
+            <div *ngIf="business.youtube_url">
+              <a class="colorRed" href="{{ business.youtube_url }}"
+                ><img src="../../../../assets/img/web/icons8-youtube-48.png"
+              /></a>
+            </div>
           </div>
           <div class="horarios mb-5 mt-4">
             <h3 class="h5 mb-3 d-flex align-items-center justify-content-end">
