@@ -151,7 +151,7 @@
 
           <div class="mt-4">
             <div *ngFor="let description of descriptionSalon">
-              <p *ngIf="description.about_us; else defaultMessage">
+              <p class="about" *ngIf="description.about_us; else defaultMessage">
                 {{ description.about_us }}
               </p>
               <div class="separator-line w-100 mt-4 mb-3"></div>

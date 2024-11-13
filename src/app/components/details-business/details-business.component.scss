@@ -10,6 +10,12 @@
   flex: 1;
 }
 
+
+//Imprimir salotos de linea de la base de datos
+.about {
+    white-space: pre-wrap;
+}
+
 *:not(i) {
   box-sizing: border-box;
 
