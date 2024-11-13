@@ -55,8 +55,10 @@ export class ContactProfesionalComponent {
         }
       );
     }
-    console.log('Datos enviados:',this.contactForm.value);
+    //console.log('Datos enviados:',this.contactForm.value);
   }
+
+
 
   loadProvinces(): void {
     this.contactProffesionalService.getProvinces().subscribe(

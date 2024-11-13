@@ -49,9 +49,9 @@
             <h6 class="c-red fw-bold w-100">Profesionales</h6>
             <ul class="list-group list-group-flush">
               <li class="list-group-item bg-transparent border-0">
-                <a  *ngIf="isAuthenticated; else loginLink" routerLink="/reclamation"  class="text-decoration-none text-white">Registra o verifica tu negocio</a>
+                <a  *ngIf="isAuthenticated; else loginLink" routerLink="/reclamation"  class="text-decoration-none text-white">Verifica tu negocio</a>
                 <ng-template #loginLink>
-                  <a (click)="openLoginModal()" class="text-decoration-none text-white" style="cursor: pointer;">Registra o verifica tu negocio
+                  <a (click)="openLoginModal()" class="text-decoration-none text-white" style="cursor: pointer;">Verifica tu negocio
                   </a>
                 </ng-template>
               </li>

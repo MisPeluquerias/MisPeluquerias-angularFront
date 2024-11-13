@@ -66,6 +66,7 @@ export class SalonReclamationComponent implements OnInit {
     this.loadProvinces();
     if (this.id_salon) {
       this.getSalonById(this.id_salon);
+
     }
 
     this.id_user = localStorage.getItem('usuarioId') || '';
@@ -94,6 +95,7 @@ export class SalonReclamationComponent implements OnInit {
       .subscribe({
         next: (salons) => {
           this.salons = salons;
+
         },
         error: (error) => {
           console.error('Error al buscar salones:', error);
@@ -122,10 +124,30 @@ export class SalonReclamationComponent implements OnInit {
   }
 
   onSelectSalon(salon: any): void {
+    console.log(salon);
     this.salon_name = salon.name;
     this.salons = [];
-    this.cdr.detectChanges(); // Forzar la actualización de la vista
-  }
+    this.cdr.detectChanges();
+    this.id_province = salon.id_province;
+    this.address = salon.address; // Asignar la dirección
+
+    // Obtener las ciudades de la provincia seleccionada
+    this.salonReclamationService.getCitiesByProvince(this.id_province).subscribe(
+      (response: any) => {
+        this.cities = response.data;
+
+        // Asignar el id_city del salón seleccionado
+        this.id_city = salon.id_city;
+
+        this.isReadOnly = true;
+        this.cdr.detectChanges(); // Actualizar la vista
+      },
+      (error) => {
+        console.error('Error al obtener las ciudades:', error);
+      }
+    );
+}
+
 
   onProvinceChange(provinceId: number): void {
     this.salonData.id_city = ''; // Resetea el valor de la ciudad cuando cambia la provincia

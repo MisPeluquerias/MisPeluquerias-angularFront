@@ -641,7 +641,7 @@
           >
             <!-- Verificar si el negocio está validado antes de permitir hacer la reseña -->
             <ng-container
-              *ngIf="business.state === 'Validado'; else cannotReview"
+              *ngIf="business.state === 'Reclamado'; else cannotReview"
             >
               <!-- Si el usuario está autenticado y el negocio está validado, abrir el modal de valoraciones -->
               <h2
