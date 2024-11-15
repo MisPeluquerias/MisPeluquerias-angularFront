@@ -194,7 +194,7 @@ export class NavbarFixedComponent implements OnInit {
   }
 
   openLoginModal() {
-    this.modalService.open(LoginComponent);
+    this.modalService.open(LoginComponent,{centered:true});
   }
 
 

@@ -26,7 +26,7 @@ export class ProfileComponent {
       this.id_user = userId;
       this.userData.id_city = '';
       this.getDataUser();
-      this.loadProvinces();
+
     }
   }
 
@@ -42,6 +42,7 @@ export class ProfileComponent {
           if (this.userData.id_province) {
             this.loadCities(this.userData.id_province, true);
           }
+          this.loadProvinces();
         }
       },
       (error) => {

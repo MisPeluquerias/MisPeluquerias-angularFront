@@ -291,6 +291,9 @@ export class UnRegisteredSearchBusinessComponent
               icon: this.customIcon,
             })
               .addTo(this.markerLayer!)
+              .on('click', () => {
+                this.selectCard(marker);
+              })
               .bindPopup(() => {
                 const imageUrl =
                   marker.images && marker.images.length > 0
@@ -465,6 +468,21 @@ export class UnRegisteredSearchBusinessComponent
   }
 
 
+
+  private selectCard(marker: any): void {
+    // Establece el marcador seleccionado
+    this.selectedMarker = marker;
+
+    // Calcula la página en la que se encuentra la tarjeta
+    const markerIndex = this.visibleMarkers.indexOf(marker);
+    if (markerIndex !== -1) {
+      this.currentPage = Math.floor(markerIndex / this.itemsPerPage) + 1;
+      this.paginateMarkers();
+      this.cdr.detectChanges(); // Fuerza la actualización de la vista
+    }
+  }
+
+
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
   }
@@ -474,7 +492,7 @@ export class UnRegisteredSearchBusinessComponent
     modalRef.componentInstance.redirectUrl = '/business';
   }
 
-  
+
   private getImagesAdmin(id: string): void {
     this.unRegisteredSearchBusinessService.getImagesAdmin(id).subscribe(
       (images) => {

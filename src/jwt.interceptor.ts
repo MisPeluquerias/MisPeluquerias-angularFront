@@ -5,14 +5,21 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './app/core/services/AuthService.service'; // Asegúrate de importar tu servicio de autenticación
 import { ToastrService } from 'ngx-toastr';
+import { Modal } from 'bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SessionExpiredModalComponent } from './app/shared/components/session-expired-modal/session-expired-modal.component';
 
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private authService: AuthService, private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: NgbModal,
   ) {}
+
+
+
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const authToken = localStorage.getItem('Token'); // Suponiendo que tengas un método para obtener el token
@@ -31,7 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401 && !req.url.includes('/login')) {
           console.log('Error 401 detectado, cerrando sesión');
           this.router.navigate(['/home']);
-          this.toastr.error('<i class="fa-solid fa-shield-halved"></i> Sesión expirada, por favor inicia sesión de nuevo');
+          this.openSessionExpiredModal();
           setTimeout(() => {
             this.authService.logout();
           }, 5000);
@@ -41,5 +48,9 @@ export class AuthInterceptor implements HttpInterceptor {
         return throwError(error); // Reemitir el error
       })
     );
+  }
+
+  openSessionExpiredModal() {
+    this.modalService.open(SessionExpiredModalComponent,{centered: true});
   }
 }

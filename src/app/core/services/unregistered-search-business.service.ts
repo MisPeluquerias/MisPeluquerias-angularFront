@@ -101,8 +101,6 @@ export class UnRegisteredSearchBuusinessService {
     });
   }
 
-
-
   searchByCityAndCategory(id_city: string, categoria: string,id_user?: string): Observable<any[]> {
     let params = new HttpParams()
       .set('id_city', id_city)

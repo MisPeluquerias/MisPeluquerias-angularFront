@@ -79,6 +79,7 @@ export class DetailsBusinessComponent implements OnInit {
  currentStatus: string="";
  salonData:any=[]
  searchFaqText = '';
+ jobsOffers:any[]=[];
 
 
 
@@ -115,6 +116,7 @@ export class DetailsBusinessComponent implements OnInit {
       const slug = params['salonSlug'];
       const id = params['id'];
       this.idSalon = id;
+
       if (id) {
         this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id,this.userId || '').subscribe(
           data => {
@@ -129,7 +131,7 @@ export class DetailsBusinessComponent implements OnInit {
               this.getObservationReviewSalon();
               this.getFaqs(id);
               this.getImagesAdmin(id);
-
+              this.getJobsOffers(id);
               this.getServicesSalon(id);
               this.getDescriptionSalon(id);
               this.detailsBusinessService.getBrandByIdSalon(this.idSalon).subscribe({
@@ -529,7 +531,7 @@ export class DetailsBusinessComponent implements OnInit {
   }
 
   openLoginModal(): void {
-    this.modalService.open(LoginComponent);
+    this.modalService.open(LoginComponent,{centered:true});
   }
 
   formatQualification(qualification: number): string {
@@ -850,7 +852,7 @@ confirmDeleteReview(): void {
       });
     }
   }
-  
+
 
   onFavoriteClick() {
     if (this.authService.isAuthenticated()) {
@@ -878,5 +880,24 @@ confirmDeleteReview(): void {
   // Helper para contar los ratings seleccionados
   countSelectedRatings(ratingArray: boolean[]): number {
     return ratingArray.filter(Boolean).length;
+  }
+
+  getJobsOffers(id: number): void {
+    this.detailsBusinessService.getJobsOffers(id).subscribe(
+      (data: any) => {
+        // Asigna los datos a la variable jobsOffers
+        this.jobsOffers = data;
+
+        // Opcional: Mostrar un mensaje de éxito
+        console.log('Ofertas de empleo cargadas correctamente:', data);
+      },
+      (error: any) => {
+        // Manejo de errores
+        console.error('Error al obtener las ofertas de empleo:', error);
+
+        // Opcional: Mostrar un mensaje de error al usuario
+        //this.toastr.error('No se pudieron cargar las ofertas de empleo', 'Error');
+      }
+    );
   }
 }

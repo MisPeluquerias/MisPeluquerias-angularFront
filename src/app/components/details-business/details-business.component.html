@@ -863,6 +863,51 @@
               SIGUIENTE &gt;
             </button>
           </div>
+
+
+          <div *ngIf="jobsOffers.length>0" class="container mt-5 mb-2">
+            <div class="row">
+              <!-- Título principal -->
+              <div class="col-12 text-center">
+                <h2 class="h4 fw-bold">Ofertas de Empleo</h2>
+              </div>
+            </div>
+
+
+          <div class="mt-5">
+            <div class="row">
+              <div *ngFor="let job of jobsOffers" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                  <div class="card-header text-center bg-dark text-white">
+                    <h5 class="mb-0">{{ job.category }}</h5>
+                  </div>
+                  <div class="card-body ">
+                    <div class="text-center">
+                    <img [src]="job.img_job_path" class="img-fluid mb-3" alt="Imagen del empleo" style="max-height: 250px; padding: 0 auto;">
+                  </div>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ job.subcategory }}</h6>
+                    <p class="card-text mb-2">{{ job.description }}</p>
+                    <p class="card-text">{{ job.requirements }}</p>
+                    <p class="card-text font-weight-bold mt-auto">Salario bruto anual: {{ job.salary }} €</p>
+                  </div>
+                  <div class="card-footer">
+                    <button
+                    class="btn btn-danger"
+                    *ngIf="!authService.isAuthenticated()"
+                    (click)="openLoginModal()">
+                    Inscribirme
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    *ngIf="authService.isAuthenticated()">
+                    Inscribirme
+                  </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
 
         <!-- Columna de información secundaria -->
@@ -942,28 +987,28 @@
             ></div>
           </div>
 
-          <div class="mb-5 mt-4 fw-bold d-flex justify-content-between">
-            <div *ngIf="business.facebook_url">
+          <div class="mb-5 mt-4 fw-bold d-flex justify-content-center">
+            <div *ngIf="business.facebook_url" style="padding: 0px 20px;">
               <a class="colorRed" href="{{ business.facebook_url }}"
-                ><img src="../../../../assets/img/web/icons8-facebook-48.png"
+                ><img src="../../../../assets/img/web/facebook-48-business.png"
               /></a>
             </div>
 
-            <div *ngIf="business.instagram_url">
+            <div *ngIf="business.instagram_url" style="padding: 0px 20px;">
               <a class="colorRed" href="{{ business.instagram_url }}"
-                ><img src="../../../../assets/img/web/icons8-instagram-48.png"
+                ><img src="../../../../assets/img/web/instagram-48.png"
               /></a>
             </div>
 
-            <div *ngIf="business.tiktok_url">
+            <div *ngIf="business.tiktok_url" style="padding: 0px 20px;">
               <a class="colorRed" href="{{ business.tiktok_url }}"
-                ><img src="../../../../assets/img/web/icons8-tik-tok-48.png"
+                ><img style="width: px !important;" src="../../../../assets/img/web/tik-tok-48.png"
               /></a>
             </div>
 
-            <div *ngIf="business.youtube_url">
+            <div *ngIf="business.youtube_url" style="padding: 0px 20px;">
               <a class="colorRed" href="{{ business.youtube_url }}"
-                ><img src="../../../../assets/img/web/icons8-youtube-48.png"
+                ><img style="width: 350px !important;" src="../../../../assets/img/web/youtube-48.png"
               /></a>
             </div>
           </div>

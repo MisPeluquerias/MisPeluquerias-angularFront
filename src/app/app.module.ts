@@ -32,6 +32,7 @@ import { DetailsBusinessComponent } from './components/details-business/details-
 import { NgxGoogleAnalyticsModule } from 'ngx-google-analytics';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FavoriteSalonComponent } from './components/favorite-salon/favorite-salon.component';
+import { SessionExpiredModalComponent } from './shared/components/session-expired-modal/session-expired-modal.component';
 
 
 
@@ -57,6 +58,7 @@ import { FavoriteSalonComponent } from './components/favorite-salon/favorite-sal
     DetailsBusinessComponent,
     ProfileComponent,
     FavoriteSalonComponent,
+    SessionExpiredModalComponent,
   ],
   imports: [
     BrowserModule,

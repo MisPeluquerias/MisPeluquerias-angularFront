@@ -22,7 +22,15 @@ export class FavoriteSalonService {
     return this.http.delete(`${this.baseUrl}/favorites/delete/${id_user_favorite}`);
   }
 
-  
+  getImagesAdmin(salon_id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/favorites/getImagesAdmin`, {
+      params: {
+        salon_id
+      }
+    });
+  }
+
+
   getFavorites(id_user: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/favorites/get`, { params: { id_user } });
   }

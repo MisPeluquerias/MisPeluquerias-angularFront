@@ -17,6 +17,7 @@ export class FavoriteSalonComponent implements OnInit {
   public totalPages: number[] = [];
   private markerToDelete: any; // Array para manejar el número total de páginas
 
+
   constructor(private favoriteSalonService: FavoriteSalonService, private router: Router) {}
 
   ngOnInit(): void {
@@ -34,16 +35,14 @@ export class FavoriteSalonComponent implements OnInit {
   loadFavorites(userId: string): void {
     this.favoriteSalonService.getFavorites(userId).subscribe(
       (favorites: any[]) => {
-
         this.favorites = favorites;
+        this.favorites.forEach(favorite => this.getImagesAdmin(favorite.id_salon)); // Llamar a getImagesAdmin para cada salón
         this.paginateFavorites();
-        //console.log('Loaded favorites:', this.favorites);
       },
       (error) => {
         console.error('Error loading favorites:', error);
       }
     );
-    console.log(this.favorites);
   }
 
   paginateFavorites(): void {
@@ -59,6 +58,21 @@ export class FavoriteSalonComponent implements OnInit {
       this.paginateFavorites(); // Actualiza la lista de favoritos paginada
     }
   }
+
+  private getImagesAdmin(id: string): void {
+  this.favoriteSalonService.getImagesAdmin(id).subscribe(
+    (images) => {
+      if (images.length > 0) {
+        const marker = this.favorites.find((m) => m.id_salon === id);
+        if (marker) {
+          marker.images = images.sort((a, b) => b.file_principal - a.file_principal);
+          this.paginateFavorites(); // Actualizar la paginación después de cargar la imagen
+        }
+      }
+    },
+    (error) => console.error('Error loading images', error)
+  );
+}
 
   public goToPreviousPage(): void {
     if (this.currentPage > 1) {

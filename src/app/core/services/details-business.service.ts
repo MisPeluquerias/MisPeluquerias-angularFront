@@ -143,4 +143,7 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
     const params = new HttpParams().set('id_salon', id_salon.toString());
     return this.http.get<any[]>(`${this.baseUrl}/details-business/getBrandsBySalon`, { params });
   }
+  getJobsOffers(id:number):Observable<any[]>{
+    return this.http.get<any[]>(`${this.baseUrl}/details-business/getJobOffers`, { params: { id } });
+  }
 }
