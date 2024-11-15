@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
   }
-  
+
   html {
     font-size: 16px; /* Tamaño de fuente base */
   }
@@ -20,28 +20,28 @@
     z-index: 10;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
-  
+
   .favorite-btn i {
     color: red;
     font-size: 1.5rem;
   }
-  
+
   .favorite-btn:hover {
     background-color: rgba(255, 0, 0, 0.8);
     transform: scale(1.1);
   }
-  
+
   .favorite-btn:focus {
     outline: none; /* Elimina el contorno al hacer clic */
   }
-  
+
 
   .wrapper {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
-  
+
   .content {
     flex: 1;
     display: flex;
@@ -49,7 +49,7 @@
     justify-content: space-between;
     padding-top: 6.25rem; /* Ajusta esto según la altura de tu navbar (100px en rem) */
   }
-  
+
   #results {
     padding: 1.25rem; /* 20px en rem */
     background-color: #f9f9f9;
@@ -60,7 +60,7 @@
   main{
     min-height: 100vh;
   }
-  
+
   .map-frame {
     width: 100%;
     height: 74vh; /* Ajusta la altura según sea necesario */
@@ -68,12 +68,12 @@
     margin-bottom: 1.25rem; /* 20px en rem */
     z-index: 1;
   }
-  
+
   .selected {
     border: 0.125rem solid #007bff; /* 2px en rem */
     box-shadow: 0 0 0.625rem rgba(0, 123, 255, 0.5); /* 10px en rem */
   }
-  
+
   .loading-spinner {
     position: absolute;
     top: 50%;
@@ -89,7 +89,7 @@
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
   }
-  
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -98,18 +98,18 @@
       transform: rotate(360deg);
     }
   }
-  
+
   .fade-out {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
   }
-  
+
   .card-container {
     display: flex;
     flex-wrap: wrap;
     gap: 1.25rem; /* 20px en rem */
   }
-  
+
   .card {
     flex: 1 1 calc(33.333% - 1.25rem); /* Tres tarjetas por fila en pantallas grandes */
     display: flex;
@@ -123,61 +123,61 @@
     cursor: pointer;
     max-width: calc(33.333% - 1.25rem);
   }
-  
-  
+
+
   .card:nth-last-child(1):nth-child(3n + 1) {
     flex: 1 1 calc(33.333% - 1.25rem); /* Si hay una tarjeta en una fila, ocupa el mismo ancho máximo */
   }
-  
+
   .card-image {
     width: 100%;
     height: 8vw;
     overflow: hidden;
   }
-  
+
   .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover; /* Mantiene la proporción */
   }
-  
+
   .card-body {
     padding: 0.1rem !important; /* 2px en rem */
-  
+
   }
-  
+
   .card-title {
     font-size: 1rem; /* Tamaño de fuente ajustado */
     margin-bottom: 0.3125rem; /* 5px en rem */
   }
-  
+
   .card-text {
     font-size: 0.9rem; /* Tamaño de fuente ajustado */
     color: #555;
   }
-  
+
   .card-status {
     font-size: 0.75rem; /* Tamaño de fuente ajustado */
     color: green;
     margin-bottom: -0.25rem; /* Espaciado relativo */
   }
-  
+
   .card-status.closed {
     color: red;
   }
-  
+
   .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 0.9375rem; /* 15px en rem */
   }
-  
+
   .pagination-info {
     font-weight: bold;
     margin: 0 0.625rem; /* 10px en rem */
   }
-  
+
   .pagination button {
     background-color: #dc3545;
     color: white;
@@ -188,27 +188,27 @@
     cursor: pointer;
     font-size: 0.875rem; /* Tamaño de fuente ajustado */
   }
-  
+
   .pagination button:hover {
     background-color: darkred;
   }
-  
+
   .card.selected {
     border: 0.0625rem solid red; /* 1px en rem */
     box-shadow: 0 0.625rem rgba(255, 0, 0, 0.5); /* 10px en rem */
   }
-  
- 
-  
+
+
+
   .star-rating .star {
     font-size: 1.5rem;
     color: #ddd; /* Color de estrellas no seleccionadas */
   }
-  
+
   .star-rating .star.filled {
     color: #FFD700; /* Color de estrellas seleccionadas */
   }
-  
+
   .info-link {
     position: absolute;
     bottom: 10px; /* Posiciona el enlace en la parte inferior de la imagen */
@@ -222,7 +222,7 @@
     z-index: 10; /* Asegura que el enlace esté sobre la imagen */
     display: block; /* Asegura que se muestre como un bloque */
   }
-  
+
   .info-link:hover {
     background-color: rgba(0, 0, 0, 0.7); /* Fondo más oscuro en hover */
   }
@@ -246,32 +246,32 @@
     justify-content: center;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
-  
+
   .delete-btn i {
     font-size: 1.5rem;
     color: red;
   }
-  
+
   .delete-btn:hover {
     background-color: rgba(255, 0, 0, 0.8);
     color: white;
     transform: scale(1.1);
   }
-  
+
   @media (max-width: 576px) {
     .card {
       flex: 1 1 100%; /* Una tarjeta por fila en pantallas pequeñas */
       max-width: 100%;
     }
-  
+
     .card-image {
       height: 25vh;
     }
-  
+
     h5 {
       font-size: 1rem;
     }
-  
+
     p {
       font-size: 1rem;
     }
@@ -290,20 +290,18 @@
       z-index: 10;
       transition: background-color 0.3s ease, transform 0.3s ease;
     }
-    
+
     .favorite-btn i {
       color: red;
       font-size: 1.5rem;
     }
-    
+
     .favorite-btn:hover {
       background-color: rgba(255, 0, 0, 0.8);
       transform: scale(1.1);
     }
-    
+
     .favorite-btn:focus {
       outline: none; /* Elimina el contorno al hacer clic */
     }
-    
   }
-  
