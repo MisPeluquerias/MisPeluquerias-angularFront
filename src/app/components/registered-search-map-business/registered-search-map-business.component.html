@@ -8,7 +8,7 @@
           <p>Obteniendo su posición, por favor espera...</p>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-          <h5>Resultados de Búsqueda</h5>
+          <h1 class="h5">Resultados de Búsqueda</h1>
           <div class="btn-group">
             <button
               style="margin-top: -12px"
@@ -109,7 +109,7 @@
               </button>
             </div>
             <div class="card-body">
-              <h5 class="text-center">{{ marker.name }}</h5>
+              <h2 class="text-center h5">{{ marker.name }}</h2>
               <p class="card-text text-center">{{ marker.address }}</p>
             </div>
           </div>
@@ -129,9 +129,9 @@
               >
             </button>
           </div>
-          <h6 class="text-center mt-3" *ngIf="totalCards > 0">
+          <h3 class="text-center mt-3 h6" *ngIf="totalCards > 0">
             Hemos encontrado {{ totalCards }} resultados para ti.
-          </h6>
+          </h3>
         </div>
       </div>
       <div class="col-md-6 d-flex flex-column">
