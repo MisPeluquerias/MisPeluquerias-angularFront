@@ -7,6 +7,7 @@ import { LoginComponent } from '../login/login.component';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class RegisterComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private registerService: RegisterService,
+    private toastr: ToastrService,
   ) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
@@ -55,6 +57,7 @@ export class RegisterComponent implements OnInit {
     this.loadProvinces();
   }
 
+  
   passwordMatchValidator(formGroup: FormGroup) {
     const passwordControl = formGroup.get('password');
     const confirmPasswordControl = formGroup.get('confirmPassword');
@@ -70,6 +73,11 @@ export class RegisterComponent implements OnInit {
     this.modalService.open(LoginComponent);
   }
 
+  returnLoginModal() {
+    this.modalService.dismissAll();
+    this.modalService.open(LoginComponent);
+  }
+
   onSubmit(): void {
     if (this.registerForm.valid) {
       const formData = this.registerForm.value;
@@ -79,8 +87,8 @@ export class RegisterComponent implements OnInit {
           this.registerForm.reset();
           this.successMessage = '¡Se ha registrado con éxito!';
           this.errorMessage = '';
-
-
+          this.returnLoginModal();
+          this.toastr.success('¡Se ha registrado con éxito!');
           // Manejar la respuesta del registro, por ejemplo:
           // mostrar un mensaje de éxito, redirigir al usuario, etc.
         },
