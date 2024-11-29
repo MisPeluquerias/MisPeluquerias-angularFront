@@ -43,7 +43,7 @@
     </div>
 
     <!-- Campo de contraseña -->
-   <div class="mb-3 w-75" style="max-width: 400px; position: relative;">
+  <div class="mb-3 w-75" style="max-width: 400px; position: relative;">
   <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
   <input
     [type]="showPassword ? 'text' : 'password'"
@@ -71,7 +71,6 @@
 
     <!-- Mensaje de error general -->
     <small id="error" class="text-danger mb-4">{{ errorMessage }}</small>
-
     <!-- Enlace para registrarse -->
     <div class="row">
       <small>Si no posees una cuenta <a href="" (click)="openRegisterModal($event)">regístrate aquí</a></small>

@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private router: Router
   ) {
-    
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],

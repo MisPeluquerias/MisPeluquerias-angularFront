@@ -251,6 +251,7 @@ export class SalonReclamationComponent implements OnInit {
     formData.append('observation', this.observation);
     formData.append('terms', termsValue.toString());
 
+
     if (this.dniFrontFile) {
       formData.append('dni_front', this.dniFrontFile);
     }
@@ -260,7 +261,7 @@ export class SalonReclamationComponent implements OnInit {
     if (this.otherFile) {
       formData.append('file_path', this.otherFile);
     }
-    if (this.invoiceFile) {  // Agregamos la factura
+    if (this.invoiceFile) { 
       formData.append('invoice_path', this.invoiceFile);
     }
 

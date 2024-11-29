@@ -16,6 +16,10 @@
     white-space: pre-wrap;
 }
 
+.pre-wrap{
+  white-space: pre-wrap;
+ }
+
 *:not(i) {
   box-sizing: border-box;
 
@@ -134,6 +138,11 @@ app-navbar-fixed {
 
   .not-favorite {
     color: gray; /* Gris para no favoritos */
+  }
+
+  .btn-sm:hover{
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: scale(1.1);
   }
 
 

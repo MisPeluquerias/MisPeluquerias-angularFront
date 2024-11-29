@@ -42,6 +42,7 @@ export class AuthService {
       });
     }
   }
+  
 
   private isLocalStorageAvailable(): boolean {
     try {

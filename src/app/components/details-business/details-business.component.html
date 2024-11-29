@@ -151,7 +151,10 @@
 
           <div class="mt-4">
             <div *ngFor="let description of descriptionSalon">
-              <p class="about" *ngIf="description.about_us; else defaultMessage">
+              <p
+                class="about"
+                *ngIf="description.about_us; else defaultMessage"
+              >
                 {{ description.about_us }}
               </p>
               <div class="separator-line w-100 mt-4 mb-3"></div>
@@ -864,50 +867,96 @@
             </button>
           </div>
 
-
-          <div *ngIf="jobsOffers.length>0" class="container mt-5 mb-2">
+          <div *ngIf="jobsOffers.length > 0" class="container mt-5 mb-2">
             <div class="row">
               <!-- Título principal -->
-              <div class="col-12 text-center">
+              <div class="col-12 text-center mb-3">
                 <h2 class="h4 fw-bold">Ofertas de Empleo</h2>
               </div>
             </div>
 
-
-          <div class="mt-5">
-            <div class="row">
-              <div *ngFor="let job of jobsOffers" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="row mt-4">
+              <div
+                *ngFor="let job of jobsOffers"
+                class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4"
+              >
                 <div class="card h-100 shadow-sm">
                   <div class="card-header text-center bg-dark text-white">
                     <h5 class="mb-0">{{ job.category }}</h5>
                   </div>
-                  <div class="card-body ">
+                  <div class="card-body">
                     <div class="text-center">
-                    <img [src]="job.img_job_path" class="img-fluid mb-3" alt="Imagen del empleo" style="max-height: 250px; padding: 0 auto;">
+                      <img
+                        [src]="job.img_job_path"
+                        class="img-fluid mb-3"
+                        alt="Imagen del empleo"
+                        style="max-height: 250px; padding: 0 auto"
+                      />
+                    </div>
+                    <h6 class="card-subtitle mb-2 mt-2 text-center">
+                      Puesto: {{ job.subcategory }}
+                    </h6>
+                    <h6 class="card-subtitle mb-2 mt-2 text-center">
+                      Publicado: {{ job.date_job_offer | date: "dd/MM/yyyy" }}
+                    </h6>
+                    <div class="d-flex justify-content-end"></div>
                   </div>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ job.subcategory }}</h6>
-                    <p class="card-text mb-2">{{ job.description }}</p>
-                    <p class="card-text">{{ job.requirements }}</p>
-                    <p class="card-text font-weight-bold mt-auto">Salario bruto anual: {{ job.salary }} €</p>
-                  </div>
-                  <div class="card-footer">
+                  <div class="card-footer d-flex justify-content-center">
                     <button
-                    class="btn btn-danger"
                     *ngIf="!authService.isAuthenticated()"
-                    (click)="openLoginModal()">
+                      class="btn btn-sm  me-2 text-white"
+                      style="background-color: #b71622; font-size: lrem;"
+                      (click)="openLoginModal()"
+                    >
                     Inscribirme
-                  </button>
-                  <button
-                    class="btn btn-danger"
-                    *ngIf="authService.isAuthenticated()">
-                    Inscribirme
-                  </button>
+                    </button>
+
+                    <!-- Botón para usuario autenticado -->
+                    <button
+                      *ngIf="authService.isAuthenticated()"
+                      class="btn btn-sm text-white me-2"
+                      style="background-color: #b71622; font-size: 1rem;"
+                      data-bs-toggle="modal"
+                      data-bs-target="#inscriptionJobModal"
+                      (click)="SetToInscriptionJob(job.id_job_offer)"
+                    >
+                      Inscribirme
+                    </button>
+                    <button
+                      class="btn btn-sm text-white"
+                      style="
+                        background-color: darkgray;
+                        font-size: 1rem !important;
+                      "
+                      (click)="SetToViewDetailsOffer(job)"
+                      data-bs-toggle="modal"
+                      data-bs-target="#detailsJobOfferModal"
+                    >
+                      Ver detalles
+                    </button>
                   </div>
                 </div>
               </div>
+              <div
+                class="d-flex justify-content-center align-items-center mt-5"
+              >
+                <button
+                  class="btn btn-preview me-2"
+                  (click)="onPageOfferJobsChange(currentPage - 1)"
+                  [disabled]="currentPage === 1"
+                >
+                  &lt; ANTERIOR
+                </button>
+                <button
+                  class="btn-next"
+                  (click)="onPageOfferJobsChange(currentPage + 1)"
+                  [disabled]="currentPage * pageSize >= totalItems"
+                >
+                  SIGUIENTE &gt;
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
         <!-- Columna de información secundaria -->
@@ -988,27 +1037,43 @@
           </div>
 
           <div class="mb-5 mt-4 fw-bold d-flex justify-content-center">
-            <div *ngIf="business.facebook_url" style="padding: 0px 20px;">
-              <a class="colorRed" href="{{ business.facebook_url }}"
+            <div *ngIf="business.facebook_url" style="padding: 0px 20px">
+              <a
+                class="colorRed"
+                href="{{ business.facebook_url }}"
+                target="_blank"
                 ><img src="../../../../assets/img/web/facebook-48-business.png"
               /></a>
             </div>
 
-            <div *ngIf="business.instagram_url" style="padding: 0px 20px;">
-              <a class="colorRed" href="{{ business.instagram_url }}"
+            <div *ngIf="business.instagram_url" style="padding: 0px 20px">
+              <a
+                class="colorRed"
+                href="{{ business.instagram_url }}"
+                target="_blank"
                 ><img src="../../../../assets/img/web/instagram-48.png"
               /></a>
             </div>
 
-            <div *ngIf="business.tiktok_url" style="padding: 0px 20px;">
-              <a class="colorRed" href="{{ business.tiktok_url }}"
-                ><img style="width: px !important;" src="../../../../assets/img/web/tik-tok-48.png"
+            <div *ngIf="business.tiktok_url" style="padding: 0px 20px">
+              <a
+                class="colorRed"
+                href="{{ business.tiktok_url }}"
+                target="_blank"
+                ><img
+                  style="width: px !important"
+                  src="../../../../assets/img/web/tik-tok-48.png"
               /></a>
             </div>
 
-            <div *ngIf="business.youtube_url" style="padding: 0px 20px;">
-              <a class="colorRed" href="{{ business.youtube_url }}"
-                ><img style="width: 350px !important;" src="../../../../assets/img/web/youtube-48.png"
+            <div *ngIf="business.youtube_url" style="padding: 0px 20px">
+              <a
+                class="colorRed"
+                href="{{ business.youtube_url }}"
+                target="_blank"
+                ><img
+                  style="width: 350px !important"
+                  src="../../../../assets/img/web/youtube-48.png"
               /></a>
             </div>
           </div>
@@ -1753,6 +1818,155 @@
           (click)="updateFaq()"
         >
           Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal descripcion de oferta de empleo-->
+<div
+  class="modal fade"
+  id="detailsJobOfferModal"
+  tabindex="-1"
+  aria-labelledby="detailsJobOfferModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="detailsJobOfferModalLabel">
+          {{ viewDetailsJob?.category }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <img
+            [src]="viewDetailsJob?.img_job_path"
+            class="img-fluid mb-5"
+            width="220"
+            alt="Imagen del empleo"
+          />
+        </div>
+        <div class="row col-12">
+          <div class="col-6">
+            <p class="fw-bold">Puesto:</p>
+            <p>{{ viewDetailsJob?.subcategory }}</p>
+          </div>
+          <div class="col-6">
+            <p class="fw-bold">Salario bruto anual:</p>
+            <p>{{getFormattedSalary()}}</p>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-6">
+            <p class="fw-bold">Descripción:</p>
+            <p class="pre-wrap">{{ viewDetailsJob?.description }}</p>
+          </div>
+          <div class="col-6">
+            <p class="fw-bold">Requisitos:</p>
+            <p class="pre-wrap">{{ viewDetailsJob?.requirements }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal para inscripción a oferta de trabajo-->
+<div
+  class="modal fade"
+  id="inscriptionJobModal"
+  tabindex="-1"
+  aria-labelledby="inscriptionJobModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="inscriptionJobModalLabel">
+          Inscripción a oferta de empleo
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img
+            src="../../../assets/img/web/sello.jpg"
+            width="120"
+            alt="logo-mis-peluquerias"
+          />
+        </div>
+        <div class="mb-3 mt-3">
+        <small>* Todos los campos son obligatorios</small>
+      </div>
+        <div class="mb-3 row">
+          <label for="" class="form-label mb-2">Describa su interés por esta oferta de empleo:</label>
+          <div class="col-12 px-3">
+          <textarea
+            maxlength="500"
+            name=""
+            [(ngModel)]="jobsOffersInterest"
+            (input)="validatedSendDescription()"
+            rows="3"
+            class="form-control rounded-2"
+          ></textarea>
+          <span class="text-danger">{{errorOfferInterest}}</span>
+        </div>
+        </div>
+        <div>
+          <label for="curriculum" class="form-label mt-3">Suba su currículo en formato PDF:</label>
+          <input
+            type="file"
+            class="form-control file"
+            id="curriculum"
+            name="curriculum"
+            accept=".pdf"
+            (change)="onPDFSelected($event)"
+          />
+          <span class="text-danger">{{ errorCurriculum }}</span>
+
+          <div class="mt-3 text-center" *ngIf="isFileSelected">
+            <i class="las la-file-pdf fa-6x text-danger"></i>
+            <p>{{ selectedFileName }}</p>
+          </div>
+          <div class="mt-3">
+            <label>
+              <input
+                type="checkbox"
+                name="privacyPolicy"
+                (change)="validatedSendPrivatePolicy()"
+                required
+                [(ngModel)]="privacyPolicy"
+              />
+              He leído y acepto las políticas de privacidad
+            </label>
+            <p class="text-danger">{{ errorprivacyPolicy }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" [disabled]="!jobsOffersInterest || !curriculum || !privacyPolicy" (click)="sendInscription()">Enviar Inscripción
+          Enviar
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
         </button>
       </div>
     </div>

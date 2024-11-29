@@ -143,7 +143,15 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
     const params = new HttpParams().set('id_salon', id_salon.toString());
     return this.http.get<any[]>(`${this.baseUrl}/details-business/getBrandsBySalon`, { params });
   }
-  getJobsOffers(id:number):Observable<any[]>{
-    return this.http.get<any[]>(`${this.baseUrl}/details-business/getJobOffers`, { params: { id } });
+  getJobsOffers(id: number, page: number = 1, limit: number = 4): Observable<any> {
+    const params = new HttpParams()
+      .set('id', id.toString())
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<any>(`${this.baseUrl}/details-business/getJobOffers`, { params });
+  }
+  addInscripcionJobOffer(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/details-business/addInscripcionJobOffer`, data);
   }
 }

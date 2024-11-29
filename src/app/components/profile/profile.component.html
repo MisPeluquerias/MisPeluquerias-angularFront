@@ -110,27 +110,39 @@
                     <h5>Cambiar contraseña</h5>
                     <form (ngSubmit)="changePassword()">
                         <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Introduce nueva contraseña..."
-                                    [(ngModel)]="password"
-                                />
-                            </div>
-                            <div class="col-md-6">
+                          <div class="col-md-6" style="position: relative;">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input
+                                [type]="showPassword ? 'text' : 'password'"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                                placeholder="Introduce nueva contraseña..."
+                                [(ngModel)]="password"
+                            />
+                            <button
+                                type="button"
+                                (click)="togglePasswordVisibility()"
+                                style="position: absolute; right: 10px; top: 35px; background: none; border: none;">
+                                <i [ngClass]="showPassword ? 'las la-eye-slash' : 'las la-eye'"></i>
+                            </button>
+                        </div>
+                            <div class="col-md-6" style="position: relative;">
                                 <label for="confirmPassword" class="form-label">Repetir contraseña</label>
                                 <input
-                                    type="password"
+                                    [type]="showConfirmPassword ? 'text' : 'password'"
                                     class="form-control"
                                     id="confirmPassword"
                                     placeholder="Repetir contraseña..."
                                     name="confirmPassword"
                                     [(ngModel)]="confirmPassword"
                                 />
+                                <button
+                                type="button"
+                                (click)="toggleConfirmPasswordVisibility()"
+                                style="position: absolute; right: 10px; top: 35px; background: none; border: none;">
+                                <i [ngClass]="showConfirmPassword ? 'las la-eye-slash' : 'las la-eye'"></i>
+                            </button>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-warning">

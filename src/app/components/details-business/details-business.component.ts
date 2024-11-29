@@ -1,24 +1,22 @@
 import { UnRegisteredSearchBuusinessService } from './../../core/services/unregistered-search-business.service';
 import { Observable } from 'rxjs';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { DetailsBusinesstService } from '../../core/services/details-business.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../core/services/AuthService.service';
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
-import { ToastrService } from 'ngx-toastr'
+import { ToastrService } from 'ngx-toastr';
 import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
-
-
-
-
+import { Modal } from 'bootstrap';
+import { response } from 'express';
 
 @Component({
   selector: 'app-details-business',
   templateUrl: './details-business.component.html',
-  styleUrls: ['./details-business.component.scss']
+  styleUrls: ['./details-business.component.scss'],
 })
 export class DetailsBusinessComponent implements OnInit {
   business: any;
@@ -43,9 +41,9 @@ export class DetailsBusinessComponent implements OnInit {
   faqToEdit: any;
   userType: string = 'client';
   selectedService: any;
-  ratingBreakdown:any[] = [];
-  reviewData:any=[];
-  averageRatings:any={}
+  ratingBreakdown: any[] = [];
+  reviewData: any = [];
+  averageRatings: any = {};
   stars: string[] = [];
   starsObservation: number[] = [];
   total_reviews: number = 280;
@@ -54,13 +52,13 @@ export class DetailsBusinessComponent implements OnInit {
   normalPercent: number = 16;
   maloPercent: number = 14;
   pesimoPercent: number = 2;
-  ratingPorcent:any=[];
+  ratingPorcent: any = [];
   isUserAuthenticated: boolean = false;
   ratings = {
     service: [false, false, false, false, false],
     quality: [false, false, false, false, false],
     cleanliness: [false, false, false, false, false],
-    speed: [false, false, false, false, false]
+    speed: [false, false, false, false, false],
   };
   additionalComments: string = '';
   loginForm: FormGroup;
@@ -69,18 +67,30 @@ export class DetailsBusinessComponent implements OnInit {
   currentPage = 1; // Página actual
   limit = 2; // Reseñas por página
   hasMorePages = true; // Determina si hay más páginas
- reviewToDeleteId: string | null = null;
- totalPages: any;
- selectedFaq: any = {};
- idFaqToDelete: number | null = null;
- usuarioId: string | null = null;
- getBrandsSalon:any;
- slides: any[] = [];
- currentStatus: string="";
- salonData:any=[]
- searchFaqText = '';
- jobsOffers:any[]=[];
-
+  reviewToDeleteId: string | null = null;
+  totalPages: any;
+  selectedFaq: any = {};
+  idFaqToDelete: number | null = null;
+  usuarioId: string | null = null;
+  getBrandsSalon: any;
+  slides: any[] = [];
+  currentStatus: string = '';
+  salonData: any = [];
+  searchFaqText = '';
+  jobsOffers: any[] = [];
+  viewDetailsJob: any = null;
+  pageSize: number = 4;
+  totalItems: number = 0;
+  isFileSelected = false;
+  selectedFileName: string = '';
+  jobsOffersInterest: string = '';
+  errorOfferInterest: string = '';
+  curriculum: File | null = null;
+  errorCurriculum: string = '';
+  privacyPolicy: boolean = false;
+  errorprivacyPolicy: string = '';
+  jobSelected: any = null;
+  id_job_offer: any;
 
 
   constructor(
@@ -90,80 +100,87 @@ export class DetailsBusinessComponent implements OnInit {
     private modalService: NgbModal,
     public authService: AuthService,
     private fb: FormBuilder,
-    private toastr:ToastrService,
-    private favoriteSalonService: FavoriteSalonService,
-
-
+    private toastr: ToastrService,
+    private favoriteSalonService: FavoriteSalonService
   ) {
     this.currentDay = this.getCurrentDay();
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
   ngOnInit(): void {
-
     this.userId = localStorage.getItem('usuarioId');
 
-    this.isUserAuthenticated=this.authService.isAuthenticated();
+    this.isUserAuthenticated = this.authService.isAuthenticated();
 
-    this.authService.getUserType().subscribe(userType => {
+    this.authService.getUserType().subscribe((userType) => {
       this.userType = userType;
     });
 
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const slug = params['salonSlug'];
       const id = params['id'];
       this.idSalon = id;
-
       if (id) {
-        this.unRegisteredSearchBuusinessService.viewDetailsBusiness(id,this.userId || '').subscribe(
-          data => {
-            if (data.length > 0) {
-              this.business = data[0];
-
-              console.log('Datos recibidos del salón:',this.business);
-              // Formatear los horarios para mostrarlos como en Google
-              this.business.formattedHours = this.formatHours(this.business.hours_old);
-              console.log(this.business.formattedHours);
-              this.getScoreReviewSalon();
-              this.getObservationReviewSalon();
-              this.getFaqs(id);
-              this.getImagesAdmin(id);
-              this.getJobsOffers(id);
-              this.getServicesSalon(id);
-              this.getDescriptionSalon(id);
-              this.detailsBusinessService.getBrandByIdSalon(this.idSalon).subscribe({
-                next: (brand) => {
-                  this.slides = brand.map(brand => ({
-                    img: brand.imagePath,
-                    title: brand.name,
-                    id:brand.id_brand
-                  }));
-                },
-                error: (error) => {
-                  console.error('Error al obtener las brandes del salón:', error);
-                }
-              });
-              setTimeout(() => {
-                this.initMap();
-              }, 0);
-            } else {
-              console.error('No se encontraron datos del negocio para el ID:', id);
+        this.unRegisteredSearchBuusinessService
+          .viewDetailsBusiness(id, this.userId || '')
+          .subscribe(
+            (data) => {
+              if (data.length > 0) {
+                this.business = data[0];
+                //console.log('Datos recibidos del salón:', this.business);
+                // Formatear los horarios para mostrarlos como en Google
+                this.business.formattedHours = this.formatHours(
+                  this.business.hours_old
+                );
+                //console.log(this.business.formattedHours);
+                this.getScoreReviewSalon();
+                this.getObservationReviewSalon();
+                this.getFaqs(id);
+                this.getImagesAdmin(id);
+                this.getJobsOffers(id);
+                this.getServicesSalon(id);
+                this.getDescriptionSalon(id);
+                this.detailsBusinessService
+                  .getBrandByIdSalon(this.idSalon)
+                  .subscribe({
+                    next: (brand) => {
+                      this.slides = brand.map((brand) => ({
+                        img: brand.imagePath,
+                        title: brand.name,
+                        id: brand.id_brand,
+                      }));
+                    },
+                    error: (error) => {
+                      console.error(
+                        'Error al obtener las brandes del salón:',
+                        error
+                      );
+                    },
+                  });
+                setTimeout(() => {
+                  this.initMap();
+                }, 0);
+              } else {
+                console.error(
+                  'No se encontraron datos del negocio para el ID:',
+                  id
+                );
+              }
+            },
+            (error) => {
+              console.error('Error al cargar los detalles del negocio:', error);
             }
-          },
-          error => {
-            console.error('Error al cargar los detalles del negocio:', error);
-          }
-        );
+          );
       } else {
         console.error('No se encontró el ID en la URL');
       }
     });
 
     const token = localStorage.getItem('usuarioId'); // Obtener el token del localStorage
-    console.log('Token recuperado:', token);
+    //console.log('Token recuperado:', token);
     if (token) {
       // Llamar al servicio para decodificar el token
       this.detailsBusinessService.getUsuarioId(token).subscribe(
@@ -177,102 +194,127 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
-
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
   }
 
+  onPDFSelected(event: any): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0]; // Aquí no se fuerza el tipo, se permite que sea File | undefined
 
-  toggleFavorite(business: any) {
+    if (file && file.type === 'application/pdf') {
+      this.isFileSelected = true;
+      this.selectedFileName = file.name;
+      this.curriculum = file; // Guardar el archivo seleccionado
+      this.errorCurriculum = ''; // Limpiar cualquier mensaje de error previo
+    } else {
+      this.isFileSelected = false;
+      this.selectedFileName = '';
+      this.curriculum = null; // Limpia la propiedad curriculum
+      this.errorCurriculum = 'Por favor seleccione un archivo válido (PDF).';
 
-
-
-   if (business.is_favorite) {
-     // Eliminar de favoritos
-     this.deleteFavorite(business);
-   } else {
-     // Añadir a favoritos
-     this.onFavoriteClick();
-   }
- }
-
-
- deleteFavorite(marker: any): void {
-  const id_user_favorite = marker.id_user_favourite;
-
-  if (!id_user_favorite) {
-    console.error('Cannot remove favorite: id_user_favorite is not defined');
-    return;
+      // Forzar la limpieza del input para permitir seleccionar el mismo archivo nuevamente
+      input.value = '';
+    }
   }
 
-  this.unRegisteredSearchBuusinessService.removeFavorite(id_user_favorite).subscribe(
-    () => {
 
-      this.reloadBusinessDetails();
-      this.toastr.success('El salón se eliminó de su lista de favoritos');
-    },
-    (error) => {
-      console.error('Error removing favorite', error);
+
+
+  toggleFavorite(business: any) {
+    if (business.is_favorite) {
+      // Eliminar de favoritos
+      this.deleteFavorite(business);
+    } else {
+      // Añadir a favoritos
+      this.onFavoriteClick();
     }
-  );
-}
+  }
+
+  deleteFavorite(marker: any): void {
+    const id_user_favorite = marker.id_user_favourite;
+
+    if (!id_user_favorite) {
+      console.error('Cannot remove favorite: id_user_favorite is not defined');
+      return;
+    }
+
+    this.unRegisteredSearchBuusinessService
+      .removeFavorite(id_user_favorite)
+      .subscribe(
+        () => {
+          this.reloadBusinessDetails();
+          this.toastr.success('El salón se eliminó de su lista de favoritos');
+        },
+        (error) => {
+          console.error('Error removing favorite', error);
+        }
+      );
+  }
 
   onSearch(): void {
     if (this.searchFaqText.trim().length >= 2) {
       // Si hay texto en la búsqueda, filtra las FAQs
-      this.detailsBusinessService.searchFaqs(this.idSalon!, this.searchFaqText).subscribe(
-        response => {
-          this.faqs = response.faqs;
-          this.currentPage = response.currentPage;
-          this.totalPages = response.totalPages;
-          this.hasMorePages = this.currentPage < this.totalPages;
-        },
-        error => console.error('Error al buscar FAQs:', error)
-      );
+      this.detailsBusinessService
+        .searchFaqs(this.idSalon!, this.searchFaqText)
+        .subscribe(
+          (response) => {
+            this.faqs = response.faqs;
+            this.currentPage = response.currentPage;
+            this.totalPages = response.totalPages;
+            this.hasMorePages = this.currentPage < this.totalPages;
+          },
+          (error) => console.error('Error al buscar FAQs:', error)
+        );
     } else {
       // Si no hay texto de búsqueda, cargar las FAQs normalmente
       this.getFaqs(this.idSalon!, this.currentPage);
     }
   }
 
+  SetToViewDetailsOffer(job: any): void {
+    this.viewDetailsJob = job;
+  }
 
   reloadBusinessDetails(): void {
     if (this.idSalon) {
-      this.unRegisteredSearchBuusinessService.viewDetailsBusiness(this.idSalon, this.userId || '').subscribe(
-        (data) => {
-          if (data.length > 0) {
-            this.business = data[0];
-            this.business.formattedHours = this.formatHours(this.business.hours_old);
+      this.unRegisteredSearchBuusinessService
+        .viewDetailsBusiness(this.idSalon, this.userId || '')
+        .subscribe(
+          (data) => {
+            if (data.length > 0) {
+              this.business = data[0];
+              this.business.formattedHours = this.formatHours(
+                this.business.hours_old
+              );
 
-            // Recargar otros datos relacionados si es necesario
-            this.getScoreReviewSalon();
-            this.getObservationReviewSalon();
-            this.getFaqs(this.idSalon!);
-            this.getImagesAdmin(this.idSalon!);
-            this.getServicesSalon(this.idSalon!);
-            this.getDescriptionSalon(this.idSalon!);
+              // Recargar otros datos relacionados si es necesario
+              this.getScoreReviewSalon();
+              this.getObservationReviewSalon();
+              this.getFaqs(this.idSalon!);
+              this.getImagesAdmin(this.idSalon!);
+              this.getServicesSalon(this.idSalon!);
+              this.getDescriptionSalon(this.idSalon!);
+            }
+          },
+          (error) => {
+            console.error('Error al recargar los detalles del negocio:', error);
           }
-        },
-        (error) => {
-          console.error('Error al recargar los detalles del negocio:', error);
-        }
-      );
+        );
     }
   }
 
-  verifyUser(){
-    if(!this.authService.isAuthenticated()){
+  verifyUser() {
+    if (!this.authService.isAuthenticated()) {
       this.openLoginModal();
     }
   }
-
 
   setFaqToDelete(id_faq: number) {
     this.idFaqToDelete = id_faq;
   }
 
-
-   confirmDeleteFaq() {
+  confirmDeleteFaq() {
     if (this.idFaqToDelete !== null) {
       this.detailsBusinessService.deleteFaq(this.idFaqToDelete).subscribe({
         next: () => {
@@ -282,12 +324,13 @@ export class DetailsBusinessComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al eliminar la pregunta', error);
-          this.toastr.error('No se pudo eliminar la pregunta, inténtelo de nuevo.');
-        }
+          this.toastr.error(
+            'No se pudo eliminar la pregunta, inténtelo de nuevo.'
+          );
+        },
       });
     }
   }
-
 
   updateFaq() {
     const { id_faq, question } = this.selectedFaq;
@@ -305,20 +348,19 @@ export class DetailsBusinessComponent implements OnInit {
     );
   }
 
-
   generateStars(rating: number): void {
-    this.stars = Array(5).fill(0).map((_, i) => {
-      if (i + 1 <= rating) {
-        return 'fas fa-star';
-      } else if (i < rating && i + 1 > rating) {
-        return 'fas fa-star-half-alt';
-      } else {
-        return 'far fa-star';
-      }
-    });
+    this.stars = Array(5)
+      .fill(0)
+      .map((_, i) => {
+        if (i + 1 <= rating) {
+          return 'fas fa-star';
+        } else if (i < rating && i + 1 > rating) {
+          return 'fas fa-star-half-alt';
+        } else {
+          return 'far fa-star';
+        }
+      });
   }
-
-
 
   updateRatings(ratingArray: boolean[], index: number): void {
     // Marca los checkboxes anteriores si uno es seleccionado
@@ -334,49 +376,64 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
-
   private formatHours(hoursOld: string): string {
-    const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    const daysOfWeek = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
+    ];
     const todayIndex = new Date().getDay();
     const currentDay = daysOfWeek[(todayIndex + 6) % 7];
     const currentTime = new Date();
-    const days = hoursOld.split(';').map(day => day.trim()).filter(day => day.length > 0);
+    const days = hoursOld
+      .split(';')
+      .map((day) => day.trim())
+      .filter((day) => day.length > 0);
     const dayMap = new Map<string, string>();
 
-    days.forEach(day => {
-        const [dayName, ...hours] = day.split(':').map(part => part.trim());
-        if (dayName && hours.length > 0) {
-            dayMap.set(dayName, hours.join(':'));
-        }
+    days.forEach((day) => {
+      const [dayName, ...hours] = day.split(':').map((part) => part.trim());
+      if (dayName && hours.length > 0) {
+        dayMap.set(dayName, hours.join(':'));
+      }
     });
 
     // Establece el estado actual del negocio (abierto/cerrado)
     this.currentStatus = 'Cerrado';
     if (dayMap.has(currentDay)) {
-        const hours = dayMap.get(currentDay);
-        if (hours && hours !== 'Cerrado') {
-            const timeRanges = hours.split(',').map(range => range.trim());
-            for (const range of timeRanges) {
-                const [aperturaStr, cierreStr] = range.split('-').map(time => time.trim());
-                const [aperturaHora, aperturaMin] = aperturaStr.split(':').map(Number);
-                const [cierreHora, cierreMin] = cierreStr.split(':').map(Number);
+      const hours = dayMap.get(currentDay);
+      if (hours && hours !== 'Cerrado') {
+        const timeRanges = hours.split(',').map((range) => range.trim());
+        for (const range of timeRanges) {
+          const [aperturaStr, cierreStr] = range
+            .split('-')
+            .map((time) => time.trim());
+          const [aperturaHora, aperturaMin] = aperturaStr
+            .split(':')
+            .map(Number);
+          const [cierreHora, cierreMin] = cierreStr.split(':').map(Number);
 
-                const apertura = new Date();
-                apertura.setHours(aperturaHora, aperturaMin, 0);
+          const apertura = new Date();
+          apertura.setHours(aperturaHora, aperturaMin, 0);
 
-                const cierre = new Date();
-                cierre.setHours(cierreHora, cierreMin, 0);
+          const cierre = new Date();
+          cierre.setHours(cierreHora, cierreMin, 0);
 
-                if (currentTime >= apertura && currentTime <= cierre) {
-                    this.currentStatus = 'Abierto ahora';
-                    break;
-                }
-            }
+          if (currentTime >= apertura && currentTime <= cierre) {
+            this.currentStatus = 'Abierto ahora';
+            break;
+          }
         }
+      }
     }
 
     // Crear el HTML formateado con flexbox
-    const formattedHours = daysOfWeek.map(dayName => {
+    const formattedHours = daysOfWeek
+      .map((dayName) => {
         const hours = dayMap.get(dayName) || 'Cerrado';
         const formattedDay = `
             <div class="d-flex justify-content-between">
@@ -385,16 +442,14 @@ export class DetailsBusinessComponent implements OnInit {
             </div>`;
 
         if (dayName === currentDay) {
-            return `<b>${formattedDay}</b>`;
+          return `<b>${formattedDay}</b>`;
         }
         return formattedDay;
-    }).join('<br>'); // Utiliza <br> para separar las líneas
+      })
+      .join('<br>'); // Utiliza <br> para separar las líneas
 
     return formattedHours;
-}
-
-
-
+  }
 
   // Función para abrir la página de Google Maps con las coordenadas del salón
   openDirections(): void {
@@ -409,44 +464,57 @@ export class DetailsBusinessComponent implements OnInit {
       // Abre la URL en una nueva pestaña o ventana
       window.open(url, '_blank');
     } else {
-      console.error('Información del negocio no disponible para obtener direcciones.');
+      console.error(
+        'Información del negocio no disponible para obtener direcciones.'
+      );
     }
   }
   private getImagesAdmin(id: string): void {
     //console.log('Cargando imágenes para el ID:', id); // Depuración: Verifica cuando se cargan las imágenes
     this.detailsBusinessService.getImagesAdmin(id).subscribe(
-      images => {
-        this.images = images.sort((a, b) => b.file_principal - a.file_principal);
+      (images) => {
+        this.images = images.sort(
+          (a, b) => b.file_principal - a.file_principal
+        );
         //console.log('Imágenes cargadas:', this.images); // Depuración: Verifica las imágenes cargadas
       },
-      error => console.error('Error al cargar imágenes para el ID:', id, error)
+      (error) =>
+        console.error('Error al cargar imágenes para el ID:', id, error)
     );
   }
 
   getDescriptionSalon(id: string): void {
     //console.log('Cargando descripción para el ID:', id); // Depuración: Verifica cuando se carga la descripción
     this.detailsBusinessService.getDescrptionSalon(id).subscribe(
-      description => {
+      (description) => {
         this.descriptionSalon = description;
         //console.log('Descripción del salón cargada:', this.descriptionSalon); // Depuración: Verifica la descripción cargada
       },
-      error => console.error('Error al cargar la descripción del salón para el ID:', id, error)
+      (error) =>
+        console.error(
+          'Error al cargar la descripción del salón para el ID:',
+          id,
+          error
+        )
     );
   }
 
-
   getFaqs(id: string, page: number = 1, limit: number = 4): void {
     this.detailsBusinessService.getFaqs(id, page, limit).subscribe(
-      response => {
+      (response) => {
         this.faqs = response.faqs;
         this.currentPage = response.currentPage;
         this.totalPages = response.totalPages;
         this.hasMorePages = this.currentPage < this.totalPages;
       },
-      error => console.error('Error al cargar preguntas frecuentes para el ID:', id, error)
+      (error) =>
+        console.error(
+          'Error al cargar preguntas frecuentes para el ID:',
+          id,
+          error
+        )
     );
   }
-
 
   previousPageFaq(): void {
     if (this.currentPage > 1) {
@@ -454,35 +522,43 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
-
   nextPageFaq(): void {
     if (this.currentPage < this.totalPages) {
       this.getFaqs(this.idSalon!, this.currentPage + 1);
     }
   }
 
-
-
   openServiceModal(service: any): void {
     this.selectedService = service;
   }
 
-
   private getServicesSalon(id_salon: string): void {
     this.detailsBusinessService.getServicesSalon(id_salon).subscribe(
       (response: any) => {
-        if (response && typeof response === 'object' && !Array.isArray(response)) {
-          this.services = Object.entries(response).map(([serviceName, subservices]) => {
-            const validSubservices = Array.isArray(subservices) ? subservices : [];
-            return {
-              serviceName,
-              subservices: validSubservices
-            };
-          });
+        if (
+          response &&
+          typeof response === 'object' &&
+          !Array.isArray(response)
+        ) {
+          this.services = Object.entries(response).map(
+            ([serviceName, subservices]) => {
+              const validSubservices = Array.isArray(subservices)
+                ? subservices
+                : [];
+              return {
+                serviceName,
+                subservices: validSubservices,
+              };
+            }
+          );
 
-          console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
+          //console.log('Servicios cargados:', this.services); // Depuración: Verifica los servicios cargados
         } else {
-          console.error('La propiedad `services` no es un array para el ID:', id_salon, response); // Depuración: Verifica si hay un error en la respuesta
+          console.error(
+            'La propiedad `services` no es un array para el ID:',
+            id_salon,
+            response
+          ); // Depuración: Verifica si hay un error en la respuesta
           this.services = [];
         }
       },
@@ -493,10 +569,8 @@ export class DetailsBusinessComponent implements OnInit {
     );
   }
 
-
   private initMap(): void {
     if (!this.business) return;
-
 
     if (this.map) {
       this.map.remove(); // Elimina el mapa anterior
@@ -505,33 +579,45 @@ export class DetailsBusinessComponent implements OnInit {
     //console.log('Inicializando mapa con latitud:', this.business.latitud, 'y longitud:', this.business.longitud); // Depuración: Verifica las coordenadas del mapa
     this.map = L.map('map', {
       center: [this.business.latitud, this.business.longitud],
-      zoom: 16
+      zoom: 16,
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '© OpenStreetMap'
+      attribution: '© OpenStreetMap',
     }).addTo(this.map);
 
     const customIcon = L.icon({
       iconUrl: '../../../assets/img/web/icon-map-finder.png',
       iconSize: [38, 38],
       iconAnchor: [19, 38],
-      popupAnchor: [0, -38]
+      popupAnchor: [0, -38],
     });
 
-    L.marker([this.business.latitud, this.business.longitud], { icon: customIcon }).addTo(this.map)
-      .bindPopup(`<b>${this.business.name}</b><br>${this.business.address}`).openPopup();
+    L.marker([this.business.latitud, this.business.longitud], {
+      icon: customIcon,
+    })
+      .addTo(this.map)
+      .bindPopup(`<b>${this.business.name}</b><br>${this.business.address}`)
+      .openPopup();
   }
 
   private getCurrentDay(): string {
-    const daysOrder = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    const daysOrder = [
+      'domingo',
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+    ];
     const currentDayIndex = new Date().getDay();
     return daysOrder[currentDayIndex];
   }
 
   openLoginModal(): void {
-    this.modalService.open(LoginComponent,{centered:true});
+    this.modalService.open(LoginComponent, { centered: true });
   }
 
   formatQualification(qualification: number): string {
@@ -547,7 +633,9 @@ export class DetailsBusinessComponent implements OnInit {
     const id_user = this.userId;
 
     if (!id_user) {
-      console.error('No se encontró el ID del usuario en el almacenamiento local.');
+      console.error(
+        'No se encontró el ID del usuario en el almacenamiento local.'
+      );
       return;
     }
 
@@ -556,15 +644,17 @@ export class DetailsBusinessComponent implements OnInit {
       return;
     }
 
-    if(!this.additionalComments){
-      this.toastr.error('Por favor completa todos los campos antes de enviar la reseña');
+    if (!this.additionalComments) {
+      this.toastr.error(
+        'Por favor completa todos los campos antes de enviar la reseña'
+      );
       console.log('No se encontró el texto de la reseña.');
       return;
     }
 
     // Función para contar los valores true en un array
     const countTrueValues = (array: boolean[]): number => {
-      return array.filter(value => value).length;
+      return array.filter((value) => value).length;
     };
 
     // Convertir los arrays de ratings a números contando los valores true
@@ -575,8 +665,15 @@ export class DetailsBusinessComponent implements OnInit {
       speed: countTrueValues(this.ratings.speed),
     };
 
-    if(numericRatings.service === 0 || numericRatings.quality === 0 || numericRatings.cleanliness === 0 || numericRatings.speed === 0){
-      this.toastr.error('Por favor selecciona al menos una opción  calificación');
+    if (
+      numericRatings.service === 0 ||
+      numericRatings.quality === 0 ||
+      numericRatings.cleanliness === 0 ||
+      numericRatings.speed === 0
+    ) {
+      this.toastr.error(
+        'Por favor selecciona al menos una opción  calificación'
+      );
       console.log('No se encontraron opciones para la calificación.');
       return;
     }
@@ -584,56 +681,77 @@ export class DetailsBusinessComponent implements OnInit {
     // Convertir los ratings a un formato string o JSON que tu backend espere
     const qualification = JSON.stringify(numericRatings); // Ajusta si tu API necesita un formato diferente
 
-    const averageQualification = Math.round(((numericRatings.service + numericRatings.quality + numericRatings.cleanliness + numericRatings.speed) / 4) * 2) / 2;
+    const averageQualification =
+      Math.round(
+        ((numericRatings.service +
+          numericRatings.quality +
+          numericRatings.cleanliness +
+          numericRatings.speed) /
+          4) *
+          2
+      ) / 2;
     const observacion = this.additionalComments;
 
     // Llamar al servicio para enviar los datos
-    this.detailsBusinessService.adddReview(id_user, this.idSalon, observacion, qualification,averageQualification).subscribe({
-      next: (response) => {
-        console.log('Media envida',averageQualification);
-        console.log('Reseña enviada exitosamente:', response);
-        this.toastr.success('Su valoración fue enviada correctamente, gracias');
-        this.getScoreReviewSalon();
-        this.getObservationReviewSalon();
-        // Lógica adicional como limpiar el formulario o  una notificación de éxito
-      },
-      error: (error) => {
-        console.error('Error al enviar la reseña:', error);
-        this.toastr.error('No pudimos guardar su valoracion, intentelo de nuevo mas tarde')
-        // Mostrar mensaje de error o manejar el error de acuerdo a tu necesidad
-      }
-    });
+    this.detailsBusinessService
+      .adddReview(
+        id_user,
+        this.idSalon,
+        observacion,
+        qualification,
+        averageQualification
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Media envida', averageQualification);
+          console.log('Reseña enviada exitosamente:', response);
+          this.toastr.success(
+            'Su valoración fue enviada correctamente, gracias'
+          );
+          this.getScoreReviewSalon();
+          this.getObservationReviewSalon();
+          // Lógica adicional como limpiar el formulario o  una notificación de éxito
+        },
+        error: (error) => {
+          console.error('Error al enviar la reseña:', error);
+          this.toastr.error(
+            'No pudimos guardar su valoracion, intentelo de nuevo mas tarde'
+          );
+          // Mostrar mensaje de error o manejar el error de acuerdo a tu necesidad
+        },
+      });
   }
 
-editReview(observation: any): void {
-  this.reviewToEdit = observation;
-  this.editReviewText = observation.observacion;
-}
-
-
-setReviewToDelete(reviewId: string): void {
-  this.reviewToDeleteId = reviewId;
-}
-
-
-confirmDeleteReview(): void {
-  if (this.reviewToDeleteId) {
-    this.detailsBusinessService.deleteReview(this.reviewToDeleteId).subscribe({
-      next: () => {
-        this.toastr.success('Reseña eliminada con éxito');
-        // Lógica adicional para recargar o actualizar la lista de reseñas
-        this.getObservationReviewSalon();
-        this.getScoreReviewSalon();
-      },
-      error: (error) => {
-        console.error('Error al eliminar la reseña:', error);
-        this.toastr.error('No se pudo eliminar la reseña, inténtelo de nuevo.');
-      }
-    });
-    this.reviewToDeleteId = null; // Limpiar la variable después de la eliminación
+  editReview(observation: any): void {
+    this.reviewToEdit = observation;
+    this.editReviewText = observation.observacion;
   }
-}
 
+  setReviewToDelete(reviewId: string): void {
+    this.reviewToDeleteId = reviewId;
+  }
+
+  confirmDeleteReview(): void {
+    if (this.reviewToDeleteId) {
+      this.detailsBusinessService
+        .deleteReview(this.reviewToDeleteId)
+        .subscribe({
+          next: () => {
+            this.toastr.success('Reseña eliminada con éxito');
+            // Lógica adicional para recargar o actualizar la lista de reseñas
+            this.getObservationReviewSalon();
+            this.getScoreReviewSalon();
+          },
+          error: (error) => {
+            console.error('Error al eliminar la reseña:', error);
+            this.toastr.error(
+              'No se pudo eliminar la reseña, inténtelo de nuevo.'
+            );
+          },
+        });
+      this.reviewToDeleteId = null; // Limpiar la variable después de la eliminación
+    }
+  }
 
   getScoreReviewSalon() {
     // Verificar si existe el idSalon
@@ -642,10 +760,13 @@ confirmDeleteReview(): void {
         next: (response: any) => {
           // Asignar los promedios recibidos del backend a las variables de puntuación
           this.averageRatings.promedio_servicio = response.promedio_servicio;
-          this.averageRatings.promedio_calidad_precio = response.promedio_calidad_precio;
+          this.averageRatings.promedio_calidad_precio =
+            response.promedio_calidad_precio;
           this.averageRatings.promedio_limpieza = response.promedio_limpieza;
-          this.averageRatings.promedio_puntualidad = response.promedio_puntualidad;
-          this.averageRatings.promedio_qualification = response.promedio_qualification;
+          this.averageRatings.promedio_puntualidad =
+            response.promedio_puntualidad;
+          this.averageRatings.promedio_qualification =
+            response.promedio_qualification;
           this.averageRatings.total_reviews = response.total_reviews;
           this.generateStars(this.averageRatings.promedio_qualification);
 
@@ -654,10 +775,9 @@ confirmDeleteReview(): void {
             { label: 'Muy bueno', percentage: response.porcentajes.muy_bueno },
             { label: 'Normal', percentage: response.porcentajes.normal },
             { label: 'Malo', percentage: response.porcentajes.malo },
-            { label: 'Pésimo', percentage: response.porcentajes.pesimo }
+            { label: 'Pésimo', percentage: response.porcentajes.pesimo },
           ];
-          console.log('Datos de la reseña recibidos:', this.ratingPorcent);
-
+          //console.log('Datos de la reseña recibidos:', this.ratingPorcent);
         },
         error: (error) => {
           if (error.status === 404) {
@@ -668,20 +788,20 @@ confirmDeleteReview(): void {
               promedio_limpieza: 0,
               promedio_puntualidad: 0,
               promedio_qualification: 0,
-              total_reviews: 0
+              total_reviews: 0,
             };
             this.ratingPorcent = [
               { label: 'Excelente', percentage: 0 },
               { label: 'Muy bueno', percentage: 0 },
               { label: 'Normal', percentage: 0 },
               { label: 'Malo', percentage: 0 },
-              { label: 'Pésimo', percentage: 0 }
+              { label: 'Pésimo', percentage: 0 },
             ];
             console.log('No hay reseñas para este salón.');
           } else {
             console.error('Error al obtener la reseña del salón:', error);
           }
-        }
+        },
       });
     } else {
       console.error('No se encontró el ID del salón.');
@@ -712,7 +832,7 @@ confirmDeleteReview(): void {
       const data = {
         id_user: this.userId,
         id_salon: this.idSalon,
-        question: this.questionText
+        question: this.questionText,
       };
       this.detailsBusinessService.addFaq(data).subscribe({
         next: (response: any) => {
@@ -722,43 +842,45 @@ confirmDeleteReview(): void {
         },
         error: (error) => {
           console.error('Error al agregar la pregunta:', error);
-          this.toastr.error('No se pudo agregar la pregunta, inténtelo de nuevo.');
-        }
+          this.toastr.error(
+            'No se pudo agregar la pregunta, inténtelo de nuevo.'
+          );
+        },
       });
     }
   }
 
   getObservationReviewSalon(page: number = 1, limit: number = 2) {
     if (this.idSalon) {
-      this.detailsBusinessService.getObservationReviews(this.idSalon, page, limit).subscribe({
-        next: (response: any) => {
-          //console.log('Response from server:', response); // Verifica la respuesta del servidor
+      this.detailsBusinessService
+        .getObservationReviews(this.idSalon, page, limit)
+        .subscribe({
+          next: (response: any) => {
+            //console.log('Response from server:', response); // Verifica la respuesta del servidor
 
-          if (response && Array.isArray(response.results)) {
-            this.observations = response.results.map((observation: any) => {
-              const starsObservation = this.generateStarsObservation(observation.qualification);
-              console.log('Observation:', observation); // Verifica los valores de cada observación
-              console.log('Generated stars:', starsObservation);   // Verifica cómo se generan las estrellas
-              return {
-                ...observation,
-                starsObservation: starsObservation // Asigna las estrellas generadas a cada observación
-              };
-            });
+            if (response && Array.isArray(response.results)) {
+              this.observations = response.results.map((observation: any) => {
+                const starsObservation = this.generateStarsObservation(
+                  observation.qualification
+                );
+                //console.log('Observation:', observation); // Verifica los valores de cada observación
+                //console.log('Generated stars:', starsObservation); // Verifica cómo se generan las estrellas
+                return {
+                  ...observation,
+                  starsObservation: starsObservation, // Asigna las estrellas generadas a cada observación
+                };
+              });
 
-            this.currentPage = page;
-            this.hasMorePages = (page * limit) < response.total;
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching observations:', err); // Captura cualquier error en la llamada
-        }
-      });
+              this.currentPage = page;
+              this.hasMorePages = page * limit < response.total;
+            }
+          },
+          error: (err) => {
+            console.error('Error fetching observations:', err); // Captura cualquier error en la llamada
+          },
+        });
     }
   }
-
-
-
-
 
   openEditModal(observation: any): void {
     this.reviewToEdit = observation;
@@ -766,7 +888,6 @@ confirmDeleteReview(): void {
 
     // Usamos la calificación general para todas las categorías
     const overallRating = observation.qualification;
-
 
     // Llenamos todas las categorías con la misma calificación general
     this.ratings = {
@@ -782,7 +903,6 @@ confirmDeleteReview(): void {
     //console.log('Estado de ratings:', this.ratings);
   }
 
-
   openEditFaqModal(faq: any) {
     this.selectedFaq = { ...faq }; // Clona el objeto faq para no modificarlo directamente
   }
@@ -791,8 +911,6 @@ confirmDeleteReview(): void {
   getCheckboxState(rating: number): boolean[] {
     return [1, 2, 3, 4, 5].map((val) => val <= rating);
   }
-
-
 
   // Método para actualizar la reseña existente
   updateReview(): void {
@@ -804,7 +922,7 @@ confirmDeleteReview(): void {
         quality: this.countSelectedRatings(this.ratings.quality),
         cleanliness: this.countSelectedRatings(this.ratings.cleanliness),
         speed: this.countSelectedRatings(this.ratings.speed),
-      }
+      },
     };
 
     // Llamada al servicio para actualizar la reseña en el backend
@@ -813,52 +931,53 @@ confirmDeleteReview(): void {
         this.toastr.success('Reseña actualizada con éxito');
 
         // Refrescar todos los datos
-        this.getObservationReviewSalon();  // Recargar las reseñas
-        this.getScoreReviewSalon();        // Recargar las puntuaciones
-
-
+        this.getObservationReviewSalon(); // Recargar las reseñas
+        this.getScoreReviewSalon(); // Recargar las puntuaciones
       },
       error: (error) => {
         //console.error('Error al actualizar la reseña:', error);
         this.toastr.error('No se pudo actualizar la reseña.');
-      }
+      },
     });
   }
 
   shareUrl() {
     if (navigator.share) {
       // Si la Web Share API está disponible (por ejemplo, en Chrome)
-      navigator.share({
-        title: document.title,
-        url: window.location.href
-      })
-      .then(() => {
-        //this.toastr.success('Dirección compartida correctamente.');
-      })
-      .catch((error) => {
-        console.error('Error al compartir:', error);
-        this.toastr.error('Error al intentar compartir.');
-      });
+      navigator
+        .share({
+          title: document.title,
+          url: window.location.href,
+        })
+        .then(() => {
+          //this.toastr.success('Dirección compartida correctamente.');
+        })
+        .catch((error) => {
+          console.error('Error al compartir:', error);
+          this.toastr.error('Error al intentar compartir.');
+        });
     } else {
       // Alternativa para navegadores sin soporte (por ejemplo, Firefox)
       const url = window.location.href;
 
       // Usa la API Clipboard para copiar la URL al portapapeles
-      navigator.clipboard.writeText(url).then(() => {
-        this.toastr.success('La URL ha sido copiada al portapapeles.');
-      }).catch((err) => {
-        console.error('Error al copiar al portapapeles:', err);
-        this.toastr.error('No se pudo copiar la URL al portapapeles.');
-      });
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          this.toastr.success('La URL ha sido copiada al portapapeles.');
+        })
+        .catch((err) => {
+          console.error('Error al copiar al portapapeles:', err);
+          this.toastr.error('No se pudo copiar la URL al portapapeles.');
+        });
     }
   }
-
 
   onFavoriteClick() {
     if (this.authService.isAuthenticated()) {
       const data = {
         id_user: this.userId,
-        id_salon: this.idSalon
+        id_salon: this.idSalon,
       };
       this.favoriteSalonService.addFavorite(data).subscribe(
         (res) => {
@@ -882,21 +1001,120 @@ confirmDeleteReview(): void {
     return ratingArray.filter(Boolean).length;
   }
 
-  getJobsOffers(id: number): void {
-    this.detailsBusinessService.getJobsOffers(id).subscribe(
+  getJobsOffers(id: number, page: number = 1, limit: number = 3): void {
+    this.detailsBusinessService.getJobsOffers(id, page, limit).subscribe(
       (data: any) => {
-        // Asigna los datos a la variable jobsOffers
-        this.jobsOffers = data;
-
-        // Opcional: Mostrar un mensaje de éxito
-        console.log('Ofertas de empleo cargadas correctamente:', data);
+        this.jobsOffers = data.jobs; // Asigna las ofertas de trabajo a la variable
+        this.totalItems = data.total; // Total de ofertas para la paginación
+        this.currentPage = data.currentPage; // Página actual
+        this.pageSize = data.pageSize; // Tamaño de la página
+        /*
+        console.log(
+          'Ofertas de empleo cargadas correctamente:',
+          this.jobsOffers
+        );
+        */
       },
       (error: any) => {
-        // Manejo de errores
         console.error('Error al obtener las ofertas de empleo:', error);
+      }
+    );
+  }
 
-        // Opcional: Mostrar un mensaje de error al usuario
-        //this.toastr.error('No se pudieron cargar las ofertas de empleo', 'Error');
+  getFormattedSalary(): string {
+    //console.log('Salario de la oferta:',this.viewDetailsJob?.salary);
+    if (this.viewDetailsJob?.salary == null || this.viewDetailsJob.salary === "0") {
+      return 'Salario no disponible';
+    }
+    return this.viewDetailsJob.salary
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €';
+  }
+
+  onPageOfferJobsChange(page: number): void {
+    const idSalonAsNumber = Number(this.idSalon); // Convierte idSalon a número
+
+    if (!isNaN(idSalonAsNumber)) {
+      if (page >= 1 && page <= Math.ceil(this.totalItems / this.pageSize)) {
+        this.getJobsOffers(idSalonAsNumber, page, this.pageSize);
+      }
+    } else {
+      console.error('El ID del salón no es válido o está indefinido.');
+    }
+  }
+
+  validatedSendDescription(): boolean {
+    let isValid = true;
+    // Validar interés por la oferta
+    if (!this.jobsOffersInterest || this.jobsOffersInterest.trim() === "") {
+      this.errorOfferInterest = "Por favor, describa su interés por esta oferta de empleo.";
+      isValid = false;
+    } else {
+      this.errorOfferInterest = "";
+    }
+    return isValid;
+  }
+
+
+
+  validatedSendPrivatePolicy(): boolean {
+    // Validar si el checkbox está marcado
+    if (!this.privacyPolicy) { // Si NO está marcado
+      this.errorprivacyPolicy = "Debe aceptar las políticas de privacidad.";
+      return false; // La validación falla
+    } else {
+      this.errorprivacyPolicy = ""; // Limpiar el mensaje de error
+      return true; // La validación pasa
+    }
+  }
+
+
+  SetToInscriptionJob(id_job_offer: any): void {
+   this.jobSelected = id_job_offer;
+  }
+
+
+  sendInscription(): void {
+    // Validaciones previas
+    const isDescriptionValid = this.validatedSendDescription();
+
+    const isPrivacyPolicyValid = this.validatedSendPrivatePolicy();
+
+    if (!isDescriptionValid || !isPrivacyPolicyValid) {
+      return; // Detener el flujo si alguna validación falla
+    }
+
+    // Crear el objeto FormData para la inscripción
+    const formData = new FormData();
+    formData.append('id_job_offer', this.jobSelected.toString()); // Convertir a string si es necesario
+    formData.append('id_user', this.userId?.toString() || '');
+    formData.append('id_salon', this.idSalon?.toString() || '');
+    formData.append('description', this.jobsOffersInterest);
+    if (this.curriculum) {
+      formData.append('curriculum', this.curriculum); // Asegúrate de que `this.curriculum` sea un archivo válido
+    }
+    formData.append('privacy_policy', this.privacyPolicy ? 'true' : 'false'); // Convertir booleano a string
+
+    //console.log('Datos enviados para inscripción:', formData);
+
+    // Llamar al servicio para procesar la inscripción
+    this.detailsBusinessService.addInscripcionJobOffer(formData).subscribe(
+      (response: any) => {
+        this.toastr.success('Su inscripción fue realizada correctamente');
+        this.jobsOffersInterest = "";
+        this.curriculum = null;
+        this.privacyPolicy = false;
+        this.isFileSelected = false;
+      },
+      (error: any) => {
+        console.error('Error al realizar la inscripción:', error);
+
+        // Mostrar notificación de error
+        this.toastr.error('Error al realizar la inscripción');
+        this.jobsOffersInterest = "";
+        this.curriculum = null;
+        this.privacyPolicy = false;
+        this.isFileSelected = false;
       }
     );
   }
