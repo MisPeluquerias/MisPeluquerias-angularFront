@@ -12,6 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
 import { Modal } from 'bootstrap';
 import { response } from 'express';
+import { Renderer2,Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-details-business',
@@ -94,6 +96,8 @@ export class DetailsBusinessComponent implements OnInit {
   schema: any;
 
   constructor(
+    private renderer:Renderer2,
+    @Inject(DOCUMENT) private document: Document,
     private route: ActivatedRoute,
     private unRegisteredSearchBuusinessService: UnRegisteredSearchBuusinessService,
     private detailsBusinessService: DetailsBusinesstService,
@@ -108,6 +112,13 @@ export class DetailsBusinessComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  addSchemaToDom(schemaData: any): void {
+    const script = this.renderer.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schemaData);
+    this.renderer.appendChild(this.document.head, script);
   }
 
   ngOnInit(): void {
