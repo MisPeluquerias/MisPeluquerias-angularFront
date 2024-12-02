@@ -114,12 +114,7 @@ export class DetailsBusinessComponent implements OnInit {
     });
   }
 
-  addSchemaToDom(schemaData: any): void {
-    const script = this.renderer.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(schemaData);
-    this.renderer.appendChild(this.document.head, script);
-  }
+
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('usuarioId');
@@ -195,6 +190,7 @@ export class DetailsBusinessComponent implements OnInit {
         (data) => {
           console.log('Schema obtenido:', data);
           this.schema = data;
+          this.addSchemaToDom(this.schema);
         },
         (error) => {
           console.error('Error al obtener el Schema:', error);
@@ -216,6 +212,13 @@ export class DetailsBusinessComponent implements OnInit {
         }
       );
     }
+  }
+
+  addSchemaToDom(schemaData: any): void {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schemaData);
+    document.head.appendChild(script);
   }
 
   onImageError(event: any) {
