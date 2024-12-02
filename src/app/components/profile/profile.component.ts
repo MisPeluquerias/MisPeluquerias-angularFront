@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
+
+
+
 export class ProfileComponent {
   userData: any = {};
   id_user: string = '';
@@ -38,7 +41,7 @@ export class ProfileComponent {
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
-  
+
 
   getDataUser(): void {
     this.profileService.getDataUser(this.id_user).subscribe(

@@ -133,6 +133,14 @@ adddReview(id_user: string, id_salon: string, observacion: string, qualification
     // Enviar el token en el cuerpo de la solicitud
     return this.http.post<any>(`${this.baseUrl}/decode-token/`, { token });
   }
+  getSalonSchema(id_salon: string): Observable<any> {
+    // Configurar los parámetros de la solicitud
+    const params = new HttpParams().set('id_salon', id_salon);
+
+    // Realizar la solicitud HTTP GET
+    return this.http.get<any>(`${this.baseUrl}/details-business/getSalonSchema`, { params });
+  }
+
 
 
   deleteFaq(id_faq: number): Observable<any> {

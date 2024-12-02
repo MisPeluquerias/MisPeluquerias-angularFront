@@ -7,15 +7,15 @@ import { HomeComponent } from './components/home/home.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { TermsComponent } from './components/home/terms/terms.component';
-import { PrivacyComponent } from './components/home/privacy/privacy.component';
-import { WarningComponent } from './components/home/warning/warning.component';
-import { CookiesComponent } from './components/home/cookies/cookies.component';
-import { FaqComponent } from './components/home/faq/faq.component';
-import { ContactComponent } from './components/home/contact/contact.component';
+import { TermsComponent } from './shared/components/terms/terms.component';
+import { PrivacyComponent } from './shared/components/privacy/privacy.component';
+import { WarningComponent } from './shared/components/warning/warning.component';
+import { CookiesComponent } from './shared/components/cookies/cookies.component';
+import { FaqComponent } from './shared/components/faq/faq.component';
+import { ContactComponent } from './shared/components/contact/contact.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ContactProfesionalComponent } from './components/home/contact-profesional/contact-profesional.component';
-import { SalonReclamationComponent } from './components/home/salon-reclamation/salon-reclamation.component';
+import { ContactProfesionalComponent } from './shared/components/contact-profesional/contact-profesional.component';
+import { SalonReclamationComponent } from './shared/components/salon-reclamation/salon-reclamation.component';
 import { LoginComponent } from './auth/login/login.component';
 import { NavbarFixedComponent } from './shared/components/navbar-fixed/navbar-fixed.component';
 import { CarouselModule } from 'primeng/carousel';
@@ -33,6 +33,7 @@ import { NgxGoogleAnalyticsModule } from 'ngx-google-analytics';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FavoriteSalonComponent } from './components/favorite-salon/favorite-salon.component';
 import { SessionExpiredModalComponent } from './shared/components/session-expired-modal/session-expired-modal.component';
+import { CandidaturesComponent } from './components/candidatures/candidatures.component';
 
 
 
@@ -59,6 +60,7 @@ import { SessionExpiredModalComponent } from './shared/components/session-expire
     ProfileComponent,
     FavoriteSalonComponent,
     SessionExpiredModalComponent,
+    CandidaturesComponent,
   ],
   imports: [
     BrowserModule,

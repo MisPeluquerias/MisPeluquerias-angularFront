@@ -1,0 +1,99 @@
+<div class="wrapper">
+  <app-navbar-fixed></app-navbar-fixed>
+  <main>
+    <div class="container" style="margin-top: 11vh;">
+      <h1 class="mb-3">Mis Candidaturas</h1>
+      <div class="card-container" *ngIf="paginatedCandidatures.length > 0; else noCandidatures">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4" *ngFor="let job of paginatedCandidatures">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header text-center bg-dark text-white">
+                <h5 class="mb-0">{{ job.category }}</h5>
+              </div>
+              <div class="card-body">
+                <div class="text-center">
+                  <img
+                    [src]="job.img_job_path"
+                    class="img-fluid mb-3"
+                    alt="Imagen del empleo"
+                    style="max-height: 250px; padding: 0 auto"
+                  />
+                </div>
+                <h6 class="card-subtitle mb-2 mt-2 text-center">
+                  Salón: {{ job.salon_name }}
+                </h6>
+                <h6 class="card-subtitle mb-2 mt-2 text-center">
+                  Puesto: {{ job.subcategory }}
+                </h6>
+                <h6 class="card-subtitle mb-2 mt-2 text-center">
+                  Publicado: {{ job.date_job_offer | date: "dd/MM/yyyy" }}
+                </h6>
+              </div>
+              <div class="card-footer d-flex justify-content-center">
+                <button
+                  class="btn btn-sm btn-danger me-2"
+                  (click)="removeCandidature(job); $event.stopPropagation()"
+                >
+                  <i class="las la-trash"></i> Eliminar
+                </button>
+                <button
+                  class="btn btn-sm btn-secondary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#detailsJobOfferModal"
+                >
+                  Ver mi inscripción
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCandidatures>
+        <p class="text-center">No tienes candidaturas aún.</p>
+      </ng-template>
+      <div class="pagination-wrapper mb-5">
+        <div class="pagination" *ngIf="totalPages.length > 1">
+          <button (click)="goToPreviousPage()" [disabled]="currentPage === 1"><</button>
+          <div class="pagination-info mt-2">
+            Página {{ currentPage }} de {{ totalPages.length }}
+          </div>
+          <button (click)="goToNextPage()" [disabled]="currentPage === totalPages.length">></button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <app-footer></app-footer>
+</div>
+
+<!-- Modal para confirmar eliminación -->
+<div
+  class="modal fade"
+  id="confirmDeleteModal"
+  tabindex="-1"
+  aria-labelledby="confirmDeleteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar esta candidatura?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmRemove()"
+          data-bs-dismiss="modal"
+        >
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

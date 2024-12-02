@@ -52,12 +52,14 @@ export class FavoriteSalonComponent implements OnInit {
     this.paginatedFavorites = this.favorites.slice(startIndex, endIndex);
   }
 
+
   public goToNextPage(): void {
     if (this.currentPage < this.totalPages.length) {
       this.currentPage++;
       this.paginateFavorites(); // Actualiza la lista de favoritos paginada
     }
   }
+
 
   private getImagesAdmin(id: string): void {
   this.favoriteSalonService.getImagesAdmin(id).subscribe(

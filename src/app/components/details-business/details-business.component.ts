@@ -91,7 +91,7 @@ export class DetailsBusinessComponent implements OnInit {
   errorprivacyPolicy: string = '';
   jobSelected: any = null;
   id_job_offer: any;
-
+  schema: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -141,6 +141,8 @@ export class DetailsBusinessComponent implements OnInit {
                 this.getFaqs(id);
                 this.getImagesAdmin(id);
                 this.getJobsOffers(id);
+
+
                 this.getServicesSalon(id);
                 this.getDescriptionSalon(id);
                 this.detailsBusinessService
@@ -177,6 +179,17 @@ export class DetailsBusinessComponent implements OnInit {
       } else {
         console.error('No se encontró el ID en la URL');
       }
+
+      this.detailsBusinessService.getSalonSchema(id).subscribe(
+        (data) => {
+          console.log('Schema obtenido:', data);
+          this.schema = data;
+        },
+        (error) => {
+          console.error('Error al obtener el Schema:', error);
+        }
+      );
+
     });
 
     const token = localStorage.getItem('usuarioId'); // Obtener el token del localStorage
@@ -217,9 +230,6 @@ export class DetailsBusinessComponent implements OnInit {
       input.value = '';
     }
   }
-
-
-
 
   toggleFavorite(business: any) {
     if (business.is_favorite) {
@@ -1023,12 +1033,17 @@ export class DetailsBusinessComponent implements OnInit {
 
   getFormattedSalary(): string {
     //console.log('Salario de la oferta:',this.viewDetailsJob?.salary);
-    if (this.viewDetailsJob?.salary == null || this.viewDetailsJob.salary === "0") {
+    if (
+      this.viewDetailsJob?.salary == null ||
+      this.viewDetailsJob.salary === '0'
+    ) {
       return 'Salario no disponible';
     }
-    return this.viewDetailsJob.salary
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €';
+    return (
+      this.viewDetailsJob.salary
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €'
+    );
   }
 
   onPageOfferJobsChange(page: number): void {
@@ -1046,33 +1061,31 @@ export class DetailsBusinessComponent implements OnInit {
   validatedSendDescription(): boolean {
     let isValid = true;
     // Validar interés por la oferta
-    if (!this.jobsOffersInterest || this.jobsOffersInterest.trim() === "") {
-      this.errorOfferInterest = "Por favor, describa su interés por esta oferta de empleo.";
+    if (!this.jobsOffersInterest || this.jobsOffersInterest.trim() === '') {
+      this.errorOfferInterest =
+        'Por favor, describa su interés por esta oferta de empleo.';
       isValid = false;
     } else {
-      this.errorOfferInterest = "";
+      this.errorOfferInterest = '';
     }
     return isValid;
   }
 
-
-
   validatedSendPrivatePolicy(): boolean {
     // Validar si el checkbox está marcado
-    if (!this.privacyPolicy) { // Si NO está marcado
-      this.errorprivacyPolicy = "Debe aceptar las políticas de privacidad.";
+    if (!this.privacyPolicy) {
+      // Si NO está marcado
+      this.errorprivacyPolicy = 'Debe aceptar las políticas de privacidad.';
       return false; // La validación falla
     } else {
-      this.errorprivacyPolicy = ""; // Limpiar el mensaje de error
+      this.errorprivacyPolicy = ''; // Limpiar el mensaje de error
       return true; // La validación pasa
     }
   }
 
-
   SetToInscriptionJob(id_job_offer: any): void {
-   this.jobSelected = id_job_offer;
+    this.jobSelected = id_job_offer;
   }
-
 
   sendInscription(): void {
     // Validaciones previas
@@ -1101,7 +1114,7 @@ export class DetailsBusinessComponent implements OnInit {
     this.detailsBusinessService.addInscripcionJobOffer(formData).subscribe(
       (response: any) => {
         this.toastr.success('Su inscripción fue realizada correctamente');
-        this.jobsOffersInterest = "";
+        this.jobsOffersInterest = '';
         this.curriculum = null;
         this.privacyPolicy = false;
         this.isFileSelected = false;
@@ -1111,7 +1124,7 @@ export class DetailsBusinessComponent implements OnInit {
 
         // Mostrar notificación de error
         this.toastr.error('Error al realizar la inscripción');
-        this.jobsOffersInterest = "";
+        this.jobsOffersInterest = '';
         this.curriculum = null;
         this.privacyPolicy = false;
         this.isFileSelected = false;

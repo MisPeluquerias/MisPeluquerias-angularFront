@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-import { TermsComponent } from './components/home/terms/terms.component';
-import { PrivacyComponent } from './components/home/privacy/privacy.component';
-import { WarningComponent } from './components/home/warning/warning.component';
-import { CookiesComponent } from './components/home/cookies/cookies.component';
-import { FaqComponent } from './components/home/faq/faq.component';
-import { ContactComponent } from './components/home/contact/contact.component';
-import { ContactProfesionalComponent } from './components/home/contact-profesional/contact-profesional.component';
-import { SalonReclamationComponent } from './components/home/salon-reclamation/salon-reclamation.component';
+import { TermsComponent } from './shared/components/terms/terms.component';
+import { PrivacyComponent } from './shared/components/privacy/privacy.component';
+import { WarningComponent } from './shared/components/warning/warning.component';
+import { CookiesComponent } from './shared/components/cookies/cookies.component';
+import { FaqComponent } from './shared/components/faq/faq.component';
+import { ContactComponent } from './shared/components/contact/contact.component';
+import { ContactProfesionalComponent } from './shared/components/contact-profesional/contact-profesional.component';
+import { SalonReclamationComponent } from './shared/components/salon-reclamation/salon-reclamation.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisteredSearchBusinessComponent } from './components/registered-search-map-business/registered-search-map-business.component';
 import { AuthGuard } from './core/guards/auth.guard';
@@ -16,6 +16,8 @@ import { UnRegisteredSearchBusinessComponent } from './components/unregistered-s
 import { DetailsBusinessComponent } from './components/details-business/details-business.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FavoriteSalonComponent } from './components/favorite-salon/favorite-salon.component';
+import { CandidaturesComponent } from './components/candidatures/candidatures.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -28,7 +30,7 @@ const routes: Routes = [
   { path: 'reclamation/:id_salon', component: SalonReclamationComponent ,
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
-  
+
   {
     path: 'terminos-y-condiciones',
     component: TermsComponent,
@@ -100,6 +102,11 @@ const routes: Routes = [
   {
     path: 'favorite',
     component: FavoriteSalonComponent,
+    title: 'Mis Peluquerias | Encuentra tu salón perfecto',
+  },
+  {
+    path: 'mis-candidaturas',
+    component: CandidaturesComponent,
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
 
