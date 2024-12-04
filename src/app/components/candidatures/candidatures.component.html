@@ -1,8 +1,8 @@
 <div class="wrapper">
   <app-navbar-fixed></app-navbar-fixed>
   <main>
-    <div class="container" style="margin-top: 11vh;">
-      <h1 class="mb-3">Mis Candidaturas</h1>
+    <div class="container " style="margin-top: 11vh;">
+      <h1 class="mb-3">Mis Candidaturas Activas</h1>
       <div class="card-container" *ngIf="paginatedCandidatures.length > 0; else noCandidatures">
         <div class="row">
           <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4" *ngFor="let job of paginatedCandidatures">
@@ -28,20 +28,28 @@
                 <h6 class="card-subtitle mb-2 mt-2 text-center">
                   Publicado: {{ job.date_job_offer | date: "dd/MM/yyyy" }}
                 </h6>
+                <div class="d-flex justify-content-end">
+                <button class="btn btn-sm bg-secondary text-white" data-bs-toggle="modal" data-bs-target="#detailsJobOfferModal" (click)="SetToViewDetailsOffer(job)">
+                  Ver detalles
+                </button>
               </div>
-              <div class="card-footer d-flex justify-content-center">
+              </div>
+              <div class="card-footer d-flex justify-content-end">
                 <button
-                  class="btn btn-sm btn-danger me-2"
-                  (click)="removeCandidature(job); $event.stopPropagation()"
+                  class="btn btn-outline-primary text-white bg-dark btn-sm me-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#detailsCandidatureModal"
+                  (click)="SetToViewDetailsCandidature(job)"
                 >
-                  <i class="las la-trash"></i> Eliminar
+                  Mi inscripción
                 </button>
                 <button
-                  class="btn btn-sm btn-secondary"
+                  class="btn btn-sm btn-danger me-2"
                   data-bs-toggle="modal"
-                  data-bs-target="#detailsJobOfferModal"
+                  data-bs-target="#confirmDeleteModal"
+                  (click)="setToRemoveCandidature(job.id_user_job_subscriptions); $event.stopPropagation()"
                 >
-                  Ver mi inscripción
+                  <i class="las la-trash"></i> Eliminar
                 </button>
               </div>
             </div>
@@ -65,6 +73,7 @@
   </main>
   <app-footer></app-footer>
 </div>
+
 
 <!-- Modal para confirmar eliminación -->
 <div
@@ -93,6 +102,123 @@
           Eliminar
         </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--Modal para ver detalles de oferta de empleo-->
+<div
+  class="modal fade"
+  id="detailsJobOfferModal"
+  tabindex="-1"
+  aria-labelledby="detailsJobOfferModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="detailsJobOfferModalLabel">
+          {{ viewDetailsJob?.category }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <img
+            [src]="viewDetailsJob?.img_job_path"
+            class="img-fluid mb-5"
+            width="220"
+            alt="Imagen del empleo"
+          />
+        </div>
+        <div class="row col-12">
+          <div class="col-6">
+            <p class="fw-bold">Puesto:</p>
+            <p>{{ viewDetailsJob?.subcategory }}</p>
+          </div>
+          <div class="col-6">
+            <p class="fw-bold">Salario bruto anual:</p>
+            <p>{{ getFormattedSalary() }}</p>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-6">
+            <p class="fw-bold">Descripción:</p>
+            <p class="pre-wrap">{{ viewDetailsJob?.description }}</p>
+          </div>
+          <div class="col-6">
+            <p class="fw-bold">Requisitos:</p>
+            <p class="pre-wrap">{{ viewDetailsJob?.requirements }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Modal para ver inscripcion de solicitud mandada-->
+<div
+  class="modal fade"
+  id="detailsCandidatureModal"
+  tabindex="-1"
+  aria-labelledby="detailsCandidatureModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="detailsCandidatureModalLabel">
+          {{ viewDetailsCandidature?.category }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <img
+            [src]="viewDetailsCandidature?.img_job_path"
+            class="img-fluid mb-5"
+            width="220"
+            alt="Imagen del empleo"
+          />
+        </div>
+        <div class="row col-12">
+          <div class="col-6">
+            <p class="fw-bold pre-wrap">Mi interés descrito por la oferta:</p>
+            <p>{{ viewDetailsCandidature?.work_presentation }}</p>
+          </div>
+          <div class="col-6">
+            <p class="fw-bold">Mi CV enviado:</p>
+            <a [attr.href]="viewDetailsCandidature?.path_curriculum" target="_blank"> <img src="../../../assets/img/web/icon_pdf.png" alt="CV"> </a>
+          </div>
+        </div>
+        <div class="row col-12">
+            <p class="fw-bold">Politica de privacidad aceptada:</p>
+            <p> {{ viewDetailsCandidature?.privacy_policy === 1 ? 'Sí' : 'No' }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

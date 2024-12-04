@@ -23,4 +23,8 @@ export class CandidaturesService {
     return this.http.get(`${this.baseUrl}/candidatures/getCandidaturesByIdUser`, { params });
   }
 
+  removeCandidature(id_user_job_subscriptions: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/candidatures/delete/${id_user_job_subscriptions}`);
+  }
+
 }
