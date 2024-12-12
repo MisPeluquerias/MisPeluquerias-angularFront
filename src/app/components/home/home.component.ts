@@ -226,7 +226,7 @@ export class HomeComponent {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  
+
   openModal(category: string) {
     this.selectedCategory = category;
     this.modalInstance.show();
@@ -253,6 +253,7 @@ export class HomeComponent {
     this.modalInstance.hide();
   }
 
+  
   searchByCityName(cityName: string): void {
     this.unRegisteredSearchBusinessService.searchByCityName(cityName).subscribe(
       (response: any) => {

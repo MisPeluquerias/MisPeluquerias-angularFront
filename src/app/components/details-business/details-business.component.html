@@ -897,25 +897,25 @@
                       Puesto: {{ job.subcategory }}
                     </h6>
                     <h6 class="card-subtitle mb-2 mt-2 text-center">
-                      Publicado: {{ job.date_job_offer | date: "dd/MM/yyyy" }}
+                      Publicado: {{ job.date_job_offer | date : "dd/MM/yyyy" }}
                     </h6>
                     <div class="d-flex justify-content-end"></div>
                   </div>
                   <div class="card-footer d-flex justify-content-center">
                     <button
-                    *ngIf="!authService.isAuthenticated()"
-                      class="btn btn-sm  me-2 text-white"
-                      style="background-color: #b71622; font-size: lrem;"
+                      *ngIf="!authService.isAuthenticated()"
+                      class="btn btn-sm me-2 text-white"
+                      style="background-color: #b71622; font-size: lrem"
                       (click)="openLoginModal()"
                     >
-                    Inscribirme
+                      Inscribirme
                     </button>
 
                     <!-- Botón para usuario autenticado -->
                     <button
                       *ngIf="authService.isAuthenticated()"
                       class="btn btn-sm text-white me-2"
-                      style="background-color: #b71622; font-size: 1rem;"
+                      style="background-color: #b71622; font-size: 1rem"
                       data-bs-toggle="modal"
                       data-bs-target="#inscriptionJobModal"
                       (click)="SetToInscriptionJob(job.id_job_offer)"
@@ -1022,6 +1022,20 @@
                 class="btn btn-outline-secondary ms-auto"
                 >Visitar sitio</a
               >
+            </div>
+          </div>
+          <div *ngIf="business?.whatsapp_phone?.length > 0">
+            <div class="d-flex align-items-center mb-3">
+              <span>
+                <i class="lab la-whatsapp" style="margin-right: 12px;"></i> {{ business.whatsapp_phone }}
+              </span>
+              <a
+                [href]="'https://wa.me/' + business.whatsapp_phone"
+                target="_blank"
+                class="btn btn-outline-secondary ms-auto"
+              >
+                Mensaje
+              </a>
             </div>
           </div>
           <div class="separator-line w-100 mb-3 w-100"></div>
@@ -1859,7 +1873,7 @@
           </div>
           <div class="col-6">
             <p class="fw-bold">Salario bruto anual:</p>
-            <p>{{getFormattedSalary()}}</p>
+            <p>{{ getFormattedSalary() }}</p>
           </div>
         </div>
         <div class="row col-12">
@@ -1881,6 +1895,7 @@
     </div>
   </div>
 </div>
+
 
 <!--Modal para inscripción a oferta de trabajo-->
 <div
@@ -1912,30 +1927,35 @@
           />
         </div>
         <div class="mb-3 mt-3">
-        <small>* Todos los campos son obligatorios</small>
-      </div>
-        <div class="mb-3 row">
-          <label for="" class="form-label mb-2">Describa su interés por esta oferta de empleo:</label>
-          <div class="col-12 px-3">
-          <textarea
-            maxlength="500"
-            name=""
-            [(ngModel)]="jobsOffersInterest"
-            (input)="validatedSendDescription()"
-            rows="3"
-            class="form-control rounded-2"
-          ></textarea>
-          <span class="text-danger">{{errorOfferInterest}}</span>
+          <small>* Todos los campos son obligatorios</small>
         </div>
+        <div class="mb-3 row">
+          <label for="" class="form-label mb-2"
+            >Describa su interés por esta oferta de empleo:</label
+          >
+          <div class="col-12 px-3">
+            <textarea
+              maxlength="500"
+              name=""
+              [(ngModel)]="jobsOffersInterest"
+              (input)="validatedSendDescription()"
+              rows="3"
+              class="form-control rounded-2"
+            ></textarea>
+            <span class="text-danger">{{ errorOfferInterest }}</span>
+          </div>
         </div>
         <div>
-          <label for="curriculum" class="form-label mt-3">Suba su currículo en formato PDF:</label>
+          <label for="curriculum" class="form-label mt-3"
+            >Suba su currículo en formato PDF:</label
+          >
           <input
             type="file"
             class="form-control file"
             id="curriculum"
             name="curriculum"
             accept=".pdf"
+            #fileInput
             (change)="onPDFSelected($event)"
           />
           <span class="text-danger">{{ errorCurriculum }}</span>
@@ -1953,15 +1973,27 @@
                 required
                 [(ngModel)]="privacyPolicy"
               />
-              He leído y acepto las políticas de privacidad
+              <a
+                routerLink="/politica-de-privacidad"
+                target="_blank"
+                class="text-dark"
+              >
+                He leído y acepto las políticas de privacidad</a
+              >
             </label>
             <p class="text-danger">{{ errorprivacyPolicy }}</p>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" [disabled]="!jobsOffersInterest || !curriculum || !privacyPolicy" (click)="sendInscription()">Enviar Inscripción
-          Enviar
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          [disabled]="!jobsOffersInterest || !curriculum || !privacyPolicy"
+          (click)="sendInscription()"
+        >
+          Enviar Inscripción Enviar
         </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Cancelar

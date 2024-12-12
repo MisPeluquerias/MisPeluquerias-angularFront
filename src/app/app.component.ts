@@ -14,6 +14,5 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.metaService.metaDescription();
-
   }
 }

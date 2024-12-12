@@ -96,7 +96,7 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent,
+    component: ProfileComponent,canActivate: [AuthGuard],
     title: 'Mis Peluquerias | Encuentra tu salón perfecto',
   },
   {

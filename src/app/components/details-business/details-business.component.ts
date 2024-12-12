@@ -1,5 +1,5 @@
 import { UnRegisteredSearchBuusinessService } from './../../core/services/unregistered-search-business.service';
-import { Observable } from 'rxjs';
+import { ViewChild, ElementRef } from '@angular/core';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
@@ -10,8 +10,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginComponent } from '../../auth/login/login.component';
 import { ToastrService } from 'ngx-toastr';
 import { FavoriteSalonService } from '../../core/services/favorite-salon.service';
-import { Modal } from 'bootstrap';
-import { response } from 'express';
 import { Renderer2,Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
@@ -94,6 +92,8 @@ export class DetailsBusinessComponent implements OnInit {
   jobSelected: any = null;
   id_job_offer: any;
   schema: any;
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private renderer:Renderer2,
@@ -220,6 +220,7 @@ export class DetailsBusinessComponent implements OnInit {
     script.textContent = JSON.stringify(schemaData);
     document.head.appendChild(script);
   }
+
 
   onImageError(event: any) {
     event.target.src = '../../../assets/img/web/sello.jpg';
@@ -1097,6 +1098,7 @@ export class DetailsBusinessComponent implements OnInit {
     }
   }
 
+
   SetToInscriptionJob(id_job_offer: any): void {
     this.jobSelected = id_job_offer;
   }
@@ -1120,18 +1122,21 @@ export class DetailsBusinessComponent implements OnInit {
     if (this.curriculum) {
       formData.append('curriculum', this.curriculum); // Asegúrate de que `this.curriculum` sea un archivo válido
     }
-    formData.append('privacy_policy', this.privacyPolicy ? 'true' : 'false'); // Convertir booleano a string
+    formData.append('privacy_policy', this.privacyPolicy ? '1' : '0'); // Convertir booleano a string
 
-    //console.log('Datos enviados para inscripción:', formData);
+    console.log('Politica de privacidad enviada:', this.privacyPolicy);
 
     // Llamar al servicio para procesar la inscripción
     this.detailsBusinessService.addInscripcionJobOffer(formData).subscribe(
       (response: any) => {
         this.toastr.success('Su inscripción fue realizada correctamente');
         this.jobsOffersInterest = '';
+        this.selectedFileName = "";
+        this.isFileSelected = false;
         this.curriculum = null;
         this.privacyPolicy = false;
         this.isFileSelected = false;
+        this.fileInput.nativeElement.value = '';
       },
       (error: any) => {
         console.error('Error al realizar la inscripción:', error);
@@ -1142,6 +1147,7 @@ export class DetailsBusinessComponent implements OnInit {
         this.curriculum = null;
         this.privacyPolicy = false;
         this.isFileSelected = false;
+        this.fileInput.nativeElement.value = '';
       }
     );
   }

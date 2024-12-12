@@ -31,7 +31,6 @@ export class FavoriteSalonComponent implements OnInit {
     }
   }
 
-
   loadFavorites(userId: string): void {
     this.favoriteSalonService.getFavorites(userId).subscribe(
       (favorites: any[]) => {
@@ -82,6 +81,7 @@ export class FavoriteSalonComponent implements OnInit {
       this.paginateFavorites(); // Actualiza la lista de favoritos paginada
     }
   }
+
 
   public viewDetails(id: any, salonName: string): void {
     if (id && salonName) {
